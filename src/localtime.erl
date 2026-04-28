@@ -257,4 +257,19 @@ get_timezone_test() ->
 tz_shift_test() ->
    ?assertEqual({'+',3,0}, tz_shift({{2014,1,1},{12,0,0}}, "America/Los_Angeles", "America/New_York")).
 
+santiago_dst_test_() ->
+   Tz = "America/Santiago",
+   Cases = [
+      {"Apr 4 2026 12:00 (Sat, before DST end) is UTC-3",   {{2026,4,4},{12, 0,0}}, {{2026,4,4},{15, 0,0}}},
+      {"Apr 5 2026 12:00 (Sun, DST end) is UTC-4",          {{2026,4,5},{12, 0,0}}, {{2026,4,5},{16, 0,0}}},
+      {"Sep 5 2026 12:00 (Sat, before DST start) is UTC-4", {{2026,9,5},{12, 0,0}}, {{2026,9,5},{16, 0,0}}},
+      {"Sep 6 2026 12:00 (Sun, DST start) is UTC-3",        {{2026,9,6},{12, 0,0}}, {{2026,9,6},{15, 0,0}}},
+      {"Apr 7 2026 10:30 in range is UTC-4",                {{2026,4,7},{10,30,0}}, {{2026,4,7},{14,30,0}}},
+      {"Apr 7 2026 11:00 in range is UTC-4",                {{2026,4,7},{11, 0,0}}, {{2026,4,7},{15, 0,0}}},
+      {"Apr 7 2026 12:00 in range is UTC-4",                {{2026,4,7},{12, 0,0}}, {{2026,4,7},{16, 0,0}}},
+      {"Apr 7 2026 13:00 in range is UTC-4",                {{2026,4,7},{13, 0,0}}, {{2026,4,7},{17, 0,0}}}
+   ],
+   [{Desc, [?_assertEqual(Local, utc_to_local(Utc, Tz)),
+            ?_assertEqual(Utc,   local_to_utc(Local, Tz))]} || {Desc, Local, Utc} <- Cases].
+
 -endif. % TEST

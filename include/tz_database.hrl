@@ -230,7 +230,7 @@
       {"America/Rosario",{"ART","ART"},undef,-180,0,undef,{0,0},undef,{0,0}},
       {"America/Santa_Isabel",{"PST","PST"},{"PDT","PDT"},-480,60,{1,sun,apr},{2,0},{last,sun,oct},{2,0}},
       {"America/Santarem",{"BRT","BRT"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Santiago",{"CLT","CLT"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      {"America/Santiago",{"CLT","CLT"},{"CLST","CLST"},-240,60,{1,sun,sep},{0,0},{1,sun,apr},{0,0}},
       {"America/Santo_Domingo",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
       {"America/Sao_Paulo",{"BRT","BRT"},{"BRST","BRST"},-180,60,{3,sun,oct},{0,0},{3,sun,feb},{0,0}},
       {"America/Scoresbysund",{"EGT","EGT"},{"EGST","EGST"},-60,60,{last,sun,mar},{0,0},{last,sun,oct},{1,0}},
