@@ -166,7 +166,7 @@ get_timezone(TimeZone) ->
     get_timezone_inner(TimeZone).
 
 list_timezones() ->
-    dict:fetch_keys(?tz_index).
+    lists:sort(maps:keys(?tz_index)).
 
 % =======================================================================
 % privates
@@ -207,11 +207,11 @@ get_timezone_inner(TimeZone) when is_binary(TimeZone) ->
     get_timezone_inner(erlang:binary_to_list(TimeZone));
 get_timezone_inner(TimeZone) when is_list(TimeZone) ->
    TimeZoneNoSpaces = tr_char(TimeZone, ?SPACE_CHAR, $_),
-   case dict:find(TimeZoneNoSpaces, ?tz_index)  of
-      error ->
-         TimeZoneNoSpaces;
-      {ok, [TZName | _]} ->
-            TZName
+   case ?tz_index of
+      #{TimeZoneNoSpaces := [TZName | _]} ->
+         TZName;
+      #{} ->
+         TimeZoneNoSpaces
    end;
 get_timezone_inner(_) ->
     throw({error, "Timezone should be string/binary"}).

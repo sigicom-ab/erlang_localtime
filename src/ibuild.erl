@@ -8,12 +8,7 @@
 -include("tz_database.hrl").
 
 build_tzlist(TzName, Name, Dict) ->
-   case dict:find(Name, Dict) of
-      error ->
-         dict:store(Name, [TzName], Dict);
-      {ok, TzNames} ->
-         dict:store(Name, TzNames ++ [TzName], Dict)
-   end.
+   maps:update_with(Name, fun(TzNames) -> TzNames ++ [TzName] end, [TzName], Dict).
 
 build_index() ->
    F = fun({TzName,{Name,_},{DName,_},_,_,_,_,_,_}, Acc) ->
@@ -25,17 +20,18 @@ build_index() ->
    % Database order (sorted by zone name) decides which zone an abbreviation
    % resolves to, so fold over the zones sorted rather than in map order.
    Zones = [Tz || {_, Tz} <- lists:sort(maps:to_list(?tz_database))],
-   I0 = lists:foldl(F, dict:new(), Zones),
+   I0 = lists:foldl(F, #{}, Zones),
    % An abbreviation that is also a zone name (e.g. "CET", "UTC") must resolve
    % to that zone, not to the first zone using the abbreviation.
-   I = dict:map(fun(Abbr, TzNames) ->
+   I = maps:map(fun(Abbr, TzNames) ->
                       case lists:member(Abbr, TzNames) of
                          true -> [Abbr | lists:delete(Abbr, TzNames)];
                          false -> TzNames
                       end
                 end, I0),
    {ok, File} = file:open("tz_index.hrl", [write]),
-   io:fwrite(File, "-define(tz_index, ~p).\n", [I]).
+   io:fwrite(File, "-define(tz_index, ~p).\n", [I]),
+   file:close(File).
 
 %% So this can be run from escript:
 main(_Args) ->

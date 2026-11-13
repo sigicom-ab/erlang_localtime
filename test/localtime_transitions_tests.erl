@@ -241,7 +241,7 @@ committed_database_sanity_test() ->
    %% Every abbreviation is indexed (tz_index.hrl rebuilt after the database).
    Abbrs = lists:usort(lists:append([[S | [element(1, D) || D =/= undef]]
                                      || _ := {_, {S, _}, D, _, _, _, _, _, _} <- ?tz_database])),
-   ?assertEqual([], [A || A <- Abbrs, dict:find(A, ?tz_index) =:= error]),
+   ?assertEqual([], [A || A <- Abbrs, not maps:is_key(A, ?tz_index)]),
    %% A zone name always resolves to itself, even when it is also an
    %% abbreviation ("CET", "UTC", ...).
    ?assertEqual([], [N || N <- Names, localtime:get_timezone(N) =/= N]),
