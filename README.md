@@ -81,3 +81,42 @@ localtime:tz_shift({{2013, 01, 22}, {18, 17, 00}}, "America/New York").
 localtime:tz_shift({{2013, 01, 22}, {18, 17, 00}}, "America/New York", "Europe/Moscow").
 {'+',9,0}
 ```
+
+### Time zone database
+
+`include/tz_database.hrl` is generated from the [IANA tz database](https://www.iana.org/time-zones)
+by `db/tz_gen.erl`, and `include/tz_index.hrl` is derived from it by `src/ibuild.erl`. The release
+it was generated from is recorded in the header of `include/tz_database.hrl`. To update to the
+latest release (requires `curl`, a C compiler and Erlang):
+
+```
+make -C db         # fetch the latest release, build zic/zdump, compile data, generate
+make               # rebuild tz_index.hrl and compile
+make -C db test    # fetch the data for the committed release, run all tests
+```
+
+`make -C db` does nothing if the committed database is already at the latest release (`FORCE=1`
+regenerates anyway); `make -C db TZ_VERSION=2026e` generates a specific release.
+
+Tests of known transitions live in `test/localtime_transitions_tests.erl` and run without any
+downloads; add one there whenever a rule change is worth pinning down.
+
+Each zone is described by one yearly rule taken from the POSIX TZ string `zic` stores in the
+compiled TZif file. Rule times may be negative or 24 hours or more (e.g. Asia/Jerusalem
+`{4,thu,mar},{26,0}`: 02:00 on the day after the 4th Thursday). Periods where a zone does not
+follow its rule (history under earlier rules, e.g. America/Winnipeg's CST/CDT before its move to
+permanent −05 on 2026-11-01, or Morocco's Ramadan suspensions) are listed in `?tz_exceptions`,
+covering 1970 to the generation year plus 20. Beyond that window the yearly rule applies, so
+**results for dates before 1970 are unsupported**. Offsets are whole minutes; the only sub-minute
+offset in the window (Africa/Monrovia, −00:44:30 until 1972) is rounded to −00:45.
+
+#### Changes since the 2015g database
+
+* `Etc/GMT±N` follows the IANA/POSIX sign convention: `Etc/GMT+1` is UTC−1.
+* Abbreviations follow IANA, which replaced many invented ones with numeric ones
+  (e.g. `"-03"` instead of `"BRT"`); the old abbreviations no longer resolve in `get_timezone/1`.
+* `Canada/East-Saskatchewan` was removed upstream; use `America/Regina`.
+* A zone name that is also an abbreviation (`CET`, `EET`, `EST`, `GMT`, `HST`, `MST`, `UTC`, `WET`)
+  now resolves to that zone.
+* `utc_to_local/2` always returns a single datetime (it used to return a list in the hour after
+  a fall-back transition).

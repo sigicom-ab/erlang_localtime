@@ -1,2 +1,4 @@
 ebin/
 _build/
+db/build/
+db/tzdata*/
