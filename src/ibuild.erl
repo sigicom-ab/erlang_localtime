@@ -22,7 +22,15 @@ build_index() ->
       ({TzName,{Name,_},undef,_,_,_,_,_,_}, Acc) ->
          build_tzlist(TzName, Name, Acc)
    end,
-   I = lists:foldl(F, dict:new(), ?tz_database),
+   I0 = lists:foldl(F, dict:new(), ?tz_database),
+   % An abbreviation that is also a zone name (e.g. "CET", "UTC") must resolve
+   % to that zone, not to the first zone using the abbreviation.
+   I = dict:map(fun(Abbr, TzNames) ->
+                      case lists:member(Abbr, TzNames) of
+                         true -> [Abbr | lists:delete(Abbr, TzNames)];
+                         false -> TzNames
+                      end
+                end, I0),
    {ok, File} = file:open("tz_index.hrl", [write]),
    io:fwrite(File, "-define(tz_index, ~p).\n", [I]).
 
