@@ -96,9 +96,10 @@ generate(Opts) ->
     Summary = io_lib:format("~b zones carry exception periods ~b-~b",
                             [length(Exceptions), From, To]),
     Text = [header(maps:get(version, Opts, "unknown"), Date, {From, To}, Summary, Problems),
-            "-define(tz_database,\n   [\n",
-            lists:join(",\n", ["      " ++ format_tuple(T) || T <- Tuples]),
-            "\n   ]).\n\n",
+            "-define(tz_database,\n   #{\n",
+            lists:join(",\n", ["      " ++ format_tuple(element(1, T)) ++ " =>\n         "
+                                ++ format_tuple(T) || T <- Tuples]),
+            "\n   }).\n\n",
             exceptions_text(Exceptions)],
     {unicode:characters_to_binary(Text), Problems}.
 
@@ -410,18 +411,18 @@ format_tuple(T) ->
 %% stays readable even though the terms hold gregorian seconds.
 exceptions_text(Exceptions) ->
     ["% Periods (UTC, [Start, End)) where a zone deviates from its yearly rule.\n"
-     "% {TimeZoneName, [{UtcStartGregorianSecs, UtcEndGregorianSecs, UtcOffsetMin, Abbr}]}\n"
-     "-define(tz_exceptions,\n   [\n",
+     "% #{TimeZoneName => [{UtcStartGregorianSecs, UtcEndGregorianSecs, UtcOffsetMin, Abbr}]}\n"
+     "-define(tz_exceptions,\n   #{\n",
      lists:join(
        "\n",
-       [["      {", format_tuple(Name), ",\n        [",
+       [["      ", format_tuple(Name), " =>\n        [",
          with_separators([{format_tuple(E), period_comment(E)} || E <- Ex],
                          ",", "\n         ", ZoneEnd)]
         || {{Name, Ex}, ZoneEnd} <- lists:zip(Exceptions, zone_ends(length(Exceptions)))]),
-     "\n   ]).\n"].
+     "\n   }).\n"].
 
 zone_ends(0) -> [];
-zone_ends(N) -> lists:duplicate(N - 1, "]},") ++ ["]}"].
+zone_ends(N) -> lists:duplicate(N - 1, "],") ++ ["]"].
 
 %% Joins [{Text, Comment}] putting Sep after every item but the last (which
 %% gets Last), before the item's comment, so comments never swallow commas.
@@ -450,7 +451,7 @@ header(Version, {Y, M, D}, {From, To}, Summary, Problems) ->
       "%%\n"
       "%% Problems:\n~ts"
       "\n"
-      "% {TimeZoneName, {StdAbbr, StdName}, {DstAbbr, DstName}, StdMin, DstMin, DstStartDay, DstStartTime, DstEndDay, DstEndTime}\n"
+      "% #{TimeZoneName => {TimeZoneName, {StdAbbr, StdName}, {DstAbbr, DstName}, StdMin, DstMin, DstStartDay, DstStartTime, DstEndDay, DstEndTime}}\n"
       "%   TimeZoneName = String(), TimeZone name, MUST be unique. It is a key\n"
       "%   StdName = {String(), String()}, name and abbreviations of timezone before daylight shift\n"
       "%   DstName = {String(), String()}, name and abbreviations of timezone after daylight shift\n"

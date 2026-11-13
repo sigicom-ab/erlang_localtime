@@ -26,7 +26,7 @@
 %  TimeZone = String() | tuple()
 -spec check(Datetime :: calendar:datetime(), Timezone :: tz() | string()) -> {error, unknown_tz} | time_not_exists | is_not_in_dst | is_in_dst | ambiguous_time.
 check(DateTime, Timezone) when is_list(Timezone) ->
-    case lists:keyfind(localtime:get_timezone(Timezone), 1, ?tz_database) of
+    case maps:get(localtime:get_timezone(Timezone), ?tz_database, false) of
         false ->
             {error, unknown_tz};
         TZ ->
@@ -88,9 +88,9 @@ rule_seconds(Rule, Time, Year) ->
 % sorted and non-overlapping, so the scan can stop at the first period that
 % starts after Utc.
 exception(Name, Utc) ->
-   case lists:keyfind(Name, 1, ?tz_exceptions) of
-      false -> none;
-      {_, Periods} -> find_period(Periods, Utc)
+   case ?tz_exceptions of
+      #{Name := Periods} -> find_period(Periods, Utc);
+      #{} -> none
    end.
 
 find_period([{S, _, _, _} | _], Utc) when Utc < S -> none;
@@ -99,9 +99,9 @@ find_period([_ | Rest], Utc) -> find_period(Rest, Utc);
 find_period([], _) -> none.
 
 exception_offsets(Name) ->
-   case lists:keyfind(Name, 1, ?tz_exceptions) of
-      false -> [];
-      {_, Periods} -> [Off || {_, _, Off, _} <- Periods]
+   case ?tz_exceptions of
+      #{Name := Periods} -> [Off || {_, _, Off, _} <- Periods];
+      #{} -> []
    end.
 
 get_dst_day_of_year({WeekDay,DayOfWeek,Month}, Year) when (WeekDay == last) or (WeekDay == 5) ->

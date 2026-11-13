@@ -40,8 +40,7 @@ tz_gen_test_() ->
 %% -------------------------------------------------------------------
 
 up_to_date({Db, Ex}) ->
-   ?assertEqual(length(Db), length(?tz_database)),
-   ?assertEqual([], Db -- ?tz_database),
+   ?assertEqual(Db, ?tz_database),
    ?assertEqual(Ex, ?tz_exceptions).
 
 %% -------------------------------------------------------------------
@@ -51,7 +50,7 @@ up_to_date({Db, Ex}) ->
 completeness() ->
    Names = source_names(filename:join(root(), "db/" ++ tzdata())),
    ?assert(length(Names) > 590),
-   ?assertEqual([], [N || N <- Names, not lists:keymember(N, 1, ?tz_database)]).
+   ?assertEqual([], [N || N <- Names, not maps:is_key(N, ?tz_database)]).
 
 
 source_names(Dir) ->
@@ -75,7 +74,7 @@ name_of(_) -> [].
 %% -------------------------------------------------------------------
 
 zdump_oracle() ->
-   Names = [element(1, T) || T <- ?tz_database],
+   Names = maps:keys(?tz_database),
    oracle(Names, ?ORACLE_FROM, ?ORACLE_TO, 100).
 
 oracle(Names, From, To, MinZones) ->
@@ -85,7 +84,7 @@ oracle(Names, From, To, MinZones) ->
    ?assertEqual([], lists:sublist(Failures, 20)).
 
 check_zone(Name, Transitions, From, To) ->
-   Tz = lists:keyfind(Name, 1, ?tz_database),
+   Tz = maps:get(Name, ?tz_database),
    Samples = [{T - 1, Before} || {T, Before, _} <- Transitions] ++
              [{T, After} || {T, _, After} <- Transitions] ++
              [{T + 3600, After} || {T, _, After} <- Transitions] ++
@@ -211,9 +210,9 @@ parse_db(File) ->
 define_term(Bin, Macro) ->
    case string:split(Bin, "-define(" ++ Macro ++ ",") of
       [_, Rest] ->
-         [Body | _] = string:split(Rest, "]).", leading),
-         {ok, Toks, _} = erl_scan:string(unicode:characters_to_list(Body) ++ "]."),
+         [Body | _] = string:split(Rest, "}).", leading),
+         {ok, Toks, _} = erl_scan:string(unicode:characters_to_list(Body) ++ "}."),
          {ok, Term} = erl_parse:parse_term(Toks),
          Term;
-      [_] -> []
+      [_] -> #{}
    end.

@@ -13,7 +13,7 @@
 %% Problems:
 %%   Africa/Monrovia: offset -00:44:30 (MMT) from 1970-01-01T00:00:00Z rounded to -45 min
 
-% {TimeZoneName, {StdAbbr, StdName}, {DstAbbr, DstName}, StdMin, DstMin, DstStartDay, DstStartTime, DstEndDay, DstEndTime}
+% #{TimeZoneName => {TimeZoneName, {StdAbbr, StdName}, {DstAbbr, DstName}, StdMin, DstMin, DstStartDay, DstStartTime, DstEndDay, DstEndTime}}
 %   TimeZoneName = String(), TimeZone name, MUST be unique. It is a key
 %   StdName = {String(), String()}, name and abbreviations of timezone before daylight shift
 %   DstName = {String(), String()}, name and abbreviations of timezone after daylight shift
@@ -32,611 +32,1208 @@
 % }
 
 -define(tz_database,
-   [
-      {"Africa/Abidjan",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Accra",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Addis_Ababa",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Algiers",{"CET","CET"},undef,60,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Asmara",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Asmera",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Bamako",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Bangui",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Banjul",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Bissau",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Blantyre",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Brazzaville",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Bujumbura",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Cairo",{"EET","EET"},{"EEST","EEST"},120,60,{last,fri,apr},{0,0},{last,thu,oct},{24,0}},
-      {"Africa/Casablanca",{"+00","+00"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Ceuta",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Africa/Conakry",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Dakar",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Dar_es_Salaam",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Djibouti",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Douala",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
-      {"Africa/El_Aaiun",{"+00","+00"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Freetown",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Gaborone",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Harare",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Johannesburg",{"SAST","SAST"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Juba",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Kampala",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Khartoum",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Kigali",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Kinshasa",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Lagos",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Libreville",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Lome",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Luanda",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Lubumbashi",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Lusaka",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Malabo",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Maputo",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Maseru",{"SAST","SAST"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Mbabane",{"SAST","SAST"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Mogadishu",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Monrovia",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Nairobi",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Ndjamena",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Niamey",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Nouakchott",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Ouagadougou",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Porto-Novo",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Sao_Tome",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Timbuktu",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Tripoli",{"EET","EET"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Tunis",{"CET","CET"},undef,60,0,undef,{0,0},undef,{0,0}},
-      {"Africa/Windhoek",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"America/Adak",{"HST","HST"},{"HDT","HDT"},-600,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Anchorage",{"AKST","AKST"},{"AKDT","AKDT"},-540,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Anguilla",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Antigua",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Araguaina",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Argentina/Buenos_Aires",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Argentina/Catamarca",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Argentina/ComodRivadavia",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Argentina/Cordoba",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Argentina/Jujuy",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Argentina/La_Rioja",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Argentina/Mendoza",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Argentina/Rio_Gallegos",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Argentina/Salta",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Argentina/San_Juan",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Argentina/San_Luis",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Argentina/Tucuman",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Argentina/Ushuaia",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Aruba",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Asuncion",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Atikokan",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"America/Atka",{"HST","HST"},{"HDT","HDT"},-600,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Bahia",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Bahia_Banderas",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"America/Barbados",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Belem",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Belize",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"America/Blanc-Sablon",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Boa_Vista",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Bogota",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"America/Boise",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Buenos_Aires",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Cambridge_Bay",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Campo_Grande",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Cancun",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"America/Caracas",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Catamarca",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Cayenne",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Cayman",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"America/Chicago",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Chihuahua",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"America/Ciudad_Juarez",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Coral_Harbour",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"America/Cordoba",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Costa_Rica",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"America/Coyhaique",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Creston",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
-      {"America/Cuiaba",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Curacao",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Danmarkshavn",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"America/Dawson",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
-      {"America/Dawson_Creek",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
-      {"America/Denver",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Detroit",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Dominica",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Edmonton",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"America/Eirunepe",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"America/El_Salvador",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"America/Ensenada",{"PST","PST"},{"PDT","PDT"},-480,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Fort_Nelson",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
-      {"America/Fort_Wayne",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Fortaleza",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Glace_Bay",{"AST","AST"},{"ADT","ADT"},-240,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Godthab",{"-02","-02"},{"-01","-01"},-120,60,{last,sun,mar},{-1,0},{last,sun,oct},{0,0}},
-      {"America/Goose_Bay",{"AST","AST"},{"ADT","ADT"},-240,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Grand_Turk",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Grenada",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Guadeloupe",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Guatemala",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"America/Guayaquil",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"America/Guyana",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Halifax",{"AST","AST"},{"ADT","ADT"},-240,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Havana",{"CST","CST"},{"CDT","CDT"},-300,60,{2,sun,mar},{0,0},{1,sun,nov},{1,0}},
-      {"America/Hermosillo",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
-      {"America/Indiana/Indianapolis",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Indiana/Knox",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Indiana/Marengo",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Indiana/Petersburg",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Indiana/Tell_City",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Indiana/Vevay",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Indiana/Vincennes",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Indiana/Winamac",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Indianapolis",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Inuvik",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"America/Iqaluit",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Jamaica",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"America/Jujuy",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Juneau",{"AKST","AKST"},{"AKDT","AKDT"},-540,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Kentucky/Louisville",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Kentucky/Monticello",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Knox_IN",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Kralendijk",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/La_Paz",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Lima",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"America/Los_Angeles",{"PST","PST"},{"PDT","PDT"},-480,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Louisville",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Lower_Princes",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Maceio",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Managua",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"America/Manaus",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Marigot",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Martinique",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Matamoros",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Mazatlan",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
-      {"America/Mendoza",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Menominee",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Merida",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"America/Metlakatla",{"AKST","AKST"},{"AKDT","AKDT"},-540,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Mexico_City",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"America/Miquelon",{"-03","-03"},{"-02","-02"},-180,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Moncton",{"AST","AST"},{"ADT","ADT"},-240,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Monterrey",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"America/Montevideo",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Montreal",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Montserrat",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Nassau",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/New_York",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Nipigon",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Nome",{"AKST","AKST"},{"AKDT","AKDT"},-540,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Noronha",{"-02","-02"},undef,-120,0,undef,{0,0},undef,{0,0}},
-      {"America/North_Dakota/Beulah",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/North_Dakota/Center",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/North_Dakota/New_Salem",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Nuuk",{"-02","-02"},{"-01","-01"},-120,60,{last,sun,mar},{-1,0},{last,sun,oct},{0,0}},
-      {"America/Ojinaga",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Panama",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"America/Pangnirtung",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Paramaribo",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Phoenix",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
-      {"America/Port-au-Prince",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Port_of_Spain",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Porto_Acre",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"America/Porto_Velho",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Puerto_Rico",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Punta_Arenas",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Rainy_River",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"America/Rankin_Inlet",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Recife",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Regina",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"America/Resolute",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Rio_Branco",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"America/Rosario",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Santa_Isabel",{"PST","PST"},{"PDT","PDT"},-480,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Santarem",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Santiago",{"-04","-04"},{"-03","-03"},-240,60,{1,sat,sep},{24,0},{1,sat,apr},{24,0}},
-      {"America/Santo_Domingo",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Sao_Paulo",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"America/Scoresbysund",{"-02","-02"},{"-01","-01"},-120,60,{last,sun,mar},{-1,0},{last,sun,oct},{0,0}},
-      {"America/Shiprock",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Sitka",{"AKST","AKST"},{"AKDT","AKDT"},-540,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/St_Barthelemy",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/St_Johns",{"NST","NST"},{"NDT","NDT"},-210,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/St_Kitts",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/St_Lucia",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/St_Thomas",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/St_Vincent",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Swift_Current",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"America/Tegucigalpa",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"America/Thule",{"AST","AST"},{"ADT","ADT"},-240,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Thunder_Bay",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Tijuana",{"PST","PST"},{"PDT","PDT"},-480,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Toronto",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Tortola",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Vancouver",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
-      {"America/Virgin",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"America/Whitehorse",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
-      {"America/Winnipeg",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"America/Yakutat",{"AKST","AKST"},{"AKDT","AKDT"},-540,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"America/Yellowknife",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"Antarctica/Casey",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Antarctica/Davis",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Antarctica/DumontDUrville",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
-      {"Antarctica/Macquarie",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
-      {"Antarctica/Mawson",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Antarctica/McMurdo",{"NZST","NZST"},{"NZDT","NZDT"},720,60,{last,sun,sep},{2,0},{1,sun,apr},{3,0}},
-      {"Antarctica/Palmer",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"Antarctica/Rothera",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"Antarctica/South_Pole",{"NZST","NZST"},{"NZDT","NZDT"},720,60,{last,sun,sep},{2,0},{1,sun,apr},{3,0}},
-      {"Antarctica/Syowa",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Antarctica/Troll",{"+00","+00"},{"+02","+02"},0,120,{last,sun,mar},{1,0},{last,sun,oct},{3,0}},
-      {"Antarctica/Vostok",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Arctic/Longyearbyen",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Asia/Aden",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Almaty",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Amman",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Anadyr",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Aqtau",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Aqtobe",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Ashgabat",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Ashkhabad",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Atyrau",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Baghdad",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Bahrain",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Baku",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Bangkok",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Barnaul",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Beirut",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{0,0},{last,sun,oct},{0,0}},
-      {"Asia/Bishkek",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Brunei",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Calcutta",{"IST","IST"},undef,330,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Chita",{"+09","+09"},undef,540,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Choibalsan",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Chongqing",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Chungking",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Colombo",{"+0530","+0530"},undef,330,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Dacca",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Damascus",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Dhaka",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Dili",{"+09","+09"},undef,540,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Dubai",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Dushanbe",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Famagusta",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Asia/Gaza",{"EET","EET"},{"EEST","EEST"},120,60,{4,thu,mar},{50,0},{4,thu,oct},{50,0}},
-      {"Asia/Harbin",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Hebron",{"EET","EET"},{"EEST","EEST"},120,60,{4,thu,mar},{50,0},{4,thu,oct},{50,0}},
-      {"Asia/Ho_Chi_Minh",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Hong_Kong",{"HKT","HKT"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Hovd",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Irkutsk",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Istanbul",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Jakarta",{"WIB","WIB"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Jayapura",{"WIT","WIT"},undef,540,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Jerusalem",{"IST","IST"},{"IDT","IDT"},120,60,{4,thu,mar},{26,0},{last,sun,oct},{2,0}},
-      {"Asia/Kabul",{"+0430","+0430"},undef,270,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Kamchatka",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Karachi",{"PKT","PKT"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Kashgar",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Kathmandu",{"+0545","+0545"},undef,345,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Katmandu",{"+0545","+0545"},undef,345,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Khandyga",{"+09","+09"},undef,540,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Kolkata",{"IST","IST"},undef,330,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Krasnoyarsk",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Kuala_Lumpur",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Kuching",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Kuwait",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Macao",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Macau",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Magadan",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Makassar",{"WITA","WITA"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Manila",{"PST","PST"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Muscat",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Nicosia",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Asia/Novokuznetsk",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Novosibirsk",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Omsk",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Oral",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Phnom_Penh",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Pontianak",{"WIB","WIB"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Pyongyang",{"KST","KST"},undef,540,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Qatar",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Qostanay",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Qyzylorda",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Rangoon",{"+0630","+0630"},undef,390,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Riyadh",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Saigon",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Sakhalin",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Samarkand",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Seoul",{"KST","KST"},undef,540,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Shanghai",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Singapore",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Srednekolymsk",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Taipei",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Tashkent",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Tbilisi",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Tehran",{"+0330","+0330"},undef,210,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Tel_Aviv",{"IST","IST"},{"IDT","IDT"},120,60,{4,thu,mar},{26,0},{last,sun,oct},{2,0}},
-      {"Asia/Thimbu",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Thimphu",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Tokyo",{"JST","JST"},undef,540,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Tomsk",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Ujung_Pandang",{"WITA","WITA"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Ulaanbaatar",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Ulan_Bator",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Urumqi",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Ust-Nera",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Vientiane",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Vladivostok",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Yakutsk",{"+09","+09"},undef,540,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Yangon",{"+0630","+0630"},undef,390,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Yekaterinburg",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Asia/Yerevan",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
-      {"Atlantic/Azores",{"-01","-01"},{"+00","+00"},-60,60,{last,sun,mar},{0,0},{last,sun,oct},{1,0}},
-      {"Atlantic/Bermuda",{"AST","AST"},{"ADT","ADT"},-240,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"Atlantic/Canary",{"WET","WET"},{"WEST","WEST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"Atlantic/Cape_Verde",{"-01","-01"},undef,-60,0,undef,{0,0},undef,{0,0}},
-      {"Atlantic/Faeroe",{"WET","WET"},{"WEST","WEST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"Atlantic/Faroe",{"WET","WET"},{"WEST","WEST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"Atlantic/Jan_Mayen",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Atlantic/Madeira",{"WET","WET"},{"WEST","WEST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"Atlantic/Reykjavik",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Atlantic/South_Georgia",{"-02","-02"},undef,-120,0,undef,{0,0},undef,{0,0}},
-      {"Atlantic/St_Helena",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Atlantic/Stanley",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"Australia/ACT",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
-      {"Australia/Adelaide",{"ACST","ACST"},{"ACDT","ACDT"},570,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
-      {"Australia/Brisbane",{"AEST","AEST"},undef,600,0,undef,{0,0},undef,{0,0}},
-      {"Australia/Broken_Hill",{"ACST","ACST"},{"ACDT","ACDT"},570,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
-      {"Australia/Canberra",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
-      {"Australia/Currie",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
-      {"Australia/Darwin",{"ACST","ACST"},undef,570,0,undef,{0,0},undef,{0,0}},
-      {"Australia/Eucla",{"+0845","+0845"},undef,525,0,undef,{0,0},undef,{0,0}},
-      {"Australia/Hobart",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
-      {"Australia/LHI",{"+1030","+1030"},{"+11","+11"},630,30,{1,sun,oct},{2,0},{1,sun,apr},{2,0}},
-      {"Australia/Lindeman",{"AEST","AEST"},undef,600,0,undef,{0,0},undef,{0,0}},
-      {"Australia/Lord_Howe",{"+1030","+1030"},{"+11","+11"},630,30,{1,sun,oct},{2,0},{1,sun,apr},{2,0}},
-      {"Australia/Melbourne",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
-      {"Australia/NSW",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
-      {"Australia/North",{"ACST","ACST"},undef,570,0,undef,{0,0},undef,{0,0}},
-      {"Australia/Perth",{"AWST","AWST"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Australia/Queensland",{"AEST","AEST"},undef,600,0,undef,{0,0},undef,{0,0}},
-      {"Australia/South",{"ACST","ACST"},{"ACDT","ACDT"},570,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
-      {"Australia/Sydney",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
-      {"Australia/Tasmania",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
-      {"Australia/Victoria",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
-      {"Australia/West",{"AWST","AWST"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Australia/Yancowinna",{"ACST","ACST"},{"ACDT","ACDT"},570,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
-      {"Brazil/Acre",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"Brazil/DeNoronha",{"-02","-02"},undef,-120,0,undef,{0,0},undef,{0,0}},
-      {"Brazil/East",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"Brazil/West",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"CET",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"CST6CDT",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"Canada/Atlantic",{"AST","AST"},{"ADT","ADT"},-240,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"Canada/Central",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"Canada/Eastern",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"Canada/Mountain",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"Canada/Newfoundland",{"NST","NST"},{"NDT","NDT"},-210,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"Canada/Pacific",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
-      {"Canada/Saskatchewan",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"Canada/Yukon",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
-      {"Chile/Continental",{"-04","-04"},{"-03","-03"},-240,60,{1,sat,sep},{24,0},{1,sat,apr},{24,0}},
-      {"Chile/EasterIsland",{"-06","-06"},{"-05","-05"},-360,60,{1,sat,sep},{22,0},{1,sat,apr},{22,0}},
-      {"Cuba",{"CST","CST"},{"CDT","CDT"},-300,60,{2,sun,mar},{0,0},{1,sun,nov},{1,0}},
-      {"EET",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"EST",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"EST5EDT",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"Egypt",{"EET","EET"},{"EEST","EEST"},120,60,{last,fri,apr},{0,0},{last,thu,oct},{24,0}},
-      {"Eire",{"GMT","GMT"},{"IST","IST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"Etc/GMT",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT+0",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT+1",{"-01","-01"},undef,-60,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT+10",{"-10","-10"},undef,-600,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT+11",{"-11","-11"},undef,-660,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT+12",{"-12","-12"},undef,-720,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT+2",{"-02","-02"},undef,-120,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT+3",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT+4",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT+5",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT+6",{"-06","-06"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT+7",{"-07","-07"},undef,-420,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT+8",{"-08","-08"},undef,-480,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT+9",{"-09","-09"},undef,-540,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT-0",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT-1",{"+01","+01"},undef,60,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT-10",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT-11",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT-12",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT-13",{"+13","+13"},undef,780,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT-14",{"+14","+14"},undef,840,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT-2",{"+02","+02"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT-3",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT-4",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT-5",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT-6",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT-7",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT-8",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT-9",{"+09","+09"},undef,540,0,undef,{0,0},undef,{0,0}},
-      {"Etc/GMT0",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Etc/Greenwich",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Etc/UCT",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Etc/UTC",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Etc/Universal",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Etc/Zulu",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Europe/Amsterdam",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Andorra",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Astrakhan",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
-      {"Europe/Athens",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Europe/Belfast",{"GMT","GMT"},{"BST","BST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"Europe/Belgrade",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Berlin",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Bratislava",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Brussels",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Bucharest",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Europe/Budapest",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Busingen",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Chisinau",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Europe/Copenhagen",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Dublin",{"GMT","GMT"},{"IST","IST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"Europe/Gibraltar",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Guernsey",{"GMT","GMT"},{"BST","BST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"Europe/Helsinki",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Europe/Isle_of_Man",{"GMT","GMT"},{"BST","BST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"Europe/Istanbul",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Europe/Jersey",{"GMT","GMT"},{"BST","BST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"Europe/Kaliningrad",{"EET","EET"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"Europe/Kiev",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Europe/Kirov",{"MSK","MSK"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Europe/Kyiv",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Europe/Lisbon",{"WET","WET"},{"WEST","WEST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"Europe/Ljubljana",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/London",{"GMT","GMT"},{"BST","BST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"Europe/Luxembourg",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Madrid",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Malta",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Mariehamn",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Europe/Minsk",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Europe/Monaco",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Moscow",{"MSK","MSK"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Europe/Nicosia",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Europe/Oslo",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Paris",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Podgorica",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Prague",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Riga",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Europe/Rome",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Samara",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
-      {"Europe/San_Marino",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Sarajevo",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Saratov",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
-      {"Europe/Simferopol",{"MSK","MSK"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Europe/Skopje",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Sofia",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Europe/Stockholm",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Tallinn",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Europe/Tirane",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Tiraspol",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Europe/Ulyanovsk",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
-      {"Europe/Uzhgorod",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Europe/Vaduz",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Vatican",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Vienna",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Vilnius",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Europe/Volgograd",{"MSK","MSK"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Europe/Warsaw",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Zagreb",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Europe/Zaporozhye",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
-      {"Europe/Zurich",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"GB",{"GMT","GMT"},{"BST","BST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"GB-Eire",{"GMT","GMT"},{"BST","BST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"GMT",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"GMT+0",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"GMT-0",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"GMT0",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Greenwich",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"HST",{"HST","HST"},undef,-600,0,undef,{0,0},undef,{0,0}},
-      {"Hongkong",{"HKT","HKT"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Iceland",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Indian/Antananarivo",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Indian/Chagos",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
-      {"Indian/Christmas",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
-      {"Indian/Cocos",{"+0630","+0630"},undef,390,0,undef,{0,0},undef,{0,0}},
-      {"Indian/Comoro",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Indian/Kerguelen",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Indian/Mahe",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
-      {"Indian/Maldives",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
-      {"Indian/Mauritius",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
-      {"Indian/Mayotte",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"Indian/Reunion",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
-      {"Iran",{"+0330","+0330"},undef,210,0,undef,{0,0},undef,{0,0}},
-      {"Israel",{"IST","IST"},{"IDT","IDT"},120,60,{4,thu,mar},{26,0},{last,sun,oct},{2,0}},
-      {"Jamaica",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
-      {"Japan",{"JST","JST"},undef,540,0,undef,{0,0},undef,{0,0}},
-      {"Kwajalein",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
-      {"Libya",{"EET","EET"},undef,120,0,undef,{0,0},undef,{0,0}},
-      {"MET",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"MST",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
-      {"MST7MDT",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"Mexico/BajaNorte",{"PST","PST"},{"PDT","PDT"},-480,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"Mexico/BajaSur",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
-      {"Mexico/General",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"NZ",{"NZST","NZST"},{"NZDT","NZDT"},720,60,{last,sun,sep},{2,0},{1,sun,apr},{3,0}},
-      {"NZ-CHAT",{"+1245","+1245"},{"+1345","+1345"},765,60,{last,sun,sep},{2,45},{1,sun,apr},{3,45}},
-      {"Navajo",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"PRC",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"PST8PDT",{"PST","PST"},{"PDT","PDT"},-480,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"Pacific/Apia",{"+13","+13"},undef,780,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Auckland",{"NZST","NZST"},{"NZDT","NZDT"},720,60,{last,sun,sep},{2,0},{1,sun,apr},{3,0}},
-      {"Pacific/Bougainville",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Chatham",{"+1245","+1245"},{"+1345","+1345"},765,60,{last,sun,sep},{2,45},{1,sun,apr},{3,45}},
-      {"Pacific/Chuuk",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Easter",{"-06","-06"},{"-05","-05"},-360,60,{1,sat,sep},{22,0},{1,sat,apr},{22,0}},
-      {"Pacific/Efate",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Enderbury",{"+13","+13"},undef,780,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Fakaofo",{"+13","+13"},undef,780,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Fiji",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Funafuti",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Galapagos",{"-06","-06"},undef,-360,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Gambier",{"-09","-09"},undef,-540,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Guadalcanal",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Guam",{"ChST","ChST"},undef,600,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Honolulu",{"HST","HST"},undef,-600,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Johnston",{"HST","HST"},undef,-600,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Kanton",{"+13","+13"},undef,780,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Kiritimati",{"+14","+14"},undef,840,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Kosrae",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Kwajalein",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Majuro",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Marquesas",{"-0930","-0930"},undef,-570,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Midway",{"SST","SST"},undef,-660,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Nauru",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Niue",{"-11","-11"},undef,-660,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Norfolk",{"+11","+11"},{"+12","+12"},660,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
-      {"Pacific/Noumea",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Pago_Pago",{"SST","SST"},undef,-660,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Palau",{"+09","+09"},undef,540,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Pitcairn",{"-08","-08"},undef,-480,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Pohnpei",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Ponape",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Port_Moresby",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Rarotonga",{"-10","-10"},undef,-600,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Saipan",{"ChST","ChST"},undef,600,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Samoa",{"SST","SST"},undef,-660,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Tahiti",{"-10","-10"},undef,-600,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Tarawa",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Tongatapu",{"+13","+13"},undef,780,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Truk",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Wake",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Wallis",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
-      {"Pacific/Yap",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
-      {"Poland",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
-      {"Portugal",{"WET","WET"},{"WEST","WEST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"ROC",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"ROK",{"KST","KST"},undef,540,0,undef,{0,0},undef,{0,0}},
-      {"Singapore",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
-      {"Turkey",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"UCT",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"US/Alaska",{"AKST","AKST"},{"AKDT","AKDT"},-540,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"US/Aleutian",{"HST","HST"},{"HDT","HDT"},-600,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"US/Arizona",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
-      {"US/Central",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"US/East-Indiana",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"US/Eastern",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"US/Hawaii",{"HST","HST"},undef,-600,0,undef,{0,0},undef,{0,0}},
-      {"US/Indiana-Starke",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"US/Michigan",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"US/Mountain",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"US/Pacific",{"PST","PST"},{"PDT","PDT"},-480,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
-      {"US/Samoa",{"SST","SST"},undef,-660,0,undef,{0,0},undef,{0,0}},
-      {"UTC",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"Universal",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}},
-      {"W-SU",{"MSK","MSK"},undef,180,0,undef,{0,0},undef,{0,0}},
-      {"WET",{"WET","WET"},{"WEST","WEST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
-      {"Zulu",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}}
-   ]).
+   #{
+      "Africa/Abidjan" =>
+         {"Africa/Abidjan",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Accra" =>
+         {"Africa/Accra",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Addis_Ababa" =>
+         {"Africa/Addis_Ababa",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Africa/Algiers" =>
+         {"Africa/Algiers",{"CET","CET"},undef,60,0,undef,{0,0},undef,{0,0}},
+      "Africa/Asmara" =>
+         {"Africa/Asmara",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Africa/Asmera" =>
+         {"Africa/Asmera",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Africa/Bamako" =>
+         {"Africa/Bamako",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Bangui" =>
+         {"Africa/Bangui",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
+      "Africa/Banjul" =>
+         {"Africa/Banjul",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Bissau" =>
+         {"Africa/Bissau",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Blantyre" =>
+         {"Africa/Blantyre",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Africa/Brazzaville" =>
+         {"Africa/Brazzaville",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
+      "Africa/Bujumbura" =>
+         {"Africa/Bujumbura",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Africa/Cairo" =>
+         {"Africa/Cairo",{"EET","EET"},{"EEST","EEST"},120,60,{last,fri,apr},{0,0},{last,thu,oct},{24,0}},
+      "Africa/Casablanca" =>
+         {"Africa/Casablanca",{"+00","+00"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Ceuta" =>
+         {"Africa/Ceuta",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Africa/Conakry" =>
+         {"Africa/Conakry",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Dakar" =>
+         {"Africa/Dakar",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Dar_es_Salaam" =>
+         {"Africa/Dar_es_Salaam",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Africa/Djibouti" =>
+         {"Africa/Djibouti",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Africa/Douala" =>
+         {"Africa/Douala",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
+      "Africa/El_Aaiun" =>
+         {"Africa/El_Aaiun",{"+00","+00"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Freetown" =>
+         {"Africa/Freetown",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Gaborone" =>
+         {"Africa/Gaborone",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Africa/Harare" =>
+         {"Africa/Harare",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Africa/Johannesburg" =>
+         {"Africa/Johannesburg",{"SAST","SAST"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Africa/Juba" =>
+         {"Africa/Juba",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Africa/Kampala" =>
+         {"Africa/Kampala",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Africa/Khartoum" =>
+         {"Africa/Khartoum",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Africa/Kigali" =>
+         {"Africa/Kigali",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Africa/Kinshasa" =>
+         {"Africa/Kinshasa",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
+      "Africa/Lagos" =>
+         {"Africa/Lagos",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
+      "Africa/Libreville" =>
+         {"Africa/Libreville",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
+      "Africa/Lome" =>
+         {"Africa/Lome",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Luanda" =>
+         {"Africa/Luanda",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
+      "Africa/Lubumbashi" =>
+         {"Africa/Lubumbashi",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Africa/Lusaka" =>
+         {"Africa/Lusaka",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Africa/Malabo" =>
+         {"Africa/Malabo",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
+      "Africa/Maputo" =>
+         {"Africa/Maputo",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Africa/Maseru" =>
+         {"Africa/Maseru",{"SAST","SAST"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Africa/Mbabane" =>
+         {"Africa/Mbabane",{"SAST","SAST"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Africa/Mogadishu" =>
+         {"Africa/Mogadishu",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Africa/Monrovia" =>
+         {"Africa/Monrovia",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Nairobi" =>
+         {"Africa/Nairobi",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Africa/Ndjamena" =>
+         {"Africa/Ndjamena",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
+      "Africa/Niamey" =>
+         {"Africa/Niamey",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
+      "Africa/Nouakchott" =>
+         {"Africa/Nouakchott",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Ouagadougou" =>
+         {"Africa/Ouagadougou",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Porto-Novo" =>
+         {"Africa/Porto-Novo",{"WAT","WAT"},undef,60,0,undef,{0,0},undef,{0,0}},
+      "Africa/Sao_Tome" =>
+         {"Africa/Sao_Tome",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Timbuktu" =>
+         {"Africa/Timbuktu",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Africa/Tripoli" =>
+         {"Africa/Tripoli",{"EET","EET"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Africa/Tunis" =>
+         {"Africa/Tunis",{"CET","CET"},undef,60,0,undef,{0,0},undef,{0,0}},
+      "Africa/Windhoek" =>
+         {"Africa/Windhoek",{"CAT","CAT"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "America/Adak" =>
+         {"America/Adak",{"HST","HST"},{"HDT","HDT"},-600,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Anchorage" =>
+         {"America/Anchorage",{"AKST","AKST"},{"AKDT","AKDT"},-540,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Anguilla" =>
+         {"America/Anguilla",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Antigua" =>
+         {"America/Antigua",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Araguaina" =>
+         {"America/Araguaina",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Argentina/Buenos_Aires" =>
+         {"America/Argentina/Buenos_Aires",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Argentina/Catamarca" =>
+         {"America/Argentina/Catamarca",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Argentina/ComodRivadavia" =>
+         {"America/Argentina/ComodRivadavia",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Argentina/Cordoba" =>
+         {"America/Argentina/Cordoba",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Argentina/Jujuy" =>
+         {"America/Argentina/Jujuy",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Argentina/La_Rioja" =>
+         {"America/Argentina/La_Rioja",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Argentina/Mendoza" =>
+         {"America/Argentina/Mendoza",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Argentina/Rio_Gallegos" =>
+         {"America/Argentina/Rio_Gallegos",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Argentina/Salta" =>
+         {"America/Argentina/Salta",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Argentina/San_Juan" =>
+         {"America/Argentina/San_Juan",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Argentina/San_Luis" =>
+         {"America/Argentina/San_Luis",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Argentina/Tucuman" =>
+         {"America/Argentina/Tucuman",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Argentina/Ushuaia" =>
+         {"America/Argentina/Ushuaia",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Aruba" =>
+         {"America/Aruba",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Asuncion" =>
+         {"America/Asuncion",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Atikokan" =>
+         {"America/Atikokan",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "America/Atka" =>
+         {"America/Atka",{"HST","HST"},{"HDT","HDT"},-600,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Bahia" =>
+         {"America/Bahia",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Bahia_Banderas" =>
+         {"America/Bahia_Banderas",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "America/Barbados" =>
+         {"America/Barbados",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Belem" =>
+         {"America/Belem",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Belize" =>
+         {"America/Belize",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "America/Blanc-Sablon" =>
+         {"America/Blanc-Sablon",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Boa_Vista" =>
+         {"America/Boa_Vista",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Bogota" =>
+         {"America/Bogota",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "America/Boise" =>
+         {"America/Boise",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Buenos_Aires" =>
+         {"America/Buenos_Aires",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Cambridge_Bay" =>
+         {"America/Cambridge_Bay",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Campo_Grande" =>
+         {"America/Campo_Grande",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Cancun" =>
+         {"America/Cancun",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "America/Caracas" =>
+         {"America/Caracas",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Catamarca" =>
+         {"America/Catamarca",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Cayenne" =>
+         {"America/Cayenne",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Cayman" =>
+         {"America/Cayman",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "America/Chicago" =>
+         {"America/Chicago",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Chihuahua" =>
+         {"America/Chihuahua",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "America/Ciudad_Juarez" =>
+         {"America/Ciudad_Juarez",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Coral_Harbour" =>
+         {"America/Coral_Harbour",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "America/Cordoba" =>
+         {"America/Cordoba",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Costa_Rica" =>
+         {"America/Costa_Rica",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "America/Coyhaique" =>
+         {"America/Coyhaique",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Creston" =>
+         {"America/Creston",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
+      "America/Cuiaba" =>
+         {"America/Cuiaba",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Curacao" =>
+         {"America/Curacao",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Danmarkshavn" =>
+         {"America/Danmarkshavn",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "America/Dawson" =>
+         {"America/Dawson",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
+      "America/Dawson_Creek" =>
+         {"America/Dawson_Creek",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
+      "America/Denver" =>
+         {"America/Denver",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Detroit" =>
+         {"America/Detroit",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Dominica" =>
+         {"America/Dominica",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Edmonton" =>
+         {"America/Edmonton",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "America/Eirunepe" =>
+         {"America/Eirunepe",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "America/El_Salvador" =>
+         {"America/El_Salvador",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "America/Ensenada" =>
+         {"America/Ensenada",{"PST","PST"},{"PDT","PDT"},-480,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Fort_Nelson" =>
+         {"America/Fort_Nelson",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
+      "America/Fort_Wayne" =>
+         {"America/Fort_Wayne",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Fortaleza" =>
+         {"America/Fortaleza",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Glace_Bay" =>
+         {"America/Glace_Bay",{"AST","AST"},{"ADT","ADT"},-240,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Godthab" =>
+         {"America/Godthab",{"-02","-02"},{"-01","-01"},-120,60,{last,sun,mar},{-1,0},{last,sun,oct},{0,0}},
+      "America/Goose_Bay" =>
+         {"America/Goose_Bay",{"AST","AST"},{"ADT","ADT"},-240,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Grand_Turk" =>
+         {"America/Grand_Turk",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Grenada" =>
+         {"America/Grenada",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Guadeloupe" =>
+         {"America/Guadeloupe",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Guatemala" =>
+         {"America/Guatemala",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "America/Guayaquil" =>
+         {"America/Guayaquil",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "America/Guyana" =>
+         {"America/Guyana",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Halifax" =>
+         {"America/Halifax",{"AST","AST"},{"ADT","ADT"},-240,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Havana" =>
+         {"America/Havana",{"CST","CST"},{"CDT","CDT"},-300,60,{2,sun,mar},{0,0},{1,sun,nov},{1,0}},
+      "America/Hermosillo" =>
+         {"America/Hermosillo",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
+      "America/Indiana/Indianapolis" =>
+         {"America/Indiana/Indianapolis",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Indiana/Knox" =>
+         {"America/Indiana/Knox",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Indiana/Marengo" =>
+         {"America/Indiana/Marengo",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Indiana/Petersburg" =>
+         {"America/Indiana/Petersburg",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Indiana/Tell_City" =>
+         {"America/Indiana/Tell_City",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Indiana/Vevay" =>
+         {"America/Indiana/Vevay",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Indiana/Vincennes" =>
+         {"America/Indiana/Vincennes",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Indiana/Winamac" =>
+         {"America/Indiana/Winamac",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Indianapolis" =>
+         {"America/Indianapolis",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Inuvik" =>
+         {"America/Inuvik",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "America/Iqaluit" =>
+         {"America/Iqaluit",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Jamaica" =>
+         {"America/Jamaica",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "America/Jujuy" =>
+         {"America/Jujuy",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Juneau" =>
+         {"America/Juneau",{"AKST","AKST"},{"AKDT","AKDT"},-540,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Kentucky/Louisville" =>
+         {"America/Kentucky/Louisville",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Kentucky/Monticello" =>
+         {"America/Kentucky/Monticello",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Knox_IN" =>
+         {"America/Knox_IN",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Kralendijk" =>
+         {"America/Kralendijk",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/La_Paz" =>
+         {"America/La_Paz",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Lima" =>
+         {"America/Lima",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "America/Los_Angeles" =>
+         {"America/Los_Angeles",{"PST","PST"},{"PDT","PDT"},-480,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Louisville" =>
+         {"America/Louisville",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Lower_Princes" =>
+         {"America/Lower_Princes",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Maceio" =>
+         {"America/Maceio",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Managua" =>
+         {"America/Managua",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "America/Manaus" =>
+         {"America/Manaus",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Marigot" =>
+         {"America/Marigot",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Martinique" =>
+         {"America/Martinique",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Matamoros" =>
+         {"America/Matamoros",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Mazatlan" =>
+         {"America/Mazatlan",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
+      "America/Mendoza" =>
+         {"America/Mendoza",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Menominee" =>
+         {"America/Menominee",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Merida" =>
+         {"America/Merida",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "America/Metlakatla" =>
+         {"America/Metlakatla",{"AKST","AKST"},{"AKDT","AKDT"},-540,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Mexico_City" =>
+         {"America/Mexico_City",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "America/Miquelon" =>
+         {"America/Miquelon",{"-03","-03"},{"-02","-02"},-180,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Moncton" =>
+         {"America/Moncton",{"AST","AST"},{"ADT","ADT"},-240,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Monterrey" =>
+         {"America/Monterrey",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "America/Montevideo" =>
+         {"America/Montevideo",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Montreal" =>
+         {"America/Montreal",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Montserrat" =>
+         {"America/Montserrat",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Nassau" =>
+         {"America/Nassau",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/New_York" =>
+         {"America/New_York",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Nipigon" =>
+         {"America/Nipigon",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Nome" =>
+         {"America/Nome",{"AKST","AKST"},{"AKDT","AKDT"},-540,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Noronha" =>
+         {"America/Noronha",{"-02","-02"},undef,-120,0,undef,{0,0},undef,{0,0}},
+      "America/North_Dakota/Beulah" =>
+         {"America/North_Dakota/Beulah",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/North_Dakota/Center" =>
+         {"America/North_Dakota/Center",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/North_Dakota/New_Salem" =>
+         {"America/North_Dakota/New_Salem",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Nuuk" =>
+         {"America/Nuuk",{"-02","-02"},{"-01","-01"},-120,60,{last,sun,mar},{-1,0},{last,sun,oct},{0,0}},
+      "America/Ojinaga" =>
+         {"America/Ojinaga",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Panama" =>
+         {"America/Panama",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "America/Pangnirtung" =>
+         {"America/Pangnirtung",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Paramaribo" =>
+         {"America/Paramaribo",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Phoenix" =>
+         {"America/Phoenix",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
+      "America/Port-au-Prince" =>
+         {"America/Port-au-Prince",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Port_of_Spain" =>
+         {"America/Port_of_Spain",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Porto_Acre" =>
+         {"America/Porto_Acre",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "America/Porto_Velho" =>
+         {"America/Porto_Velho",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Puerto_Rico" =>
+         {"America/Puerto_Rico",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Punta_Arenas" =>
+         {"America/Punta_Arenas",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Rainy_River" =>
+         {"America/Rainy_River",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "America/Rankin_Inlet" =>
+         {"America/Rankin_Inlet",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Recife" =>
+         {"America/Recife",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Regina" =>
+         {"America/Regina",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "America/Resolute" =>
+         {"America/Resolute",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Rio_Branco" =>
+         {"America/Rio_Branco",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "America/Rosario" =>
+         {"America/Rosario",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Santa_Isabel" =>
+         {"America/Santa_Isabel",{"PST","PST"},{"PDT","PDT"},-480,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Santarem" =>
+         {"America/Santarem",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Santiago" =>
+         {"America/Santiago",{"-04","-04"},{"-03","-03"},-240,60,{1,sat,sep},{24,0},{1,sat,apr},{24,0}},
+      "America/Santo_Domingo" =>
+         {"America/Santo_Domingo",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Sao_Paulo" =>
+         {"America/Sao_Paulo",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "America/Scoresbysund" =>
+         {"America/Scoresbysund",{"-02","-02"},{"-01","-01"},-120,60,{last,sun,mar},{-1,0},{last,sun,oct},{0,0}},
+      "America/Shiprock" =>
+         {"America/Shiprock",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Sitka" =>
+         {"America/Sitka",{"AKST","AKST"},{"AKDT","AKDT"},-540,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/St_Barthelemy" =>
+         {"America/St_Barthelemy",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/St_Johns" =>
+         {"America/St_Johns",{"NST","NST"},{"NDT","NDT"},-210,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/St_Kitts" =>
+         {"America/St_Kitts",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/St_Lucia" =>
+         {"America/St_Lucia",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/St_Thomas" =>
+         {"America/St_Thomas",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/St_Vincent" =>
+         {"America/St_Vincent",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Swift_Current" =>
+         {"America/Swift_Current",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "America/Tegucigalpa" =>
+         {"America/Tegucigalpa",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "America/Thule" =>
+         {"America/Thule",{"AST","AST"},{"ADT","ADT"},-240,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Thunder_Bay" =>
+         {"America/Thunder_Bay",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Tijuana" =>
+         {"America/Tijuana",{"PST","PST"},{"PDT","PDT"},-480,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Toronto" =>
+         {"America/Toronto",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Tortola" =>
+         {"America/Tortola",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Vancouver" =>
+         {"America/Vancouver",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
+      "America/Virgin" =>
+         {"America/Virgin",{"AST","AST"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "America/Whitehorse" =>
+         {"America/Whitehorse",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
+      "America/Winnipeg" =>
+         {"America/Winnipeg",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "America/Yakutat" =>
+         {"America/Yakutat",{"AKST","AKST"},{"AKDT","AKDT"},-540,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "America/Yellowknife" =>
+         {"America/Yellowknife",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "Antarctica/Casey" =>
+         {"Antarctica/Casey",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Antarctica/Davis" =>
+         {"Antarctica/Davis",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Antarctica/DumontDUrville" =>
+         {"Antarctica/DumontDUrville",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
+      "Antarctica/Macquarie" =>
+         {"Antarctica/Macquarie",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
+      "Antarctica/Mawson" =>
+         {"Antarctica/Mawson",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Antarctica/McMurdo" =>
+         {"Antarctica/McMurdo",{"NZST","NZST"},{"NZDT","NZDT"},720,60,{last,sun,sep},{2,0},{1,sun,apr},{3,0}},
+      "Antarctica/Palmer" =>
+         {"Antarctica/Palmer",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "Antarctica/Rothera" =>
+         {"Antarctica/Rothera",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "Antarctica/South_Pole" =>
+         {"Antarctica/South_Pole",{"NZST","NZST"},{"NZDT","NZDT"},720,60,{last,sun,sep},{2,0},{1,sun,apr},{3,0}},
+      "Antarctica/Syowa" =>
+         {"Antarctica/Syowa",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Antarctica/Troll" =>
+         {"Antarctica/Troll",{"+00","+00"},{"+02","+02"},0,120,{last,sun,mar},{1,0},{last,sun,oct},{3,0}},
+      "Antarctica/Vostok" =>
+         {"Antarctica/Vostok",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Arctic/Longyearbyen" =>
+         {"Arctic/Longyearbyen",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Asia/Aden" =>
+         {"Asia/Aden",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Asia/Almaty" =>
+         {"Asia/Almaty",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Asia/Amman" =>
+         {"Asia/Amman",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Asia/Anadyr" =>
+         {"Asia/Anadyr",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
+      "Asia/Aqtau" =>
+         {"Asia/Aqtau",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Asia/Aqtobe" =>
+         {"Asia/Aqtobe",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Asia/Ashgabat" =>
+         {"Asia/Ashgabat",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Asia/Ashkhabad" =>
+         {"Asia/Ashkhabad",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Asia/Atyrau" =>
+         {"Asia/Atyrau",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Asia/Baghdad" =>
+         {"Asia/Baghdad",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Asia/Bahrain" =>
+         {"Asia/Bahrain",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Asia/Baku" =>
+         {"Asia/Baku",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
+      "Asia/Bangkok" =>
+         {"Asia/Bangkok",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Asia/Barnaul" =>
+         {"Asia/Barnaul",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Asia/Beirut" =>
+         {"Asia/Beirut",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{0,0},{last,sun,oct},{0,0}},
+      "Asia/Bishkek" =>
+         {"Asia/Bishkek",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
+      "Asia/Brunei" =>
+         {"Asia/Brunei",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Calcutta" =>
+         {"Asia/Calcutta",{"IST","IST"},undef,330,0,undef,{0,0},undef,{0,0}},
+      "Asia/Chita" =>
+         {"Asia/Chita",{"+09","+09"},undef,540,0,undef,{0,0},undef,{0,0}},
+      "Asia/Choibalsan" =>
+         {"Asia/Choibalsan",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Chongqing" =>
+         {"Asia/Chongqing",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Chungking" =>
+         {"Asia/Chungking",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Colombo" =>
+         {"Asia/Colombo",{"+0530","+0530"},undef,330,0,undef,{0,0},undef,{0,0}},
+      "Asia/Dacca" =>
+         {"Asia/Dacca",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
+      "Asia/Damascus" =>
+         {"Asia/Damascus",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Asia/Dhaka" =>
+         {"Asia/Dhaka",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
+      "Asia/Dili" =>
+         {"Asia/Dili",{"+09","+09"},undef,540,0,undef,{0,0},undef,{0,0}},
+      "Asia/Dubai" =>
+         {"Asia/Dubai",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
+      "Asia/Dushanbe" =>
+         {"Asia/Dushanbe",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Asia/Famagusta" =>
+         {"Asia/Famagusta",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Asia/Gaza" =>
+         {"Asia/Gaza",{"EET","EET"},{"EEST","EEST"},120,60,{4,thu,mar},{50,0},{4,thu,oct},{50,0}},
+      "Asia/Harbin" =>
+         {"Asia/Harbin",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Hebron" =>
+         {"Asia/Hebron",{"EET","EET"},{"EEST","EEST"},120,60,{4,thu,mar},{50,0},{4,thu,oct},{50,0}},
+      "Asia/Ho_Chi_Minh" =>
+         {"Asia/Ho_Chi_Minh",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Asia/Hong_Kong" =>
+         {"Asia/Hong_Kong",{"HKT","HKT"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Hovd" =>
+         {"Asia/Hovd",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Asia/Irkutsk" =>
+         {"Asia/Irkutsk",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Istanbul" =>
+         {"Asia/Istanbul",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Asia/Jakarta" =>
+         {"Asia/Jakarta",{"WIB","WIB"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Asia/Jayapura" =>
+         {"Asia/Jayapura",{"WIT","WIT"},undef,540,0,undef,{0,0},undef,{0,0}},
+      "Asia/Jerusalem" =>
+         {"Asia/Jerusalem",{"IST","IST"},{"IDT","IDT"},120,60,{4,thu,mar},{26,0},{last,sun,oct},{2,0}},
+      "Asia/Kabul" =>
+         {"Asia/Kabul",{"+0430","+0430"},undef,270,0,undef,{0,0},undef,{0,0}},
+      "Asia/Kamchatka" =>
+         {"Asia/Kamchatka",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
+      "Asia/Karachi" =>
+         {"Asia/Karachi",{"PKT","PKT"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Asia/Kashgar" =>
+         {"Asia/Kashgar",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
+      "Asia/Kathmandu" =>
+         {"Asia/Kathmandu",{"+0545","+0545"},undef,345,0,undef,{0,0},undef,{0,0}},
+      "Asia/Katmandu" =>
+         {"Asia/Katmandu",{"+0545","+0545"},undef,345,0,undef,{0,0},undef,{0,0}},
+      "Asia/Khandyga" =>
+         {"Asia/Khandyga",{"+09","+09"},undef,540,0,undef,{0,0},undef,{0,0}},
+      "Asia/Kolkata" =>
+         {"Asia/Kolkata",{"IST","IST"},undef,330,0,undef,{0,0},undef,{0,0}},
+      "Asia/Krasnoyarsk" =>
+         {"Asia/Krasnoyarsk",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Asia/Kuala_Lumpur" =>
+         {"Asia/Kuala_Lumpur",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Kuching" =>
+         {"Asia/Kuching",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Kuwait" =>
+         {"Asia/Kuwait",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Asia/Macao" =>
+         {"Asia/Macao",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Macau" =>
+         {"Asia/Macau",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Magadan" =>
+         {"Asia/Magadan",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
+      "Asia/Makassar" =>
+         {"Asia/Makassar",{"WITA","WITA"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Manila" =>
+         {"Asia/Manila",{"PST","PST"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Muscat" =>
+         {"Asia/Muscat",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
+      "Asia/Nicosia" =>
+         {"Asia/Nicosia",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Asia/Novokuznetsk" =>
+         {"Asia/Novokuznetsk",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Asia/Novosibirsk" =>
+         {"Asia/Novosibirsk",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Asia/Omsk" =>
+         {"Asia/Omsk",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
+      "Asia/Oral" =>
+         {"Asia/Oral",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Asia/Phnom_Penh" =>
+         {"Asia/Phnom_Penh",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Asia/Pontianak" =>
+         {"Asia/Pontianak",{"WIB","WIB"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Asia/Pyongyang" =>
+         {"Asia/Pyongyang",{"KST","KST"},undef,540,0,undef,{0,0},undef,{0,0}},
+      "Asia/Qatar" =>
+         {"Asia/Qatar",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Asia/Qostanay" =>
+         {"Asia/Qostanay",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Asia/Qyzylorda" =>
+         {"Asia/Qyzylorda",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Asia/Rangoon" =>
+         {"Asia/Rangoon",{"+0630","+0630"},undef,390,0,undef,{0,0},undef,{0,0}},
+      "Asia/Riyadh" =>
+         {"Asia/Riyadh",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Asia/Saigon" =>
+         {"Asia/Saigon",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Asia/Sakhalin" =>
+         {"Asia/Sakhalin",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
+      "Asia/Samarkand" =>
+         {"Asia/Samarkand",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Asia/Seoul" =>
+         {"Asia/Seoul",{"KST","KST"},undef,540,0,undef,{0,0},undef,{0,0}},
+      "Asia/Shanghai" =>
+         {"Asia/Shanghai",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Singapore" =>
+         {"Asia/Singapore",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Srednekolymsk" =>
+         {"Asia/Srednekolymsk",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
+      "Asia/Taipei" =>
+         {"Asia/Taipei",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Tashkent" =>
+         {"Asia/Tashkent",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Asia/Tbilisi" =>
+         {"Asia/Tbilisi",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
+      "Asia/Tehran" =>
+         {"Asia/Tehran",{"+0330","+0330"},undef,210,0,undef,{0,0},undef,{0,0}},
+      "Asia/Tel_Aviv" =>
+         {"Asia/Tel_Aviv",{"IST","IST"},{"IDT","IDT"},120,60,{4,thu,mar},{26,0},{last,sun,oct},{2,0}},
+      "Asia/Thimbu" =>
+         {"Asia/Thimbu",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
+      "Asia/Thimphu" =>
+         {"Asia/Thimphu",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
+      "Asia/Tokyo" =>
+         {"Asia/Tokyo",{"JST","JST"},undef,540,0,undef,{0,0},undef,{0,0}},
+      "Asia/Tomsk" =>
+         {"Asia/Tomsk",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Asia/Ujung_Pandang" =>
+         {"Asia/Ujung_Pandang",{"WITA","WITA"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Ulaanbaatar" =>
+         {"Asia/Ulaanbaatar",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Ulan_Bator" =>
+         {"Asia/Ulan_Bator",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Asia/Urumqi" =>
+         {"Asia/Urumqi",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
+      "Asia/Ust-Nera" =>
+         {"Asia/Ust-Nera",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
+      "Asia/Vientiane" =>
+         {"Asia/Vientiane",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Asia/Vladivostok" =>
+         {"Asia/Vladivostok",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
+      "Asia/Yakutsk" =>
+         {"Asia/Yakutsk",{"+09","+09"},undef,540,0,undef,{0,0},undef,{0,0}},
+      "Asia/Yangon" =>
+         {"Asia/Yangon",{"+0630","+0630"},undef,390,0,undef,{0,0},undef,{0,0}},
+      "Asia/Yekaterinburg" =>
+         {"Asia/Yekaterinburg",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Asia/Yerevan" =>
+         {"Asia/Yerevan",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
+      "Atlantic/Azores" =>
+         {"Atlantic/Azores",{"-01","-01"},{"+00","+00"},-60,60,{last,sun,mar},{0,0},{last,sun,oct},{1,0}},
+      "Atlantic/Bermuda" =>
+         {"Atlantic/Bermuda",{"AST","AST"},{"ADT","ADT"},-240,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "Atlantic/Canary" =>
+         {"Atlantic/Canary",{"WET","WET"},{"WEST","WEST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "Atlantic/Cape_Verde" =>
+         {"Atlantic/Cape_Verde",{"-01","-01"},undef,-60,0,undef,{0,0},undef,{0,0}},
+      "Atlantic/Faeroe" =>
+         {"Atlantic/Faeroe",{"WET","WET"},{"WEST","WEST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "Atlantic/Faroe" =>
+         {"Atlantic/Faroe",{"WET","WET"},{"WEST","WEST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "Atlantic/Jan_Mayen" =>
+         {"Atlantic/Jan_Mayen",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Atlantic/Madeira" =>
+         {"Atlantic/Madeira",{"WET","WET"},{"WEST","WEST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "Atlantic/Reykjavik" =>
+         {"Atlantic/Reykjavik",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Atlantic/South_Georgia" =>
+         {"Atlantic/South_Georgia",{"-02","-02"},undef,-120,0,undef,{0,0},undef,{0,0}},
+      "Atlantic/St_Helena" =>
+         {"Atlantic/St_Helena",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Atlantic/Stanley" =>
+         {"Atlantic/Stanley",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "Australia/ACT" =>
+         {"Australia/ACT",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
+      "Australia/Adelaide" =>
+         {"Australia/Adelaide",{"ACST","ACST"},{"ACDT","ACDT"},570,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
+      "Australia/Brisbane" =>
+         {"Australia/Brisbane",{"AEST","AEST"},undef,600,0,undef,{0,0},undef,{0,0}},
+      "Australia/Broken_Hill" =>
+         {"Australia/Broken_Hill",{"ACST","ACST"},{"ACDT","ACDT"},570,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
+      "Australia/Canberra" =>
+         {"Australia/Canberra",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
+      "Australia/Currie" =>
+         {"Australia/Currie",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
+      "Australia/Darwin" =>
+         {"Australia/Darwin",{"ACST","ACST"},undef,570,0,undef,{0,0},undef,{0,0}},
+      "Australia/Eucla" =>
+         {"Australia/Eucla",{"+0845","+0845"},undef,525,0,undef,{0,0},undef,{0,0}},
+      "Australia/Hobart" =>
+         {"Australia/Hobart",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
+      "Australia/LHI" =>
+         {"Australia/LHI",{"+1030","+1030"},{"+11","+11"},630,30,{1,sun,oct},{2,0},{1,sun,apr},{2,0}},
+      "Australia/Lindeman" =>
+         {"Australia/Lindeman",{"AEST","AEST"},undef,600,0,undef,{0,0},undef,{0,0}},
+      "Australia/Lord_Howe" =>
+         {"Australia/Lord_Howe",{"+1030","+1030"},{"+11","+11"},630,30,{1,sun,oct},{2,0},{1,sun,apr},{2,0}},
+      "Australia/Melbourne" =>
+         {"Australia/Melbourne",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
+      "Australia/NSW" =>
+         {"Australia/NSW",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
+      "Australia/North" =>
+         {"Australia/North",{"ACST","ACST"},undef,570,0,undef,{0,0},undef,{0,0}},
+      "Australia/Perth" =>
+         {"Australia/Perth",{"AWST","AWST"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Australia/Queensland" =>
+         {"Australia/Queensland",{"AEST","AEST"},undef,600,0,undef,{0,0},undef,{0,0}},
+      "Australia/South" =>
+         {"Australia/South",{"ACST","ACST"},{"ACDT","ACDT"},570,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
+      "Australia/Sydney" =>
+         {"Australia/Sydney",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
+      "Australia/Tasmania" =>
+         {"Australia/Tasmania",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
+      "Australia/Victoria" =>
+         {"Australia/Victoria",{"AEST","AEST"},{"AEDT","AEDT"},600,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
+      "Australia/West" =>
+         {"Australia/West",{"AWST","AWST"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Australia/Yancowinna" =>
+         {"Australia/Yancowinna",{"ACST","ACST"},{"ACDT","ACDT"},570,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
+      "Brazil/Acre" =>
+         {"Brazil/Acre",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "Brazil/DeNoronha" =>
+         {"Brazil/DeNoronha",{"-02","-02"},undef,-120,0,undef,{0,0},undef,{0,0}},
+      "Brazil/East" =>
+         {"Brazil/East",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "Brazil/West" =>
+         {"Brazil/West",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "CET" =>
+         {"CET",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "CST6CDT" =>
+         {"CST6CDT",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "Canada/Atlantic" =>
+         {"Canada/Atlantic",{"AST","AST"},{"ADT","ADT"},-240,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "Canada/Central" =>
+         {"Canada/Central",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "Canada/Eastern" =>
+         {"Canada/Eastern",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "Canada/Mountain" =>
+         {"Canada/Mountain",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "Canada/Newfoundland" =>
+         {"Canada/Newfoundland",{"NST","NST"},{"NDT","NDT"},-210,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "Canada/Pacific" =>
+         {"Canada/Pacific",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
+      "Canada/Saskatchewan" =>
+         {"Canada/Saskatchewan",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "Canada/Yukon" =>
+         {"Canada/Yukon",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
+      "Chile/Continental" =>
+         {"Chile/Continental",{"-04","-04"},{"-03","-03"},-240,60,{1,sat,sep},{24,0},{1,sat,apr},{24,0}},
+      "Chile/EasterIsland" =>
+         {"Chile/EasterIsland",{"-06","-06"},{"-05","-05"},-360,60,{1,sat,sep},{22,0},{1,sat,apr},{22,0}},
+      "Cuba" =>
+         {"Cuba",{"CST","CST"},{"CDT","CDT"},-300,60,{2,sun,mar},{0,0},{1,sun,nov},{1,0}},
+      "EET" =>
+         {"EET",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "EST" =>
+         {"EST",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "EST5EDT" =>
+         {"EST5EDT",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "Egypt" =>
+         {"Egypt",{"EET","EET"},{"EEST","EEST"},120,60,{last,fri,apr},{0,0},{last,thu,oct},{24,0}},
+      "Eire" =>
+         {"Eire",{"GMT","GMT"},{"IST","IST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "Etc/GMT" =>
+         {"Etc/GMT",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT+0" =>
+         {"Etc/GMT+0",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT+1" =>
+         {"Etc/GMT+1",{"-01","-01"},undef,-60,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT+10" =>
+         {"Etc/GMT+10",{"-10","-10"},undef,-600,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT+11" =>
+         {"Etc/GMT+11",{"-11","-11"},undef,-660,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT+12" =>
+         {"Etc/GMT+12",{"-12","-12"},undef,-720,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT+2" =>
+         {"Etc/GMT+2",{"-02","-02"},undef,-120,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT+3" =>
+         {"Etc/GMT+3",{"-03","-03"},undef,-180,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT+4" =>
+         {"Etc/GMT+4",{"-04","-04"},undef,-240,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT+5" =>
+         {"Etc/GMT+5",{"-05","-05"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT+6" =>
+         {"Etc/GMT+6",{"-06","-06"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT+7" =>
+         {"Etc/GMT+7",{"-07","-07"},undef,-420,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT+8" =>
+         {"Etc/GMT+8",{"-08","-08"},undef,-480,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT+9" =>
+         {"Etc/GMT+9",{"-09","-09"},undef,-540,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT-0" =>
+         {"Etc/GMT-0",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT-1" =>
+         {"Etc/GMT-1",{"+01","+01"},undef,60,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT-10" =>
+         {"Etc/GMT-10",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT-11" =>
+         {"Etc/GMT-11",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT-12" =>
+         {"Etc/GMT-12",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT-13" =>
+         {"Etc/GMT-13",{"+13","+13"},undef,780,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT-14" =>
+         {"Etc/GMT-14",{"+14","+14"},undef,840,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT-2" =>
+         {"Etc/GMT-2",{"+02","+02"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT-3" =>
+         {"Etc/GMT-3",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT-4" =>
+         {"Etc/GMT-4",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT-5" =>
+         {"Etc/GMT-5",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT-6" =>
+         {"Etc/GMT-6",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT-7" =>
+         {"Etc/GMT-7",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT-8" =>
+         {"Etc/GMT-8",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT-9" =>
+         {"Etc/GMT-9",{"+09","+09"},undef,540,0,undef,{0,0},undef,{0,0}},
+      "Etc/GMT0" =>
+         {"Etc/GMT0",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Etc/Greenwich" =>
+         {"Etc/Greenwich",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Etc/UCT" =>
+         {"Etc/UCT",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Etc/UTC" =>
+         {"Etc/UTC",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Etc/Universal" =>
+         {"Etc/Universal",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Etc/Zulu" =>
+         {"Etc/Zulu",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Europe/Amsterdam" =>
+         {"Europe/Amsterdam",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Andorra" =>
+         {"Europe/Andorra",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Astrakhan" =>
+         {"Europe/Astrakhan",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
+      "Europe/Athens" =>
+         {"Europe/Athens",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Europe/Belfast" =>
+         {"Europe/Belfast",{"GMT","GMT"},{"BST","BST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "Europe/Belgrade" =>
+         {"Europe/Belgrade",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Berlin" =>
+         {"Europe/Berlin",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Bratislava" =>
+         {"Europe/Bratislava",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Brussels" =>
+         {"Europe/Brussels",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Bucharest" =>
+         {"Europe/Bucharest",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Europe/Budapest" =>
+         {"Europe/Budapest",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Busingen" =>
+         {"Europe/Busingen",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Chisinau" =>
+         {"Europe/Chisinau",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Europe/Copenhagen" =>
+         {"Europe/Copenhagen",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Dublin" =>
+         {"Europe/Dublin",{"GMT","GMT"},{"IST","IST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "Europe/Gibraltar" =>
+         {"Europe/Gibraltar",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Guernsey" =>
+         {"Europe/Guernsey",{"GMT","GMT"},{"BST","BST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "Europe/Helsinki" =>
+         {"Europe/Helsinki",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Europe/Isle_of_Man" =>
+         {"Europe/Isle_of_Man",{"GMT","GMT"},{"BST","BST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "Europe/Istanbul" =>
+         {"Europe/Istanbul",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Europe/Jersey" =>
+         {"Europe/Jersey",{"GMT","GMT"},{"BST","BST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "Europe/Kaliningrad" =>
+         {"Europe/Kaliningrad",{"EET","EET"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "Europe/Kiev" =>
+         {"Europe/Kiev",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Europe/Kirov" =>
+         {"Europe/Kirov",{"MSK","MSK"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Europe/Kyiv" =>
+         {"Europe/Kyiv",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Europe/Lisbon" =>
+         {"Europe/Lisbon",{"WET","WET"},{"WEST","WEST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "Europe/Ljubljana" =>
+         {"Europe/Ljubljana",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/London" =>
+         {"Europe/London",{"GMT","GMT"},{"BST","BST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "Europe/Luxembourg" =>
+         {"Europe/Luxembourg",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Madrid" =>
+         {"Europe/Madrid",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Malta" =>
+         {"Europe/Malta",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Mariehamn" =>
+         {"Europe/Mariehamn",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Europe/Minsk" =>
+         {"Europe/Minsk",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Europe/Monaco" =>
+         {"Europe/Monaco",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Moscow" =>
+         {"Europe/Moscow",{"MSK","MSK"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Europe/Nicosia" =>
+         {"Europe/Nicosia",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Europe/Oslo" =>
+         {"Europe/Oslo",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Paris" =>
+         {"Europe/Paris",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Podgorica" =>
+         {"Europe/Podgorica",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Prague" =>
+         {"Europe/Prague",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Riga" =>
+         {"Europe/Riga",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Europe/Rome" =>
+         {"Europe/Rome",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Samara" =>
+         {"Europe/Samara",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
+      "Europe/San_Marino" =>
+         {"Europe/San_Marino",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Sarajevo" =>
+         {"Europe/Sarajevo",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Saratov" =>
+         {"Europe/Saratov",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
+      "Europe/Simferopol" =>
+         {"Europe/Simferopol",{"MSK","MSK"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Europe/Skopje" =>
+         {"Europe/Skopje",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Sofia" =>
+         {"Europe/Sofia",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Europe/Stockholm" =>
+         {"Europe/Stockholm",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Tallinn" =>
+         {"Europe/Tallinn",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Europe/Tirane" =>
+         {"Europe/Tirane",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Tiraspol" =>
+         {"Europe/Tiraspol",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Europe/Ulyanovsk" =>
+         {"Europe/Ulyanovsk",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
+      "Europe/Uzhgorod" =>
+         {"Europe/Uzhgorod",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Europe/Vaduz" =>
+         {"Europe/Vaduz",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Vatican" =>
+         {"Europe/Vatican",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Vienna" =>
+         {"Europe/Vienna",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Vilnius" =>
+         {"Europe/Vilnius",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Europe/Volgograd" =>
+         {"Europe/Volgograd",{"MSK","MSK"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Europe/Warsaw" =>
+         {"Europe/Warsaw",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Zagreb" =>
+         {"Europe/Zagreb",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Europe/Zaporozhye" =>
+         {"Europe/Zaporozhye",{"EET","EET"},{"EEST","EEST"},120,60,{last,sun,mar},{3,0},{last,sun,oct},{4,0}},
+      "Europe/Zurich" =>
+         {"Europe/Zurich",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "GB" =>
+         {"GB",{"GMT","GMT"},{"BST","BST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "GB-Eire" =>
+         {"GB-Eire",{"GMT","GMT"},{"BST","BST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "GMT" =>
+         {"GMT",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "GMT+0" =>
+         {"GMT+0",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "GMT-0" =>
+         {"GMT-0",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "GMT0" =>
+         {"GMT0",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Greenwich" =>
+         {"Greenwich",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "HST" =>
+         {"HST",{"HST","HST"},undef,-600,0,undef,{0,0},undef,{0,0}},
+      "Hongkong" =>
+         {"Hongkong",{"HKT","HKT"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Iceland" =>
+         {"Iceland",{"GMT","GMT"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Indian/Antananarivo" =>
+         {"Indian/Antananarivo",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Indian/Chagos" =>
+         {"Indian/Chagos",{"+06","+06"},undef,360,0,undef,{0,0},undef,{0,0}},
+      "Indian/Christmas" =>
+         {"Indian/Christmas",{"+07","+07"},undef,420,0,undef,{0,0},undef,{0,0}},
+      "Indian/Cocos" =>
+         {"Indian/Cocos",{"+0630","+0630"},undef,390,0,undef,{0,0},undef,{0,0}},
+      "Indian/Comoro" =>
+         {"Indian/Comoro",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Indian/Kerguelen" =>
+         {"Indian/Kerguelen",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Indian/Mahe" =>
+         {"Indian/Mahe",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
+      "Indian/Maldives" =>
+         {"Indian/Maldives",{"+05","+05"},undef,300,0,undef,{0,0},undef,{0,0}},
+      "Indian/Mauritius" =>
+         {"Indian/Mauritius",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
+      "Indian/Mayotte" =>
+         {"Indian/Mayotte",{"EAT","EAT"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "Indian/Reunion" =>
+         {"Indian/Reunion",{"+04","+04"},undef,240,0,undef,{0,0},undef,{0,0}},
+      "Iran" =>
+         {"Iran",{"+0330","+0330"},undef,210,0,undef,{0,0},undef,{0,0}},
+      "Israel" =>
+         {"Israel",{"IST","IST"},{"IDT","IDT"},120,60,{4,thu,mar},{26,0},{last,sun,oct},{2,0}},
+      "Jamaica" =>
+         {"Jamaica",{"EST","EST"},undef,-300,0,undef,{0,0},undef,{0,0}},
+      "Japan" =>
+         {"Japan",{"JST","JST"},undef,540,0,undef,{0,0},undef,{0,0}},
+      "Kwajalein" =>
+         {"Kwajalein",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
+      "Libya" =>
+         {"Libya",{"EET","EET"},undef,120,0,undef,{0,0},undef,{0,0}},
+      "MET" =>
+         {"MET",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "MST" =>
+         {"MST",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
+      "MST7MDT" =>
+         {"MST7MDT",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "Mexico/BajaNorte" =>
+         {"Mexico/BajaNorte",{"PST","PST"},{"PDT","PDT"},-480,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "Mexico/BajaSur" =>
+         {"Mexico/BajaSur",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
+      "Mexico/General" =>
+         {"Mexico/General",{"CST","CST"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "NZ" =>
+         {"NZ",{"NZST","NZST"},{"NZDT","NZDT"},720,60,{last,sun,sep},{2,0},{1,sun,apr},{3,0}},
+      "NZ-CHAT" =>
+         {"NZ-CHAT",{"+1245","+1245"},{"+1345","+1345"},765,60,{last,sun,sep},{2,45},{1,sun,apr},{3,45}},
+      "Navajo" =>
+         {"Navajo",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "PRC" =>
+         {"PRC",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "PST8PDT" =>
+         {"PST8PDT",{"PST","PST"},{"PDT","PDT"},-480,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "Pacific/Apia" =>
+         {"Pacific/Apia",{"+13","+13"},undef,780,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Auckland" =>
+         {"Pacific/Auckland",{"NZST","NZST"},{"NZDT","NZDT"},720,60,{last,sun,sep},{2,0},{1,sun,apr},{3,0}},
+      "Pacific/Bougainville" =>
+         {"Pacific/Bougainville",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Chatham" =>
+         {"Pacific/Chatham",{"+1245","+1245"},{"+1345","+1345"},765,60,{last,sun,sep},{2,45},{1,sun,apr},{3,45}},
+      "Pacific/Chuuk" =>
+         {"Pacific/Chuuk",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Easter" =>
+         {"Pacific/Easter",{"-06","-06"},{"-05","-05"},-360,60,{1,sat,sep},{22,0},{1,sat,apr},{22,0}},
+      "Pacific/Efate" =>
+         {"Pacific/Efate",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Enderbury" =>
+         {"Pacific/Enderbury",{"+13","+13"},undef,780,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Fakaofo" =>
+         {"Pacific/Fakaofo",{"+13","+13"},undef,780,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Fiji" =>
+         {"Pacific/Fiji",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Funafuti" =>
+         {"Pacific/Funafuti",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Galapagos" =>
+         {"Pacific/Galapagos",{"-06","-06"},undef,-360,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Gambier" =>
+         {"Pacific/Gambier",{"-09","-09"},undef,-540,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Guadalcanal" =>
+         {"Pacific/Guadalcanal",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Guam" =>
+         {"Pacific/Guam",{"ChST","ChST"},undef,600,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Honolulu" =>
+         {"Pacific/Honolulu",{"HST","HST"},undef,-600,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Johnston" =>
+         {"Pacific/Johnston",{"HST","HST"},undef,-600,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Kanton" =>
+         {"Pacific/Kanton",{"+13","+13"},undef,780,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Kiritimati" =>
+         {"Pacific/Kiritimati",{"+14","+14"},undef,840,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Kosrae" =>
+         {"Pacific/Kosrae",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Kwajalein" =>
+         {"Pacific/Kwajalein",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Majuro" =>
+         {"Pacific/Majuro",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Marquesas" =>
+         {"Pacific/Marquesas",{"-0930","-0930"},undef,-570,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Midway" =>
+         {"Pacific/Midway",{"SST","SST"},undef,-660,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Nauru" =>
+         {"Pacific/Nauru",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Niue" =>
+         {"Pacific/Niue",{"-11","-11"},undef,-660,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Norfolk" =>
+         {"Pacific/Norfolk",{"+11","+11"},{"+12","+12"},660,60,{1,sun,oct},{2,0},{1,sun,apr},{3,0}},
+      "Pacific/Noumea" =>
+         {"Pacific/Noumea",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Pago_Pago" =>
+         {"Pacific/Pago_Pago",{"SST","SST"},undef,-660,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Palau" =>
+         {"Pacific/Palau",{"+09","+09"},undef,540,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Pitcairn" =>
+         {"Pacific/Pitcairn",{"-08","-08"},undef,-480,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Pohnpei" =>
+         {"Pacific/Pohnpei",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Ponape" =>
+         {"Pacific/Ponape",{"+11","+11"},undef,660,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Port_Moresby" =>
+         {"Pacific/Port_Moresby",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Rarotonga" =>
+         {"Pacific/Rarotonga",{"-10","-10"},undef,-600,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Saipan" =>
+         {"Pacific/Saipan",{"ChST","ChST"},undef,600,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Samoa" =>
+         {"Pacific/Samoa",{"SST","SST"},undef,-660,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Tahiti" =>
+         {"Pacific/Tahiti",{"-10","-10"},undef,-600,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Tarawa" =>
+         {"Pacific/Tarawa",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Tongatapu" =>
+         {"Pacific/Tongatapu",{"+13","+13"},undef,780,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Truk" =>
+         {"Pacific/Truk",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Wake" =>
+         {"Pacific/Wake",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Wallis" =>
+         {"Pacific/Wallis",{"+12","+12"},undef,720,0,undef,{0,0},undef,{0,0}},
+      "Pacific/Yap" =>
+         {"Pacific/Yap",{"+10","+10"},undef,600,0,undef,{0,0},undef,{0,0}},
+      "Poland" =>
+         {"Poland",{"CET","CET"},{"CEST","CEST"},60,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+      "Portugal" =>
+         {"Portugal",{"WET","WET"},{"WEST","WEST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "ROC" =>
+         {"ROC",{"CST","CST"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "ROK" =>
+         {"ROK",{"KST","KST"},undef,540,0,undef,{0,0},undef,{0,0}},
+      "Singapore" =>
+         {"Singapore",{"+08","+08"},undef,480,0,undef,{0,0},undef,{0,0}},
+      "Turkey" =>
+         {"Turkey",{"+03","+03"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "UCT" =>
+         {"UCT",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "US/Alaska" =>
+         {"US/Alaska",{"AKST","AKST"},{"AKDT","AKDT"},-540,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "US/Aleutian" =>
+         {"US/Aleutian",{"HST","HST"},{"HDT","HDT"},-600,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "US/Arizona" =>
+         {"US/Arizona",{"MST","MST"},undef,-420,0,undef,{0,0},undef,{0,0}},
+      "US/Central" =>
+         {"US/Central",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "US/East-Indiana" =>
+         {"US/East-Indiana",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "US/Eastern" =>
+         {"US/Eastern",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "US/Hawaii" =>
+         {"US/Hawaii",{"HST","HST"},undef,-600,0,undef,{0,0},undef,{0,0}},
+      "US/Indiana-Starke" =>
+         {"US/Indiana-Starke",{"CST","CST"},{"CDT","CDT"},-360,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "US/Michigan" =>
+         {"US/Michigan",{"EST","EST"},{"EDT","EDT"},-300,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "US/Mountain" =>
+         {"US/Mountain",{"MST","MST"},{"MDT","MDT"},-420,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "US/Pacific" =>
+         {"US/Pacific",{"PST","PST"},{"PDT","PDT"},-480,60,{2,sun,mar},{2,0},{1,sun,nov},{2,0}},
+      "US/Samoa" =>
+         {"US/Samoa",{"SST","SST"},undef,-660,0,undef,{0,0},undef,{0,0}},
+      "UTC" =>
+         {"UTC",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "Universal" =>
+         {"Universal",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}},
+      "W-SU" =>
+         {"W-SU",{"MSK","MSK"},undef,180,0,undef,{0,0},undef,{0,0}},
+      "WET" =>
+         {"WET",{"WET","WET"},{"WEST","WEST"},0,60,{last,sun,mar},{1,0},{last,sun,oct},{2,0}},
+      "Zulu" =>
+         {"Zulu",{"UTC","UTC"},undef,0,0,undef,{0,0},undef,{0,0}}
+   }).
 
 % Periods (UTC, [Start, End)) where a zone deviates from its yearly rule.
-% {TimeZoneName, [{UtcStartGregorianSecs, UtcEndGregorianSecs, UtcOffsetMin, Abbr}]}
+% #{TimeZoneName => [{UtcStartGregorianSecs, UtcEndGregorianSecs, UtcOffsetMin, Abbr}]}
 -define(tz_exceptions,
-   [
-      {"Africa/Algiers",
+   #{
+      "Africa/Algiers" =>
         [{62167219200,62208687600,0,"WET"},  % 1970-01-01T00:00:00Z .. 1971-04-25T23:00:00Z
          {62208687600,62221993200,60,"WEST"},  % 1971-04-25T23:00:00Z .. 1971-09-26T23:00:00Z
          {62221993200,62398944000,0,"WET"},  % 1971-09-26T23:00:00Z .. 1977-05-06T00:00:00Z
@@ -644,10 +1241,10 @@
          {62426764800,62442493200,120,"CEST"},  % 1978-03-24T00:00:00Z .. 1978-09-22T01:00:00Z
          {62476959600,62492688000,0,"WET"},  % 1979-10-25T23:00:00Z .. 1980-04-25T00:00:00Z
          {62492688000,62509021200,60,"WEST"},  % 1980-04-25T00:00:00Z .. 1980-10-31T01:00:00Z
-         {62509021200,62524742400,0,"WET"}]},  % 1980-10-31T01:00:00Z .. 1981-05-01T00:00:00Z
-      {"Africa/Bissau",
-        [{62167219200,62324989200,-60,"-01"}]},  % 1970-01-01T00:00:00Z .. 1975-01-01T01:00:00Z
-      {"Africa/Cairo",
+         {62509021200,62524742400,0,"WET"}],  % 1980-10-31T01:00:00Z .. 1981-05-01T00:00:00Z
+      "Africa/Bissau" =>
+        [{62167219200,62324989200,-60,"-01"}],  % 1970-01-01T00:00:00Z .. 1975-01-01T01:00:00Z
+      "Africa/Cairo" =>
         [{62176975200,62177583600,120,"EET"},  % 1970-04-23T22:00:00Z .. 1970-04-30T23:00:00Z
          {62190806400,62193301200,120,"EET"},  % 1970-10-01T00:00:00Z .. 1970-10-29T21:00:00Z
          {62209029600,62209119600,120,"EET"},  % 1971-04-29T22:00:00Z .. 1971-04-30T23:00:00Z
@@ -728,8 +1325,8 @@
          {63723448800,63739774800,120,"EET"},  % 2019-04-25T22:00:00Z .. 2019-10-31T21:00:00Z
          {63754898400,63771224400,120,"EET"},  % 2020-04-23T22:00:00Z .. 2020-10-29T21:00:00Z
          {63786952800,63802674000,120,"EET"},  % 2021-04-29T22:00:00Z .. 2021-10-28T21:00:00Z
-         {63818402400,63834123600,120,"EET"}]},  % 2022-04-28T22:00:00Z .. 2022-10-27T21:00:00Z
-      {"Africa/Casablanca",
+         {63818402400,63834123600,120,"EET"}],  % 2022-04-28T22:00:00Z .. 2022-10-27T21:00:00Z
+      "Africa/Casablanca" =>
         [{62308483200,62314441200,60,"+01"},  % 1974-06-24T00:00:00Z .. 1974-08-31T23:00:00Z
          {62366976000,62374921200,60,"+01"},  % 1976-05-01T00:00:00Z .. 1976-07-31T23:00:00Z
          {62398512000,62411468400,60,"+01"},  % 1977-05-01T00:00:00Z .. 1977-09-27T23:00:00Z
@@ -760,8 +1357,8 @@
          {63849434400,63877255200,60,"+01"},  % 2023-04-23T02:00:00Z .. 2024-03-10T02:00:00Z
          {63880279200,63907495200,60,"+01"},  % 2024-04-14T02:00:00Z .. 2025-02-23T02:00:00Z
          {63911124000,63938340000,60,"+01"},  % 2025-04-06T02:00:00Z .. 2026-02-15T02:00:00Z
-         {63941364000,63957085200,60,"+01"}]},  % 2026-03-22T02:00:00Z .. 2026-09-20T01:00:00Z
-      {"Africa/Ceuta",
+         {63941364000,63957085200,60,"+01"}],  % 2026-03-22T02:00:00Z .. 2026-09-20T01:00:00Z
+      "Africa/Ceuta" =>
         [{62167219200,62308483200,0,"WET"},  % 1970-01-01T00:00:00Z .. 1974-06-24T00:00:00Z
          {62308483200,62314441200,60,"WEST"},  % 1974-06-24T00:00:00Z .. 1974-08-31T23:00:00Z
          {62314441200,62366976000,0,"WET"},  % 1974-08-31T23:00:00Z .. 1976-05-01T00:00:00Z
@@ -782,8 +1379,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Africa/El_Aaiun",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Africa/El_Aaiun" =>
         [{62167219200,62365510800,-60,"-01"},  % 1970-01-01T00:00:00Z .. 1976-04-14T01:00:00Z
          {62366976000,62374921200,60,"+01"},  % 1976-05-01T00:00:00Z .. 1976-07-31T23:00:00Z
          {62398512000,62411468400,60,"+01"},  % 1977-05-01T00:00:00Z .. 1977-09-27T23:00:00Z
@@ -813,8 +1410,8 @@
          {63849434400,63877255200,60,"+01"},  % 2023-04-23T02:00:00Z .. 2024-03-10T02:00:00Z
          {63880279200,63907495200,60,"+01"},  % 2024-04-14T02:00:00Z .. 2025-02-23T02:00:00Z
          {63911124000,63938340000,60,"+01"},  % 2025-04-06T02:00:00Z .. 2026-02-15T02:00:00Z
-         {63941364000,63957085200,60,"+01"}]},  % 2026-03-22T02:00:00Z .. 2026-09-20T01:00:00Z
-      {"Africa/Juba",
+         {63941364000,63957085200,60,"+01"}],  % 2026-03-22T02:00:00Z .. 2026-09-20T01:00:00Z
+      "Africa/Juba" =>
         [{62177580000,62192005200,180,"CAST"},  % 1970-04-30T22:00:00Z .. 1970-10-14T21:00:00Z
          {62209029600,62223541200,180,"CAST"},  % 1971-04-29T22:00:00Z .. 1971-10-14T21:00:00Z
          {62240652000,62255163600,180,"CAST"},  % 1972-04-29T22:00:00Z .. 1972-10-14T21:00:00Z
@@ -831,8 +1428,8 @@
          {62587202400,62602232400,180,"CAST"},  % 1983-04-23T22:00:00Z .. 1983-10-14T21:00:00Z
          {62619256800,62633854800,180,"CAST"},  % 1984-04-28T22:00:00Z .. 1984-10-14T21:00:00Z
          {62650706400,62665390800,180,"CAST"},  % 1985-04-27T22:00:00Z .. 1985-10-14T21:00:00Z
-         {63115149600,63779346000,180,"EAT"}]},  % 2000-01-15T10:00:00Z .. 2021-01-31T21:00:00Z
-      {"Africa/Khartoum",
+         {63115149600,63779346000,180,"EAT"}],  % 2000-01-15T10:00:00Z .. 2021-01-31T21:00:00Z
+      "Africa/Khartoum" =>
         [{62177580000,62192005200,180,"CAST"},  % 1970-04-30T22:00:00Z .. 1970-10-14T21:00:00Z
          {62209029600,62223541200,180,"CAST"},  % 1971-04-29T22:00:00Z .. 1971-10-14T21:00:00Z
          {62240652000,62255163600,180,"CAST"},  % 1972-04-29T22:00:00Z .. 1972-10-14T21:00:00Z
@@ -849,14 +1446,14 @@
          {62587202400,62602232400,180,"CAST"},  % 1983-04-23T22:00:00Z .. 1983-10-14T21:00:00Z
          {62619256800,62633854800,180,"CAST"},  % 1984-04-28T22:00:00Z .. 1984-10-14T21:00:00Z
          {62650706400,62665390800,180,"CAST"},  % 1985-04-27T22:00:00Z .. 1985-10-14T21:00:00Z
-         {63115149600,63676702800,180,"EAT"}]},  % 2000-01-15T10:00:00Z .. 2017-10-31T21:00:00Z
-      {"Africa/Monrovia",
-        [{62167219200,62230812270,-45,"MMT"}]},  % 1970-01-01T00:00:00Z .. 1972-01-07T00:44:30Z
-      {"Africa/Ndjamena",
-        [{62475922800,62488533600,120,"WAST"}]},  % 1979-10-13T23:00:00Z .. 1980-03-07T22:00:00Z
-      {"Africa/Sao_Tome",
-        [{63681987600,63713523600,60,"WAT"}]},  % 2018-01-01T01:00:00Z .. 2019-01-01T01:00:00Z
-      {"Africa/Tripoli",
+         {63115149600,63676702800,180,"EAT"}],  % 2000-01-15T10:00:00Z .. 2017-10-31T21:00:00Z
+      "Africa/Monrovia" =>
+        [{62167219200,62230812270,-45,"MMT"}],  % 1970-01-01T00:00:00Z .. 1972-01-07T00:44:30Z
+      "Africa/Ndjamena" =>
+        [{62475922800,62488533600,120,"WAST"}],  % 1979-10-13T23:00:00Z .. 1980-03-07T22:00:00Z
+      "Africa/Sao_Tome" =>
+        [{63681987600,63713523600,60,"WAT"}],  % 2018-01-01T01:00:00Z .. 2019-01-01T01:00:00Z
+      "Africa/Tripoli" =>
         [{62545903200,62553682800,60,"CET"},  % 1981-12-31T22:00:00Z .. 1982-03-31T23:00:00Z
          {62553682800,62569490400,120,"CEST"},  % 1982-03-31T23:00:00Z .. 1982-09-30T22:00:00Z
          {62569490400,62585218800,60,"CET"},  % 1982-09-30T22:00:00Z .. 1983-03-31T23:00:00Z
@@ -877,8 +1474,8 @@
          {63011253600,63027327600,60,"CET"},  % 1996-09-29T22:00:00Z .. 1997-04-03T23:00:00Z
          {63027327600,63043135200,120,"CEST"},  % 1997-04-03T23:00:00Z .. 1997-10-03T22:00:00Z
          {63519724800,63531734400,60,"CET"},  % 2012-11-10T00:00:00Z .. 2013-03-29T00:00:00Z
-         {63531734400,63549878400,120,"CEST"}]},  % 2013-03-29T00:00:00Z .. 2013-10-25T00:00:00Z
-      {"Africa/Tunis",
+         {63531734400,63549878400,120,"CEST"}],  % 2013-03-29T00:00:00Z .. 2013-10-25T00:00:00Z
+      "Africa/Tunis" =>
         [{62398422000,62411122800,120,"CEST"},  % 1977-04-29T23:00:00Z .. 1977-09-23T23:00:00Z
          {62430044400,62443263600,120,"CEST"},  % 1978-04-30T23:00:00Z .. 1978-09-30T23:00:00Z
          {62748342000,62758364400,120,"CEST"},  % 1988-05-31T23:00:00Z .. 1988-09-24T23:00:00Z
@@ -887,8 +1484,8 @@
          {63282121200,63295257600,120,"CEST"},  % 2005-04-30T23:00:00Z .. 2005-09-30T00:00:00Z
          {63310554000,63329302800,120,"CEST"},  % 2006-03-26T01:00:00Z .. 2006-10-29T01:00:00Z
          {63342003600,63360752400,120,"CEST"},  % 2007-03-25T01:00:00Z .. 2007-10-28T01:00:00Z
-         {63374058000,63392202000,120,"CEST"}]},  % 2008-03-30T01:00:00Z .. 2008-10-26T01:00:00Z
-      {"Africa/Windhoek",
+         {63374058000,63392202000,120,"CEST"}],  % 2008-03-30T01:00:00Z .. 2008-10-26T01:00:00Z
+      "Africa/Windhoek" =>
         [{62167219200,62805189600,120,"SAST"},  % 1970-01-01T00:00:00Z .. 1990-03-20T22:00:00Z
          {62931420000,62945859600,60,"WAT"},  % 1994-03-20T22:00:00Z .. 1994-09-04T01:00:00Z
          {62964000000,62977309200,60,"WAT"},  % 1995-04-02T00:00:00Z .. 1995-09-03T01:00:00Z
@@ -913,8 +1510,8 @@
          {63563961600,63577270800,60,"WAT"},  % 2014-04-06T00:00:00Z .. 2014-09-07T01:00:00Z
          {63595411200,63608720400,60,"WAT"},  % 2015-04-05T00:00:00Z .. 2015-09-06T01:00:00Z
          {63626860800,63640170000,60,"WAT"},  % 2016-04-03T00:00:00Z .. 2016-09-04T01:00:00Z
-         {63658310400,63671619600,60,"WAT"}]},  % 2017-04-02T00:00:00Z .. 2017-09-03T01:00:00Z
-      {"America/Adak",
+         {63658310400,63671619600,60,"WAT"}],  % 2017-04-02T00:00:00Z .. 2017-09-03T01:00:00Z
+      "America/Adak" =>
         [{62167219200,62177202000,-660,"BST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T13:00:00Z
          {62177202000,62192923200,-600,"BDT"},  % 1970-04-26T13:00:00Z .. 1970-10-25T12:00:00Z
          {62192923200,62208651600,-660,"BST"},  % 1970-10-25T12:00:00Z .. 1971-04-25T13:00:00Z
@@ -989,8 +1586,8 @@
          {63277934400,63279748800,-600,"HST"},  % 2005-03-13T12:00:00Z .. 2005-04-03T12:00:00Z
          {63297889200,63298494000,-600,"HST"},  % 2005-10-30T11:00:00Z .. 2005-11-06T11:00:00Z
          {63309384000,63311198400,-600,"HST"},  % 2006-03-12T12:00:00Z .. 2006-04-02T12:00:00Z
-         {63329338800,63329943600,-600,"HST"}]},  % 2006-10-29T11:00:00Z .. 2006-11-05T11:00:00Z
-      {"America/Anchorage",
+         {63329338800,63329943600,-600,"HST"}],  % 2006-10-29T11:00:00Z .. 2006-11-05T11:00:00Z
+      "America/Anchorage" =>
         [{62167219200,62177198400,-600,"AHST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T12:00:00Z
          {62177198400,62192919600,-540,"AHDT"},  % 1970-04-26T12:00:00Z .. 1970-10-25T11:00:00Z
          {62192919600,62208648000,-600,"AHST"},  % 1970-10-25T11:00:00Z .. 1971-04-25T12:00:00Z
@@ -1065,8 +1662,8 @@
          {63277930800,63279745200,-540,"AKST"},  % 2005-03-13T11:00:00Z .. 2005-04-03T11:00:00Z
          {63297885600,63298490400,-540,"AKST"},  % 2005-10-30T10:00:00Z .. 2005-11-06T10:00:00Z
          {63309380400,63311194800,-540,"AKST"},  % 2006-03-12T11:00:00Z .. 2006-04-02T11:00:00Z
-         {63329335200,63329940000,-540,"AKST"}]},  % 2006-10-29T10:00:00Z .. 2006-11-05T10:00:00Z
-      {"America/Araguaina",
+         {63329335200,63329940000,-540,"AKST"}],  % 2006-10-29T10:00:00Z .. 2006-11-05T10:00:00Z
+      "America/Araguaina" =>
         [{62666967600,62678455200,-120,"-02"},  % 1985-11-02T03:00:00Z .. 1986-03-15T02:00:00Z
          {62697812400,62707485600,-120,"-02"},  % 1986-10-25T03:00:00Z .. 1987-02-14T02:00:00Z
          {62729348400,62738416800,-120,"-02"},  % 1987-10-25T03:00:00Z .. 1988-02-07T02:00:00Z
@@ -1080,8 +1677,8 @@
          {63138193200,63149680800,-120,"-02"},  % 2000-10-08T03:00:00Z .. 2001-02-18T02:00:00Z
          {63170247600,63181130400,-120,"-02"},  % 2001-10-14T03:00:00Z .. 2002-02-17T02:00:00Z
          {63203511600,63212580000,-120,"-02"},  % 2002-11-03T03:00:00Z .. 2003-02-16T02:00:00Z
-         {63518007600,63528285600,-120,"-02"}]},  % 2012-10-21T03:00:00Z .. 2013-02-17T02:00:00Z
-      {"America/Argentina/Buenos_Aires",
+         {63518007600,63528285600,-120,"-02"}],  % 2012-10-21T03:00:00Z .. 2013-02-17T02:00:00Z
+      "America/Argentina/Buenos_Aires" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -1089,8 +1686,8 @@
          {62855146800,62866634400,-120,"-02"},  % 1991-10-20T03:00:00Z .. 1992-03-01T02:00:00Z
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
          {63366202800,63372852000,-120,"-02"},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-         {63391604400,63404301600,-120,"-02"}]},  % 2008-10-19T03:00:00Z .. 2009-03-15T02:00:00Z
-      {"America/Argentina/Catamarca",
+         {63391604400,63404301600,-120,"-02"}],  % 2008-10-19T03:00:00Z .. 2009-03-15T02:00:00Z
+      "America/Argentina/Catamarca" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -1099,8 +1696,8 @@
          {62855150400,62866634400,-120,"-02"},  % 1991-10-20T04:00:00Z .. 1992-03-01T02:00:00Z
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
          {63253278000,63254923200,-240,"-04"},  % 2004-06-01T03:00:00Z .. 2004-06-20T04:00:00Z
-         {63366202800,63372852000,-120,"-02"}]},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-      {"America/Argentina/ComodRivadavia",
+         {63366202800,63372852000,-120,"-02"}],  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
+      "America/Argentina/ComodRivadavia" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -1109,8 +1706,8 @@
          {62855150400,62866634400,-120,"-02"},  % 1991-10-20T04:00:00Z .. 1992-03-01T02:00:00Z
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
          {63253278000,63254923200,-240,"-04"},  % 2004-06-01T03:00:00Z .. 2004-06-20T04:00:00Z
-         {63366202800,63372852000,-120,"-02"}]},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-      {"America/Argentina/Cordoba",
+         {63366202800,63372852000,-120,"-02"}],  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
+      "America/Argentina/Cordoba" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -1119,8 +1716,8 @@
          {62855150400,62866634400,-120,"-02"},  % 1991-10-20T04:00:00Z .. 1992-03-01T02:00:00Z
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
          {63366202800,63372852000,-120,"-02"},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-         {63391604400,63404301600,-120,"-02"}]},  % 2008-10-19T03:00:00Z .. 2009-03-15T02:00:00Z
-      {"America/Argentina/Jujuy",
+         {63391604400,63404301600,-120,"-02"}],  % 2008-10-19T03:00:00Z .. 2009-03-15T02:00:00Z
+      "America/Argentina/Jujuy" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -1128,8 +1725,8 @@
          {62836398000,62853940800,-240,"-04"},  % 1991-03-17T03:00:00Z .. 1991-10-06T04:00:00Z
          {62853940800,62866634400,-120,"-02"},  % 1991-10-06T04:00:00Z .. 1992-03-01T02:00:00Z
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
-         {63366202800,63372852000,-120,"-02"}]},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-      {"America/Argentina/La_Rioja",
+         {63366202800,63372852000,-120,"-02"}],  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
+      "America/Argentina/La_Rioja" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -1138,8 +1735,8 @@
          {62855146800,62866634400,-120,"-02"},  % 1991-10-20T03:00:00Z .. 1992-03-01T02:00:00Z
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
          {63253278000,63254923200,-240,"-04"},  % 2004-06-01T03:00:00Z .. 2004-06-20T04:00:00Z
-         {63366202800,63372852000,-120,"-02"}]},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-      {"America/Argentina/Mendoza",
+         {63366202800,63372852000,-120,"-02"}],  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
+      "America/Argentina/Mendoza" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -1148,8 +1745,8 @@
          {62866638000,62886600000,-240,"-04"},  % 1992-03-01T03:00:00Z .. 1992-10-18T04:00:00Z
          {62886600000,62898688800,-120,"-02"},  % 1992-10-18T04:00:00Z .. 1993-03-07T02:00:00Z
          {63252500400,63263390400,-240,"-04"},  % 2004-05-23T03:00:00Z .. 2004-09-26T04:00:00Z
-         {63366202800,63372852000,-120,"-02"}]},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-      {"America/Argentina/Rio_Gallegos",
+         {63366202800,63372852000,-120,"-02"}],  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
+      "America/Argentina/Rio_Gallegos" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -1157,8 +1754,8 @@
          {62855146800,62866634400,-120,"-02"},  % 1991-10-20T03:00:00Z .. 1992-03-01T02:00:00Z
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
          {63253278000,63254923200,-240,"-04"},  % 2004-06-01T03:00:00Z .. 2004-06-20T04:00:00Z
-         {63366202800,63372852000,-120,"-02"}]},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-      {"America/Argentina/Salta",
+         {63366202800,63372852000,-120,"-02"}],  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
+      "America/Argentina/Salta" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -1166,8 +1763,8 @@
          {62835184800,62855150400,-240,"-04"},  % 1991-03-03T02:00:00Z .. 1991-10-20T04:00:00Z
          {62855150400,62866634400,-120,"-02"},  % 1991-10-20T04:00:00Z .. 1992-03-01T02:00:00Z
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
-         {63366202800,63372852000,-120,"-02"}]},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-      {"America/Argentina/San_Juan",
+         {63366202800,63372852000,-120,"-02"}],  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
+      "America/Argentina/San_Juan" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -1176,8 +1773,8 @@
          {62855146800,62866634400,-120,"-02"},  % 1991-10-20T03:00:00Z .. 1992-03-01T02:00:00Z
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
          {63253191600,63257947200,-240,"-04"},  % 2004-05-31T03:00:00Z .. 2004-07-25T04:00:00Z
-         {63366202800,63372852000,-120,"-02"}]},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-      {"America/Argentina/San_Luis",
+         {63366202800,63372852000,-120,"-02"}],  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
+      "America/Argentina/San_Luis" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62804599200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-14T02:00:00Z
@@ -1186,8 +1783,8 @@
          {63253191600,63257947200,-240,"-04"},  % 2004-05-31T03:00:00Z .. 2004-07-25T04:00:00Z
          {63366202800,63368100000,-120,"-02"},  % 2007-12-30T03:00:00Z .. 2008-01-21T02:00:00Z
          {63372250800,63391003200,-240,"-04"},  % 2008-03-09T03:00:00Z .. 2008-10-12T04:00:00Z
-         {63403700400,63422452800,-240,"-04"}]},  % 2009-03-08T03:00:00Z .. 2009-10-11T04:00:00Z
-      {"America/Argentina/Tucuman",
+         {63403700400,63422452800,-240,"-04"}],  % 2009-03-08T03:00:00Z .. 2009-10-11T04:00:00Z
+      "America/Argentina/Tucuman" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -1197,8 +1794,8 @@
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
          {63253278000,63254318400,-240,"-04"},  % 2004-06-01T03:00:00Z .. 2004-06-13T04:00:00Z
          {63366202800,63372852000,-120,"-02"},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-         {63391604400,63404301600,-120,"-02"}]},  % 2008-10-19T03:00:00Z .. 2009-03-15T02:00:00Z
-      {"America/Argentina/Ushuaia",
+         {63391604400,63404301600,-120,"-02"}],  % 2008-10-19T03:00:00Z .. 2009-03-15T02:00:00Z
+      "America/Argentina/Ushuaia" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -1206,8 +1803,8 @@
          {62855146800,62866634400,-120,"-02"},  % 1991-10-20T03:00:00Z .. 1992-03-01T02:00:00Z
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
          {63253105200,63254923200,-240,"-04"},  % 2004-05-30T03:00:00Z .. 2004-06-20T04:00:00Z
-         {63366202800,63372852000,-120,"-02"}]},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-      {"America/Asuncion",
+         {63366202800,63372852000,-120,"-02"}],  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
+      "America/Asuncion" =>
         [{62167219200,62253979200,-240,"-04"},  % 1970-01-01T00:00:00Z .. 1972-10-01T04:00:00Z
          {62301236400,62348587200,-240,"-04"},  % 1974-04-01T03:00:00Z .. 1975-10-01T04:00:00Z
          {62361716400,62380209600,-240,"-04"},  % 1976-03-01T03:00:00Z .. 1976-10-01T04:00:00Z
@@ -1258,8 +1855,8 @@
          {63784119600,63800452800,-240,"-04"},  % 2021-03-28T03:00:00Z .. 2021-10-03T04:00:00Z
          {63815569200,63831902400,-240,"-04"},  % 2022-03-27T03:00:00Z .. 2022-10-02T04:00:00Z
          {63847018800,63863352000,-240,"-04"},  % 2023-03-26T03:00:00Z .. 2023-10-01T04:00:00Z
-         {63878468400,63895406400,-240,"-04"}]},  % 2024-03-24T03:00:00Z .. 2024-10-06T04:00:00Z
-      {"America/Atka",
+         {63878468400,63895406400,-240,"-04"}],  % 2024-03-24T03:00:00Z .. 2024-10-06T04:00:00Z
+      "America/Atka" =>
         [{62167219200,62177202000,-660,"BST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T13:00:00Z
          {62177202000,62192923200,-600,"BDT"},  % 1970-04-26T13:00:00Z .. 1970-10-25T12:00:00Z
          {62192923200,62208651600,-660,"BST"},  % 1970-10-25T12:00:00Z .. 1971-04-25T13:00:00Z
@@ -1334,8 +1931,8 @@
          {63277934400,63279748800,-600,"HST"},  % 2005-03-13T12:00:00Z .. 2005-04-03T12:00:00Z
          {63297889200,63298494000,-600,"HST"},  % 2005-10-30T11:00:00Z .. 2005-11-06T11:00:00Z
          {63309384000,63311198400,-600,"HST"},  % 2006-03-12T12:00:00Z .. 2006-04-02T12:00:00Z
-         {63329338800,63329943600,-600,"HST"}]},  % 2006-10-29T11:00:00Z .. 2006-11-05T11:00:00Z
-      {"America/Bahia",
+         {63329338800,63329943600,-600,"HST"}],  % 2006-10-29T11:00:00Z .. 2006-11-05T11:00:00Z
+      "America/Bahia" =>
         [{62666967600,62678455200,-120,"-02"},  % 1985-11-02T03:00:00Z .. 1986-03-15T02:00:00Z
          {62697812400,62707485600,-120,"-02"},  % 1986-10-25T03:00:00Z .. 1987-02-14T02:00:00Z
          {62729348400,62738416800,-120,"-02"},  % 1987-10-25T03:00:00Z .. 1988-02-07T02:00:00Z
@@ -1354,8 +1951,8 @@
          {63138193200,63149680800,-120,"-02"},  % 2000-10-08T03:00:00Z .. 2001-02-18T02:00:00Z
          {63170247600,63181130400,-120,"-02"},  % 2001-10-14T03:00:00Z .. 2002-02-17T02:00:00Z
          {63203511600,63212580000,-120,"-02"},  % 2002-11-03T03:00:00Z .. 2003-02-16T02:00:00Z
-         {63485953200,63497440800,-120,"-02"}]},  % 2011-10-16T03:00:00Z .. 2012-02-26T02:00:00Z
-      {"America/Bahia_Banderas",
+         {63485953200,63497440800,-120,"-02"}],  % 2011-10-16T03:00:00Z .. 2012-02-26T02:00:00Z
+      "America/Bahia_Banderas" =>
         [{62167219200,62996086800,-420,"MST"},  % 1970-01-01T00:00:00Z .. 1996-04-07T09:00:00Z
          {62996086800,63013622400,-360,"MDT"},  % 1996-04-07T09:00:00Z .. 1996-10-27T08:00:00Z
          {63013622400,63027536400,-420,"MST"},  % 1996-10-27T08:00:00Z .. 1997-04-06T09:00:00Z
@@ -1397,28 +1994,28 @@
          {63721843200,63739378800,-300,"CDT"},  % 2019-04-07T08:00:00Z .. 2019-10-27T07:00:00Z
          {63753292800,63770828400,-300,"CDT"},  % 2020-04-05T08:00:00Z .. 2020-10-25T07:00:00Z
          {63784742400,63802882800,-300,"CDT"},  % 2021-04-04T08:00:00Z .. 2021-10-31T07:00:00Z
-         {63816192000,63834332400,-300,"CDT"}]},  % 2022-04-03T08:00:00Z .. 2022-10-30T07:00:00Z
-      {"America/Barbados",
+         {63816192000,63834332400,-300,"CDT"}],  % 2022-04-03T08:00:00Z .. 2022-10-30T07:00:00Z
+      "America/Barbados" =>
         [{62402162400,62411835600,-180,"ADT"},  % 1977-06-12T06:00:00Z .. 1977-10-02T05:00:00Z
          {62428773600,62443285200,-180,"ADT"},  % 1978-04-16T06:00:00Z .. 1978-10-01T05:00:00Z
          {62460223200,62474734800,-180,"ADT"},  % 1979-04-15T06:00:00Z .. 1979-09-30T05:00:00Z
-         {62492277600,62505925200,-180,"ADT"}]},  % 1980-04-20T06:00:00Z .. 1980-09-25T05:00:00Z
-      {"America/Belem",
+         {62492277600,62505925200,-180,"ADT"}],  % 1980-04-20T06:00:00Z .. 1980-09-25T05:00:00Z
+      "America/Belem" =>
         [{62666967600,62678455200,-120,"-02"},  % 1985-11-02T03:00:00Z .. 1986-03-15T02:00:00Z
          {62697812400,62707485600,-120,"-02"},  % 1986-10-25T03:00:00Z .. 1987-02-14T02:00:00Z
-         {62729348400,62738416800,-120,"-02"}]},  % 1987-10-25T03:00:00Z .. 1988-02-07T02:00:00Z
-      {"America/Belize",
+         {62729348400,62738416800,-120,"-02"}],  % 1987-10-25T03:00:00Z .. 1988-02-07T02:00:00Z
+      "America/Belize" =>
         [{62291138400,62296837200,-300,"CDT"},  % 1973-12-05T06:00:00Z .. 1974-02-09T05:00:00Z
-         {62576258400,62581093200,-300,"CDT"}]},  % 1982-12-18T06:00:00Z .. 1983-02-12T05:00:00Z
-      {"America/Boa_Vista",
+         {62576258400,62581093200,-300,"CDT"}],  % 1982-12-18T06:00:00Z .. 1983-02-12T05:00:00Z
+      "America/Boa_Vista" =>
         [{62666971200,62678458800,-180,"-03"},  % 1985-11-02T04:00:00Z .. 1986-03-15T03:00:00Z
          {62697816000,62707489200,-180,"-03"},  % 1986-10-25T04:00:00Z .. 1987-02-14T03:00:00Z
          {62729352000,62738420400,-180,"-03"},  % 1987-10-25T04:00:00Z .. 1988-02-07T03:00:00Z
          {63106142400,63118839600,-180,"-03"},  % 1999-10-03T04:00:00Z .. 2000-02-27T03:00:00Z
-         {63138196800,63138798000,-180,"-03"}]},  % 2000-10-08T04:00:00Z .. 2000-10-15T03:00:00Z
-      {"America/Bogota",
-        [{62872002000,62896276800,-240,"-04"}]},  % 1992-05-02T05:00:00Z .. 1993-02-07T04:00:00Z
-      {"America/Boise",
+         {63138196800,63138798000,-180,"-03"}],  % 2000-10-08T04:00:00Z .. 2000-10-15T03:00:00Z
+      "America/Bogota" =>
+        [{62872002000,62896276800,-240,"-04"}],  % 1992-05-02T05:00:00Z .. 1993-02-07T04:00:00Z
+      "America/Boise" =>
         [{62172954000,62177187600,-420,"MST"},  % 1970-03-08T09:00:00Z .. 1970-04-26T09:00:00Z
          {62192908800,62193513600,-420,"MST"},  % 1970-10-25T08:00:00Z .. 1970-11-01T08:00:00Z
          {62205008400,62208637200,-420,"MST"},  % 1971-03-14T09:00:00Z .. 1971-04-25T09:00:00Z
@@ -1492,8 +2089,8 @@
          {63277923600,63279738000,-420,"MST"},  % 2005-03-13T09:00:00Z .. 2005-04-03T09:00:00Z
          {63297878400,63298483200,-420,"MST"},  % 2005-10-30T08:00:00Z .. 2005-11-06T08:00:00Z
          {63309373200,63311187600,-420,"MST"},  % 2006-03-12T09:00:00Z .. 2006-04-02T09:00:00Z
-         {63329328000,63329932800,-420,"MST"}]},  % 2006-10-29T08:00:00Z .. 2006-11-05T08:00:00Z
-      {"America/Buenos_Aires",
+         {63329328000,63329932800,-420,"MST"}],  % 2006-10-29T08:00:00Z .. 2006-11-05T08:00:00Z
+      "America/Buenos_Aires" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -1501,8 +2098,8 @@
          {62855146800,62866634400,-120,"-02"},  % 1991-10-20T03:00:00Z .. 1992-03-01T02:00:00Z
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
          {63366202800,63372852000,-120,"-02"},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-         {63391604400,63404301600,-120,"-02"}]},  % 2008-10-19T03:00:00Z .. 2009-03-15T02:00:00Z
-      {"America/Cambridge_Bay",
+         {63391604400,63404301600,-120,"-02"}],  % 2008-10-19T03:00:00Z .. 2009-03-15T02:00:00Z
+      "America/Cambridge_Bay" =>
         [{62172954000,62193513600,-420,"MST"},  % 1970-03-08T09:00:00Z .. 1970-11-01T08:00:00Z
          {62205008400,62225568000,-420,"MST"},  % 1971-03-14T09:00:00Z .. 1971-11-07T08:00:00Z
          {62236458000,62240691600,-420,"MST"},  % 1972-03-12T09:00:00Z .. 1972-04-30T09:00:00Z
@@ -1574,8 +2171,8 @@
          {63277923600,63279738000,-420,"MST"},  % 2005-03-13T09:00:00Z .. 2005-04-03T09:00:00Z
          {63297878400,63298483200,-420,"MST"},  % 2005-10-30T08:00:00Z .. 2005-11-06T08:00:00Z
          {63309373200,63311187600,-420,"MST"},  % 2006-03-12T09:00:00Z .. 2006-04-02T09:00:00Z
-         {63329328000,63329932800,-420,"MST"}]},  % 2006-10-29T08:00:00Z .. 2006-11-05T08:00:00Z
-      {"America/Campo_Grande",
+         {63329328000,63329932800,-420,"MST"}],  % 2006-10-29T08:00:00Z .. 2006-11-05T08:00:00Z
+      "America/Campo_Grande" =>
         [{62666971200,62678458800,-180,"-03"},  % 1985-11-02T04:00:00Z .. 1986-03-15T03:00:00Z
          {62697816000,62707489200,-180,"-03"},  % 1986-10-25T04:00:00Z .. 1987-02-14T03:00:00Z
          {62729352000,62738420400,-180,"-03"},  % 1987-10-25T04:00:00Z .. 1988-02-07T03:00:00Z
@@ -1609,8 +2206,8 @@
          {63612360000,63623242800,-180,"-03"},  % 2015-10-18T04:00:00Z .. 2016-02-21T03:00:00Z
          {63643809600,63654692400,-180,"-03"},  % 2016-10-16T04:00:00Z .. 2017-02-19T03:00:00Z
          {63675259200,63686142000,-180,"-03"},  % 2017-10-15T04:00:00Z .. 2018-02-18T03:00:00Z
-         {63708523200,63717591600,-180,"-03"}]},  % 2018-11-04T04:00:00Z .. 2019-02-17T03:00:00Z
-      {"America/Cancun",
+         {63708523200,63717591600,-180,"-03"}],  % 2018-11-04T04:00:00Z .. 2019-02-17T03:00:00Z
+      "America/Cancun" =>
         [{62167219200,62545420800,-360,"CST"},  % 1970-01-01T00:00:00Z .. 1981-12-26T08:00:00Z
          {62577723600,62996083200,-360,"CST"},  % 1983-01-04T05:00:00Z .. 1996-04-07T08:00:00Z
          {62996083200,63013618800,-300,"CDT"},  % 1996-04-07T08:00:00Z .. 1996-10-27T07:00:00Z
@@ -1650,10 +2247,10 @@
          {63532540800,63550076400,-300,"CDT"},  % 2013-04-07T08:00:00Z .. 2013-10-27T07:00:00Z
          {63550076400,63563990400,-360,"CST"},  % 2013-10-27T07:00:00Z .. 2014-04-06T08:00:00Z
          {63563990400,63581526000,-300,"CDT"},  % 2014-04-06T08:00:00Z .. 2014-10-26T07:00:00Z
-         {63581526000,63589996800,-360,"CST"}]},  % 2014-10-26T07:00:00Z .. 2015-02-01T08:00:00Z
-      {"America/Caracas",
-        [{63364402800,63629305200,-270,"-0430"}]},  % 2007-12-09T07:00:00Z .. 2016-05-01T07:00:00Z
-      {"America/Catamarca",
+         {63581526000,63589996800,-360,"CST"}],  % 2014-10-26T07:00:00Z .. 2015-02-01T08:00:00Z
+      "America/Caracas" =>
+        [{63364402800,63629305200,-270,"-0430"}],  % 2007-12-09T07:00:00Z .. 2016-05-01T07:00:00Z
+      "America/Catamarca" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -1662,8 +2259,8 @@
          {62855150400,62866634400,-120,"-02"},  % 1991-10-20T04:00:00Z .. 1992-03-01T02:00:00Z
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
          {63253278000,63254923200,-240,"-04"},  % 2004-06-01T03:00:00Z .. 2004-06-20T04:00:00Z
-         {63366202800,63372852000,-120,"-02"}]},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-      {"America/Chicago",
+         {63366202800,63372852000,-120,"-02"}],  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
+      "America/Chicago" =>
         [{62172950400,62177184000,-360,"CST"},  % 1970-03-08T08:00:00Z .. 1970-04-26T08:00:00Z
          {62192905200,62193510000,-360,"CST"},  % 1970-10-25T07:00:00Z .. 1970-11-01T07:00:00Z
          {62205004800,62208633600,-360,"CST"},  % 1971-03-14T08:00:00Z .. 1971-04-25T08:00:00Z
@@ -1737,8 +2334,8 @@
          {63277920000,63279734400,-360,"CST"},  % 2005-03-13T08:00:00Z .. 2005-04-03T08:00:00Z
          {63297874800,63298479600,-360,"CST"},  % 2005-10-30T07:00:00Z .. 2005-11-06T07:00:00Z
          {63309369600,63311184000,-360,"CST"},  % 2006-03-12T08:00:00Z .. 2006-04-02T08:00:00Z
-         {63329324400,63329929200,-360,"CST"}]},  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
-      {"America/Chihuahua",
+         {63329324400,63329929200,-360,"CST"}],  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
+      "America/Chihuahua" =>
         [{62996083200,63013618800,-300,"CDT"},  % 1996-04-07T08:00:00Z .. 1996-10-27T07:00:00Z
          {63027532800,63045068400,-300,"CDT"},  % 1997-04-06T08:00:00Z .. 1997-10-26T07:00:00Z
          {63058986000,63076521600,-360,"MDT"},  % 1998-04-05T09:00:00Z .. 1998-10-25T08:00:00Z
@@ -1789,8 +2386,8 @@
          {63770832000,63784746000,-420,"MST"},  % 2020-10-25T08:00:00Z .. 2021-04-04T09:00:00Z
          {63784746000,63802886400,-360,"MDT"},  % 2021-04-04T09:00:00Z .. 2021-10-31T08:00:00Z
          {63802886400,63816195600,-420,"MST"},  % 2021-10-31T08:00:00Z .. 2022-04-03T09:00:00Z
-         {63816195600,63834336000,-360,"MDT"}]},  % 2022-04-03T09:00:00Z .. 2022-10-30T08:00:00Z
-      {"America/Ciudad_Juarez",
+         {63816195600,63834336000,-360,"MDT"}],  % 2022-04-03T09:00:00Z .. 2022-10-30T08:00:00Z
+      "America/Ciudad_Juarez" =>
         [{62167219200,62996083200,-360,"CST"},  % 1970-01-01T00:00:00Z .. 1996-04-07T08:00:00Z
          {62996083200,63013618800,-300,"CDT"},  % 1996-04-07T08:00:00Z .. 1996-10-27T07:00:00Z
          {63013618800,63027532800,-360,"CST"},  % 1996-10-27T07:00:00Z .. 1997-04-06T08:00:00Z
@@ -1819,8 +2416,8 @@
          {63392227200,63392832000,-420,"MST"},  % 2008-10-26T08:00:00Z .. 2008-11-02T08:00:00Z
          {63403722000,63406141200,-420,"MST"},  % 2009-03-08T09:00:00Z .. 2009-04-05T09:00:00Z
          {63423676800,63424281600,-420,"MST"},  % 2009-10-25T08:00:00Z .. 2009-11-01T08:00:00Z
-         {63834336000,63837007200,-360,"CST"}]},  % 2022-10-30T08:00:00Z .. 2022-11-30T06:00:00Z
-      {"America/Cordoba",
+         {63834336000,63837007200,-360,"CST"}],  % 2022-10-30T08:00:00Z .. 2022-11-30T06:00:00Z
+      "America/Cordoba" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -1829,13 +2426,13 @@
          {62855150400,62866634400,-120,"-02"},  % 1991-10-20T04:00:00Z .. 1992-03-01T02:00:00Z
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
          {63366202800,63372852000,-120,"-02"},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-         {63391604400,63404301600,-120,"-02"}]},  % 2008-10-19T03:00:00Z .. 2009-03-15T02:00:00Z
-      {"America/Costa_Rica",
+         {63391604400,63404301600,-120,"-02"}],  % 2008-10-19T03:00:00Z .. 2009-03-15T02:00:00Z
+      "America/Costa_Rica" =>
         [{62455989600,62464453200,-300,"CDT"},  % 1979-02-25T06:00:00Z .. 1979-06-03T05:00:00Z
          {62487439200,62495902800,-300,"CDT"},  % 1980-02-24T06:00:00Z .. 1980-06-01T05:00:00Z
          {62831484000,62845563600,-300,"CDT"},  % 1991-01-19T06:00:00Z .. 1991-07-01T05:00:00Z
-         {62862933600,62867854800,-300,"CDT"}]},  % 1992-01-18T06:00:00Z .. 1992-03-15T05:00:00Z
-      {"America/Coyhaique",
+         {62862933600,62867854800,-300,"CDT"}],  % 1992-01-18T06:00:00Z .. 1992-03-15T05:00:00Z
+      "America/Coyhaique" =>
         [{62174746800,62191684800,-240,"-04"},  % 1970-03-29T03:00:00Z .. 1970-10-11T04:00:00Z
          {62204986800,62223134400,-240,"-04"},  % 1971-03-14T03:00:00Z .. 1971-10-10T04:00:00Z
          {62236436400,62255188800,-240,"-04"},  % 1972-03-12T03:00:00Z .. 1972-10-15T04:00:00Z
@@ -1889,8 +2486,8 @@
          {63784724400,63798033600,-240,"-04"},  % 2021-04-04T03:00:00Z .. 2021-09-05T04:00:00Z
          {63816174000,63830088000,-240,"-04"},  % 2022-04-03T03:00:00Z .. 2022-09-11T04:00:00Z
          {63847623600,63860932800,-240,"-04"},  % 2023-04-02T03:00:00Z .. 2023-09-03T04:00:00Z
-         {63879678000,63892987200,-240,"-04"}]},  % 2024-04-07T03:00:00Z .. 2024-09-08T04:00:00Z
-      {"America/Cuiaba",
+         {63879678000,63892987200,-240,"-04"}],  % 2024-04-07T03:00:00Z .. 2024-09-08T04:00:00Z
+      "America/Cuiaba" =>
         [{62666971200,62678458800,-180,"-03"},  % 1985-11-02T04:00:00Z .. 1986-03-15T03:00:00Z
          {62697816000,62707489200,-180,"-03"},  % 1986-10-25T04:00:00Z .. 1987-02-14T03:00:00Z
          {62729352000,62738420400,-180,"-03"},  % 1987-10-25T04:00:00Z .. 1988-02-07T03:00:00Z
@@ -1923,8 +2520,8 @@
          {63612360000,63623242800,-180,"-03"},  % 2015-10-18T04:00:00Z .. 2016-02-21T03:00:00Z
          {63643809600,63654692400,-180,"-03"},  % 2016-10-16T04:00:00Z .. 2017-02-19T03:00:00Z
          {63675259200,63686142000,-180,"-03"},  % 2017-10-15T04:00:00Z .. 2018-02-18T03:00:00Z
-         {63708523200,63717591600,-180,"-03"}]},  % 2018-11-04T04:00:00Z .. 2019-02-17T03:00:00Z
-      {"America/Danmarkshavn",
+         {63708523200,63717591600,-180,"-03"}],  % 2018-11-04T04:00:00Z .. 2019-02-17T03:00:00Z
+      "America/Danmarkshavn" =>
         [{62167219200,62491064400,-180,"-03"},  % 1970-01-01T00:00:00Z .. 1980-04-06T05:00:00Z
          {62491064400,62506170000,-120,"-02"},  % 1980-04-06T05:00:00Z .. 1980-09-28T01:00:00Z
          {62506170000,62521894800,-180,"-03"},  % 1980-09-28T01:00:00Z .. 1981-03-29T01:00:00Z
@@ -1957,8 +2554,8 @@
          {62931949200,62947674000,-120,"-02"},  % 1994-03-27T01:00:00Z .. 1994-09-25T01:00:00Z
          {62947674000,62963398800,-180,"-03"},  % 1994-09-25T01:00:00Z .. 1995-03-26T01:00:00Z
          {62963398800,62979123600,-120,"-02"},  % 1995-03-26T01:00:00Z .. 1995-09-24T01:00:00Z
-         {62979123600,62987684400,-180,"-03"}]},  % 1995-09-24T01:00:00Z .. 1996-01-01T03:00:00Z
-      {"America/Dawson",
+         {62979123600,62987684400,-180,"-03"}],  % 1995-09-24T01:00:00Z .. 1996-01-01T03:00:00Z
+      "America/Dawson" =>
         [{62167219200,62287866000,-540,"YST"},  % 1970-01-01T00:00:00Z .. 1973-10-28T09:00:00Z
          {62287866000,62492896800,-480,"PST"},  % 1973-10-28T09:00:00Z .. 1980-04-27T10:00:00Z
          {62492896800,62508618000,-420,"PDT"},  % 1980-04-27T10:00:00Z .. 1980-10-26T09:00:00Z
@@ -2041,15 +2638,15 @@
          {63708541200,63719431200,-480,"PST"},  % 2018-11-04T09:00:00Z .. 2019-03-10T10:00:00Z
          {63719431200,63739990800,-420,"PDT"},  % 2019-03-10T10:00:00Z .. 2019-11-03T09:00:00Z
          {63739990800,63750880800,-480,"PST"},  % 2019-11-03T09:00:00Z .. 2020-03-08T10:00:00Z
-         {63750880800,63771433200,-420,"PDT"}]},  % 2020-03-08T10:00:00Z .. 2020-11-01T07:00:00Z
-      {"America/Dawson_Creek",
+         {63750880800,63771433200,-420,"PDT"}],  % 2020-03-08T10:00:00Z .. 2020-11-01T07:00:00Z
+      "America/Dawson_Creek" =>
         [{62167219200,62177191200,-480,"PST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T10:00:00Z
          {62177191200,62192912400,-420,"PDT"},  % 1970-04-26T10:00:00Z .. 1970-10-25T09:00:00Z
          {62192912400,62208640800,-480,"PST"},  % 1970-10-25T09:00:00Z .. 1971-04-25T10:00:00Z
          {62208640800,62224966800,-420,"PDT"},  % 1971-04-25T10:00:00Z .. 1971-10-31T09:00:00Z
          {62224966800,62240695200,-480,"PST"},  % 1971-10-31T09:00:00Z .. 1972-04-30T10:00:00Z
-         {62240695200,62251232400,-420,"PDT"}]},  % 1972-04-30T10:00:00Z .. 1972-08-30T09:00:00Z
-      {"America/Denver",
+         {62240695200,62251232400,-420,"PDT"}],  % 1972-04-30T10:00:00Z .. 1972-08-30T09:00:00Z
+      "America/Denver" =>
         [{62172954000,62177187600,-420,"MST"},  % 1970-03-08T09:00:00Z .. 1970-04-26T09:00:00Z
          {62192908800,62193513600,-420,"MST"},  % 1970-10-25T08:00:00Z .. 1970-11-01T08:00:00Z
          {62205008400,62208637200,-420,"MST"},  % 1971-03-14T09:00:00Z .. 1971-04-25T09:00:00Z
@@ -2123,8 +2720,8 @@
          {63277923600,63279738000,-420,"MST"},  % 2005-03-13T09:00:00Z .. 2005-04-03T09:00:00Z
          {63297878400,63298483200,-420,"MST"},  % 2005-10-30T08:00:00Z .. 2005-11-06T08:00:00Z
          {63309373200,63311187600,-420,"MST"},  % 2006-03-12T09:00:00Z .. 2006-04-02T09:00:00Z
-         {63329328000,63329932800,-420,"MST"}]},  % 2006-10-29T08:00:00Z .. 2006-11-05T08:00:00Z
-      {"America/Detroit",
+         {63329328000,63329932800,-420,"MST"}],  % 2006-10-29T08:00:00Z .. 2006-11-05T08:00:00Z
+      "America/Detroit" =>
         [{62172946800,62193506400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62225560800,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-11-07T06:00:00Z
          {62236450800,62257010400,-300,"EST"},  % 1972-03-12T07:00:00Z .. 1972-11-05T06:00:00Z
@@ -2195,8 +2792,8 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Edmonton",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Edmonton" =>
         [{62167219200,62240691600,-420,"MST"},  % 1970-01-01T00:00:00Z .. 1972-04-30T09:00:00Z
          {62240691600,62256412800,-360,"MDT"},  % 1972-04-30T09:00:00Z .. 1972-10-29T08:00:00Z
          {62256412800,62272141200,-420,"MST"},  % 1972-10-29T08:00:00Z .. 1973-04-29T09:00:00Z
@@ -2306,17 +2903,17 @@
          {63897840000,63908730000,-420,"MST"},  % 2024-11-03T08:00:00Z .. 2025-03-09T09:00:00Z
          {63908730000,63929289600,-360,"MDT"},  % 2025-03-09T09:00:00Z .. 2025-11-02T08:00:00Z
          {63929289600,63940179600,-420,"MST"},  % 2025-11-02T08:00:00Z .. 2026-03-08T09:00:00Z
-         {63940179600,63960739200,-360,"MDT"}]},  % 2026-03-08T09:00:00Z .. 2026-11-01T08:00:00Z
-      {"America/Eirunepe",
+         {63940179600,63960739200,-360,"MDT"}],  % 2026-03-08T09:00:00Z .. 2026-11-01T08:00:00Z
+      "America/Eirunepe" =>
         [{62666974800,62678462400,-240,"-04"},  % 1985-11-02T05:00:00Z .. 1986-03-15T04:00:00Z
          {62697819600,62707492800,-240,"-04"},  % 1986-10-25T05:00:00Z .. 1987-02-14T04:00:00Z
          {62729355600,62738424000,-240,"-04"},  % 1987-10-25T05:00:00Z .. 1988-02-07T04:00:00Z
          {62918053200,62928936000,-240,"-04"},  % 1993-10-17T05:00:00Z .. 1994-02-20T04:00:00Z
-         {63381502800,63551275200,-240,"-04"}]},  % 2008-06-24T05:00:00Z .. 2013-11-10T04:00:00Z
-      {"America/El_Salvador",
+         {63381502800,63551275200,-240,"-04"}],  % 2008-06-24T05:00:00Z .. 2013-11-10T04:00:00Z
+      "America/El_Salvador" =>
         [{62714239200,62726936400,-300,"CDT"},  % 1987-05-03T06:00:00Z .. 1987-09-27T05:00:00Z
-         {62745688800,62758386000,-300,"CDT"}]},  % 1988-05-01T06:00:00Z .. 1988-09-25T05:00:00Z
-      {"America/Ensenada",
+         {62745688800,62758386000,-300,"CDT"}],  % 1988-05-01T06:00:00Z .. 1988-09-25T05:00:00Z
+      "America/Ensenada" =>
         [{62172957600,62177191200,-480,"PST"},  % 1970-03-08T10:00:00Z .. 1970-04-26T10:00:00Z
          {62192912400,62193517200,-480,"PST"},  % 1970-10-25T09:00:00Z .. 1970-11-01T09:00:00Z
          {62205012000,62208640800,-480,"PST"},  % 1971-03-14T10:00:00Z .. 1971-04-25T10:00:00Z
@@ -2396,8 +2993,8 @@
          {63372276000,63374695200,-480,"PST"},  % 2008-03-09T10:00:00Z .. 2008-04-06T10:00:00Z
          {63392230800,63392835600,-480,"PST"},  % 2008-10-26T09:00:00Z .. 2008-11-02T09:00:00Z
          {63403725600,63406144800,-480,"PST"},  % 2009-03-08T10:00:00Z .. 2009-04-05T10:00:00Z
-         {63423680400,63424285200,-480,"PST"}]},  % 2009-10-25T09:00:00Z .. 2009-11-01T09:00:00Z
-      {"America/Fort_Nelson",
+         {63423680400,63424285200,-480,"PST"}],  % 2009-10-25T09:00:00Z .. 2009-11-01T09:00:00Z
+      "America/Fort_Nelson" =>
         [{62167219200,62177191200,-480,"PST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T10:00:00Z
          {62177191200,62192912400,-420,"PDT"},  % 1970-04-26T10:00:00Z .. 1970-10-25T09:00:00Z
          {62192912400,62208640800,-480,"PST"},  % 1970-10-25T09:00:00Z .. 1971-04-25T10:00:00Z
@@ -2488,8 +3085,8 @@
          {63530128800,63550688400,-420,"PDT"},  % 2013-03-10T10:00:00Z .. 2013-11-03T09:00:00Z
          {63550688400,63561578400,-480,"PST"},  % 2013-11-03T09:00:00Z .. 2014-03-09T10:00:00Z
          {63561578400,63582138000,-420,"PDT"},  % 2014-03-09T10:00:00Z .. 2014-11-02T09:00:00Z
-         {63582138000,63593028000,-480,"PST"}]},  % 2014-11-02T09:00:00Z .. 2015-03-08T10:00:00Z
-      {"America/Fort_Wayne",
+         {63582138000,63593028000,-480,"PST"}],  % 2014-11-02T09:00:00Z .. 2015-03-08T10:00:00Z
+      "America/Fort_Wayne" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62225560800,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-11-07T06:00:00Z
@@ -2528,8 +3125,8 @@
          {63246466800,63267026400,-300,"EST"},  % 2004-03-14T07:00:00Z .. 2004-11-07T06:00:00Z
          {63277916400,63298476000,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Fortaleza",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Fortaleza" =>
         [{62666967600,62678455200,-120,"-02"},  % 1985-11-02T03:00:00Z .. 1986-03-15T02:00:00Z
          {62697812400,62707485600,-120,"-02"},  % 1986-10-25T03:00:00Z .. 1987-02-14T02:00:00Z
          {62729348400,62738416800,-120,"-02"},  % 1987-10-25T03:00:00Z .. 1988-02-07T02:00:00Z
@@ -2537,8 +3134,8 @@
          {62791642800,62801920800,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-02-11T02:00:00Z
          {63106138800,63118836000,-120,"-02"},  % 1999-10-03T03:00:00Z .. 2000-02-27T02:00:00Z
          {63138193200,63139399200,-120,"-02"},  % 2000-10-08T03:00:00Z .. 2000-10-22T02:00:00Z
-         {63170247600,63181130400,-120,"-02"}]},  % 2001-10-14T03:00:00Z .. 2002-02-17T02:00:00Z
-      {"America/Glace_Bay",
+         {63170247600,63181130400,-120,"-02"}],  % 2001-10-14T03:00:00Z .. 2002-02-17T02:00:00Z
+      "America/Glace_Bay" =>
         [{62172943200,62193502800,-240,"AST"},  % 1970-03-08T06:00:00Z .. 1970-11-01T05:00:00Z
          {62204997600,62225557200,-240,"AST"},  % 1971-03-14T06:00:00Z .. 1971-11-07T05:00:00Z
          {62236447200,62240680800,-240,"AST"},  % 1972-03-12T06:00:00Z .. 1972-04-30T06:00:00Z
@@ -2610,8 +3207,8 @@
          {63277912800,63279727200,-240,"AST"},  % 2005-03-13T06:00:00Z .. 2005-04-03T06:00:00Z
          {63297867600,63298472400,-240,"AST"},  % 2005-10-30T05:00:00Z .. 2005-11-06T05:00:00Z
          {63309362400,63311176800,-240,"AST"},  % 2006-03-12T06:00:00Z .. 2006-04-02T06:00:00Z
-         {63329317200,63329922000,-240,"AST"}]},  % 2006-10-29T05:00:00Z .. 2006-11-05T05:00:00Z
-      {"America/Godthab",
+         {63329317200,63329922000,-240,"AST"}],  % 2006-10-29T05:00:00Z .. 2006-11-05T05:00:00Z
+      "America/Godthab" =>
         [{62167219200,62491064400,-180,"-03"},  % 1970-01-01T00:00:00Z .. 1980-04-06T05:00:00Z
          {62491064400,62506170000,-120,"-02"},  % 1980-04-06T05:00:00Z .. 1980-09-28T01:00:00Z
          {62506170000,62521894800,-180,"-03"},  % 1980-09-28T01:00:00Z .. 1981-03-29T01:00:00Z
@@ -2699,8 +3296,8 @@
          {63802861200,63815562000,-180,"-03"},  % 2021-10-31T01:00:00Z .. 2022-03-27T01:00:00Z
          {63815562000,63834310800,-120,"-02"},  % 2022-03-27T01:00:00Z .. 2022-10-30T01:00:00Z
          {63834310800,63847011600,-180,"-03"},  % 2022-10-30T01:00:00Z .. 2023-03-26T01:00:00Z
-         {63847011600,63865760400,-120,"-02"}]},  % 2023-03-26T01:00:00Z .. 2023-10-29T01:00:00Z
-      {"America/Goose_Bay",
+         {63847011600,63865760400,-120,"-02"}],  % 2023-03-26T01:00:00Z .. 2023-10-29T01:00:00Z
+      "America/Goose_Bay" =>
         [{62172943200,62177176800,-240,"AST"},  % 1970-03-08T06:00:00Z .. 1970-04-26T06:00:00Z
          {62192898000,62193502800,-240,"AST"},  % 1970-10-25T05:00:00Z .. 1970-11-01T05:00:00Z
          {62204997600,62208626400,-240,"AST"},  % 1971-03-14T06:00:00Z .. 1971-04-25T06:00:00Z
@@ -2784,8 +3381,8 @@
          {63424263660,63424270800,-240,"AST"},  % 2009-11-01T03:01:00Z .. 2009-11-01T05:00:00Z
          {63435758460,63435765600,-180,"ADT"},  % 2010-03-14T04:01:00Z .. 2010-03-14T06:00:00Z
          {63456318060,63456325200,-240,"AST"},  % 2010-11-07T03:01:00Z .. 2010-11-07T05:00:00Z
-         {63467208060,63467215200,-180,"ADT"}]},  % 2011-03-13T04:01:00Z .. 2011-03-13T06:00:00Z
-      {"America/Grand_Turk",
+         {63467208060,63467215200,-180,"ADT"}],  % 2011-03-13T04:01:00Z .. 2011-03-13T06:00:00Z
+      "America/Grand_Turk" =>
         [{62172946800,62193506400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62225560800,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-11-07T06:00:00Z
          {62236450800,62257010400,-300,"EST"},  % 1972-03-12T07:00:00Z .. 1972-11-05T06:00:00Z
@@ -2851,18 +3448,18 @@
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
          {63329320800,63329925600,-300,"EST"},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-         {63593017200,63687970800,-240,"AST"}]},  % 2015-03-08T07:00:00Z .. 2018-03-11T07:00:00Z
-      {"America/Guatemala",
+         {63593017200,63687970800,-240,"AST"}],  % 2015-03-08T07:00:00Z .. 2018-03-11T07:00:00Z
+      "America/Guatemala" =>
         [{62290274400,62298133200,-300,"CDT"},  % 1973-11-25T06:00:00Z .. 1974-02-24T05:00:00Z
          {62589564000,62600274000,-300,"CDT"},  % 1983-05-21T06:00:00Z .. 1983-09-22T05:00:00Z
          {62836927200,62851438800,-300,"CDT"},  % 1991-03-23T06:00:00Z .. 1991-09-07T05:00:00Z
-         {63313596000,63326898000,-300,"CDT"}]},  % 2006-04-30T06:00:00Z .. 2006-10-01T05:00:00Z
-      {"America/Guayaquil",
-        [{62890146000,62896104000,-240,"-04"}]},  % 1992-11-28T05:00:00Z .. 1993-02-05T04:00:00Z
-      {"America/Guyana",
+         {63313596000,63326898000,-300,"CDT"}],  % 2006-04-30T06:00:00Z .. 2006-10-01T05:00:00Z
+      "America/Guayaquil" =>
+        [{62890146000,62896104000,-240,"-04"}],  % 1992-11-28T05:00:00Z .. 1993-02-05T04:00:00Z
+      "America/Guyana" =>
         [{62167219200,62343315900,-225,"-0345"},  % 1970-01-01T00:00:00Z .. 1975-08-01T03:45:00Z
-         {62343315900,62869060800,-180,"-03"}]},  % 1975-08-01T03:45:00Z .. 1992-03-29T04:00:00Z
-      {"America/Halifax",
+         {62343315900,62869060800,-180,"-03"}],  % 1975-08-01T03:45:00Z .. 1992-03-29T04:00:00Z
+      "America/Halifax" =>
         [{62172943200,62177176800,-240,"AST"},  % 1970-03-08T06:00:00Z .. 1970-04-26T06:00:00Z
          {62192898000,62193502800,-240,"AST"},  % 1970-10-25T05:00:00Z .. 1970-11-01T05:00:00Z
          {62204997600,62208626400,-240,"AST"},  % 1971-03-14T06:00:00Z .. 1971-04-25T06:00:00Z
@@ -2936,8 +3533,8 @@
          {63277912800,63279727200,-240,"AST"},  % 2005-03-13T06:00:00Z .. 2005-04-03T06:00:00Z
          {63297867600,63298472400,-240,"AST"},  % 2005-10-30T05:00:00Z .. 2005-11-06T05:00:00Z
          {63309362400,63311176800,-240,"AST"},  % 2006-03-12T06:00:00Z .. 2006-04-02T06:00:00Z
-         {63329317200,63329922000,-240,"AST"}]},  % 2006-10-29T05:00:00Z .. 2006-11-05T05:00:00Z
-      {"America/Havana",
+         {63329317200,63329922000,-240,"AST"}],  % 2006-10-29T05:00:00Z .. 2006-11-05T05:00:00Z
+      "America/Havana" =>
         [{62172939600,62177173200,-300,"CST"},  % 1970-03-08T05:00:00Z .. 1970-04-26T05:00:00Z
          {62192894400,62193502800,-300,"CST"},  % 1970-10-25T04:00:00Z .. 1970-11-01T05:00:00Z
          {62204994000,62208622800,-300,"CST"},  % 1971-03-14T05:00:00Z .. 1971-04-25T05:00:00Z
@@ -3018,12 +3615,12 @@
          {63467211600,63467816400,-300,"CST"},  % 2011-03-13T05:00:00Z .. 2011-03-20T05:00:00Z
          {63487774800,63488379600,-240,"CDT"},  % 2011-11-06T05:00:00Z .. 2011-11-13T05:00:00Z
          {63498661200,63500475600,-300,"CST"},  % 2012-03-11T05:00:00Z .. 2012-04-01T05:00:00Z
-         {63960728400,63972219600,-240,"CDT"}]},  % 2026-11-01T05:00:00Z .. 2027-03-14T05:00:00Z
-      {"America/Hermosillo",
+         {63960728400,63972219600,-240,"CDT"}],  % 2026-11-01T05:00:00Z .. 2027-03-14T05:00:00Z
+      "America/Hermosillo" =>
         [{62996086800,63013622400,-360,"MDT"},  % 1996-04-07T09:00:00Z .. 1996-10-27T08:00:00Z
          {63027536400,63045072000,-360,"MDT"},  % 1997-04-06T09:00:00Z .. 1997-10-26T08:00:00Z
-         {63058986000,63076521600,-360,"MDT"}]},  % 1998-04-05T09:00:00Z .. 1998-10-25T08:00:00Z
-      {"America/Indiana/Indianapolis",
+         {63058986000,63076521600,-360,"MDT"}],  % 1998-04-05T09:00:00Z .. 1998-10-25T08:00:00Z
+      "America/Indiana/Indianapolis" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62225560800,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-11-07T06:00:00Z
@@ -3062,8 +3659,8 @@
          {63246466800,63267026400,-300,"EST"},  % 2004-03-14T07:00:00Z .. 2004-11-07T06:00:00Z
          {63277916400,63298476000,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Indiana/Knox",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Indiana/Knox" =>
         [{62172950400,62177184000,-360,"CST"},  % 1970-03-08T08:00:00Z .. 1970-04-26T08:00:00Z
          {62192905200,62193510000,-360,"CST"},  % 1970-10-25T07:00:00Z .. 1970-11-01T07:00:00Z
          {62205004800,62208633600,-360,"CST"},  % 1971-03-14T08:00:00Z .. 1971-04-25T08:00:00Z
@@ -3108,8 +3705,8 @@
          {62824316400,62824921200,-360,"CST"},  % 1990-10-28T07:00:00Z .. 1990-11-04T07:00:00Z
          {62835811200,62838230400,-360,"CST"},  % 1991-03-10T08:00:00Z .. 1991-04-07T08:00:00Z
          {62855766000,63311180400,-300,"EST"},  % 1991-10-27T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329324400,63329929200,-360,"CST"}]},  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
-      {"America/Indiana/Marengo",
+         {63329324400,63329929200,-360,"CST"}],  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
+      "America/Indiana/Marengo" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62208630000,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-04-25T07:00:00Z
@@ -3153,8 +3750,8 @@
          {63246466800,63267026400,-300,"EST"},  % 2004-03-14T07:00:00Z .. 2004-11-07T06:00:00Z
          {63277916400,63298476000,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Indiana/Petersburg",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Indiana/Petersburg" =>
         [{62167219200,62177184000,-360,"CST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T08:00:00Z
          {62177184000,62192905200,-300,"CDT"},  % 1970-04-26T08:00:00Z .. 1970-10-25T07:00:00Z
          {62192905200,62208633600,-360,"CST"},  % 1970-10-25T07:00:00Z .. 1971-04-25T08:00:00Z
@@ -3203,13 +3800,13 @@
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
          {63311180400,63329324400,-300,"CDT"},  % 2006-04-02T07:00:00Z .. 2006-10-29T07:00:00Z
          {63329324400,63340819200,-360,"CST"},  % 2006-10-29T07:00:00Z .. 2007-03-11T08:00:00Z
-         {63340819200,63361378800,-300,"CDT"}]},  % 2007-03-11T08:00:00Z .. 2007-11-04T07:00:00Z
-      {"America/Indiana/Tell_City",
+         {63340819200,63361378800,-300,"CDT"}],  % 2007-03-11T08:00:00Z .. 2007-11-04T07:00:00Z
+      "America/Indiana/Tell_City" =>
         [{62167219200,62177180400,-300,"EST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T07:00:00Z
          {62177180400,62192901600,-240,"EDT"},  % 1970-04-26T07:00:00Z .. 1970-10-25T06:00:00Z
          {62192901600,63311180400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 2006-04-02T07:00:00Z
-         {63329324400,63329929200,-360,"CST"}]},  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
-      {"America/Indiana/Vevay",
+         {63329324400,63329929200,-360,"CST"}],  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
+      "America/Indiana/Vevay" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62208630000,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-04-25T07:00:00Z
@@ -3250,8 +3847,8 @@
          {63246466800,63267026400,-300,"EST"},  % 2004-03-14T07:00:00Z .. 2004-11-07T06:00:00Z
          {63277916400,63298476000,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Indiana/Vincennes",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Indiana/Vincennes" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62225560800,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-11-07T06:00:00Z
@@ -3292,8 +3889,8 @@
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
          {63311180400,63329324400,-300,"CDT"},  % 2006-04-02T07:00:00Z .. 2006-10-29T07:00:00Z
          {63329324400,63340819200,-360,"CST"},  % 2006-10-29T07:00:00Z .. 2007-03-11T08:00:00Z
-         {63340819200,63361378800,-300,"CDT"}]},  % 2007-03-11T08:00:00Z .. 2007-11-04T07:00:00Z
-      {"America/Indiana/Winamac",
+         {63340819200,63361378800,-300,"CDT"}],  % 2007-03-11T08:00:00Z .. 2007-11-04T07:00:00Z
+      "America/Indiana/Winamac" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62225560800,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-11-07T06:00:00Z
@@ -3333,8 +3930,8 @@
          {63277916400,63298476000,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
          {63311180400,63329324400,-300,"CDT"},  % 2006-04-02T07:00:00Z .. 2006-10-29T07:00:00Z
-         {63329324400,63340819200,-360,"CST"}]},  % 2006-10-29T07:00:00Z .. 2007-03-11T08:00:00Z
-      {"America/Indianapolis",
+         {63329324400,63340819200,-360,"CST"}],  % 2006-10-29T07:00:00Z .. 2007-03-11T08:00:00Z
+      "America/Indianapolis" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62225560800,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-11-07T06:00:00Z
@@ -3373,8 +3970,8 @@
          {63246466800,63267026400,-300,"EST"},  % 2004-03-14T07:00:00Z .. 2004-11-07T06:00:00Z
          {63277916400,63298476000,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Inuvik",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Inuvik" =>
         [{62167219200,62240695200,-480,"PST"},  % 1970-01-01T00:00:00Z .. 1972-04-30T10:00:00Z
          {62240695200,62256416400,-420,"PDT"},  % 1972-04-30T10:00:00Z .. 1972-10-29T09:00:00Z
          {62256416400,62272144800,-480,"PST"},  % 1972-10-29T09:00:00Z .. 1973-04-29T10:00:00Z
@@ -3484,8 +4081,8 @@
          {63897840000,63908730000,-420,"MST"},  % 2024-11-03T08:00:00Z .. 2025-03-09T09:00:00Z
          {63908730000,63929289600,-360,"MDT"},  % 2025-03-09T09:00:00Z .. 2025-11-02T08:00:00Z
          {63929289600,63940179600,-420,"MST"},  % 2025-11-02T08:00:00Z .. 2026-03-08T09:00:00Z
-         {63940179600,63960739200,-360,"MDT"}]},  % 2026-03-08T09:00:00Z .. 2026-11-01T08:00:00Z
-      {"America/Iqaluit",
+         {63940179600,63960739200,-360,"MDT"}],  % 2026-03-08T09:00:00Z .. 2026-11-01T08:00:00Z
+      "America/Iqaluit" =>
         [{62172946800,62193506400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62225560800,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-11-07T06:00:00Z
          {62236450800,62240684400,-300,"EST"},  % 1972-03-12T07:00:00Z .. 1972-04-30T07:00:00Z
@@ -3557,8 +4154,8 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Jamaica",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Jamaica" =>
         [{62293906800,62319304800,-240,"EDT"},  % 1974-01-06T07:00:00Z .. 1974-10-27T06:00:00Z
          {62329590000,62350754400,-240,"EDT"},  % 1975-02-23T07:00:00Z .. 1975-10-26T06:00:00Z
          {62366482800,62382808800,-240,"EDT"},  % 1976-04-25T07:00:00Z .. 1976-10-31T06:00:00Z
@@ -3568,8 +4165,8 @@
          {62492886000,62508607200,-240,"EDT"},  % 1980-04-27T07:00:00Z .. 1980-10-26T06:00:00Z
          {62524335600,62540056800,-240,"EDT"},  % 1981-04-26T07:00:00Z .. 1981-10-25T06:00:00Z
          {62555785200,62572111200,-240,"EDT"},  % 1982-04-25T07:00:00Z .. 1982-10-31T06:00:00Z
-         {62587234800,62603560800,-240,"EDT"}]},  % 1983-04-24T07:00:00Z .. 1983-10-30T06:00:00Z
-      {"America/Jujuy",
+         {62587234800,62603560800,-240,"EDT"}],  % 1983-04-24T07:00:00Z .. 1983-10-30T06:00:00Z
+      "America/Jujuy" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -3577,8 +4174,8 @@
          {62836398000,62853940800,-240,"-04"},  % 1991-03-17T03:00:00Z .. 1991-10-06T04:00:00Z
          {62853940800,62866634400,-120,"-02"},  % 1991-10-06T04:00:00Z .. 1992-03-01T02:00:00Z
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
-         {63366202800,63372852000,-120,"-02"}]},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-      {"America/Juneau",
+         {63366202800,63372852000,-120,"-02"}],  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
+      "America/Juneau" =>
         [{62167219200,62177191200,-480,"PST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T10:00:00Z
          {62177191200,62192912400,-420,"PDT"},  % 1970-04-26T10:00:00Z .. 1970-10-25T09:00:00Z
          {62192912400,62208640800,-480,"PST"},  % 1970-10-25T09:00:00Z .. 1971-04-25T10:00:00Z
@@ -3653,8 +4250,8 @@
          {63277930800,63279745200,-540,"AKST"},  % 2005-03-13T11:00:00Z .. 2005-04-03T11:00:00Z
          {63297885600,63298490400,-540,"AKST"},  % 2005-10-30T10:00:00Z .. 2005-11-06T10:00:00Z
          {63309380400,63311194800,-540,"AKST"},  % 2006-03-12T11:00:00Z .. 2006-04-02T11:00:00Z
-         {63329335200,63329940000,-540,"AKST"}]},  % 2006-10-29T10:00:00Z .. 2006-11-05T10:00:00Z
-      {"America/Kentucky/Louisville",
+         {63329335200,63329940000,-540,"AKST"}],  % 2006-10-29T10:00:00Z .. 2006-11-05T10:00:00Z
+      "America/Kentucky/Louisville" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62208630000,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-04-25T07:00:00Z
@@ -3728,8 +4325,8 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Kentucky/Monticello",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Kentucky/Monticello" =>
         [{62167219200,62177184000,-360,"CST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T08:00:00Z
          {62177184000,62192905200,-300,"CDT"},  % 1970-04-26T08:00:00Z .. 1970-10-25T07:00:00Z
          {62192905200,62208633600,-360,"CST"},  % 1970-10-25T07:00:00Z .. 1971-04-25T08:00:00Z
@@ -3804,8 +4401,8 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Knox_IN",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Knox_IN" =>
         [{62172950400,62177184000,-360,"CST"},  % 1970-03-08T08:00:00Z .. 1970-04-26T08:00:00Z
          {62192905200,62193510000,-360,"CST"},  % 1970-10-25T07:00:00Z .. 1970-11-01T07:00:00Z
          {62205004800,62208633600,-360,"CST"},  % 1971-03-14T08:00:00Z .. 1971-04-25T08:00:00Z
@@ -3850,13 +4447,13 @@
          {62824316400,62824921200,-360,"CST"},  % 1990-10-28T07:00:00Z .. 1990-11-04T07:00:00Z
          {62835811200,62838230400,-360,"CST"},  % 1991-03-10T08:00:00Z .. 1991-04-07T08:00:00Z
          {62855766000,63311180400,-300,"EST"},  % 1991-10-27T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329324400,63329929200,-360,"CST"}]},  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
-      {"America/Lima",
+         {63329324400,63329929200,-360,"CST"}],  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
+      "America/Lima" =>
         [{62672158800,62679931200,-240,"-04"},  % 1986-01-01T05:00:00Z .. 1986-04-01T04:00:00Z
          {62703694800,62711467200,-240,"-04"},  % 1987-01-01T05:00:00Z .. 1987-04-01T04:00:00Z
          {62798389200,62806161600,-240,"-04"},  % 1990-01-01T05:00:00Z .. 1990-04-01T04:00:00Z
-         {62924619600,62932392000,-240,"-04"}]},  % 1994-01-01T05:00:00Z .. 1994-04-01T04:00:00Z
-      {"America/Los_Angeles",
+         {62924619600,62932392000,-240,"-04"}],  % 1994-01-01T05:00:00Z .. 1994-04-01T04:00:00Z
+      "America/Los_Angeles" =>
         [{62172957600,62177191200,-480,"PST"},  % 1970-03-08T10:00:00Z .. 1970-04-26T10:00:00Z
          {62192912400,62193517200,-480,"PST"},  % 1970-10-25T09:00:00Z .. 1970-11-01T09:00:00Z
          {62205012000,62208640800,-480,"PST"},  % 1971-03-14T10:00:00Z .. 1971-04-25T10:00:00Z
@@ -3930,8 +4527,8 @@
          {63277927200,63279741600,-480,"PST"},  % 2005-03-13T10:00:00Z .. 2005-04-03T10:00:00Z
          {63297882000,63298486800,-480,"PST"},  % 2005-10-30T09:00:00Z .. 2005-11-06T09:00:00Z
          {63309376800,63311191200,-480,"PST"},  % 2006-03-12T10:00:00Z .. 2006-04-02T10:00:00Z
-         {63329331600,63329936400,-480,"PST"}]},  % 2006-10-29T09:00:00Z .. 2006-11-05T09:00:00Z
-      {"America/Louisville",
+         {63329331600,63329936400,-480,"PST"}],  % 2006-10-29T09:00:00Z .. 2006-11-05T09:00:00Z
+      "America/Louisville" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62208630000,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-04-25T07:00:00Z
@@ -4005,8 +4602,8 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Maceio",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Maceio" =>
         [{62666967600,62678455200,-120,"-02"},  % 1985-11-02T03:00:00Z .. 1986-03-15T02:00:00Z
          {62697812400,62707485600,-120,"-02"},  % 1986-10-25T03:00:00Z .. 1987-02-14T02:00:00Z
          {62729348400,62738416800,-120,"-02"},  % 1987-10-25T03:00:00Z .. 1988-02-07T02:00:00Z
@@ -4015,23 +4612,23 @@
          {62980945200,62991223200,-120,"-02"},  % 1995-10-15T03:00:00Z .. 1996-02-11T02:00:00Z
          {63106138800,63118836000,-120,"-02"},  % 1999-10-03T03:00:00Z .. 2000-02-27T02:00:00Z
          {63138193200,63139399200,-120,"-02"},  % 2000-10-08T03:00:00Z .. 2000-10-22T02:00:00Z
-         {63170247600,63181130400,-120,"-02"}]},  % 2001-10-14T03:00:00Z .. 2002-02-17T02:00:00Z
-      {"America/Managua",
+         {63170247600,63181130400,-120,"-02"}],  % 2001-10-14T03:00:00Z .. 2002-02-17T02:00:00Z
+      "America/Managua" =>
         [{62272303200,62328978000,-300,"EST"},  % 1973-05-01T06:00:00Z .. 1975-02-16T05:00:00Z
          {62457804000,62466354000,-300,"CDT"},  % 1979-03-18T06:00:00Z .. 1979-06-25T05:00:00Z
          {62489253600,62497803600,-300,"CDT"},  % 1980-03-16T06:00:00Z .. 1980-06-23T05:00:00Z
          {62861479200,62884530000,-300,"EST"},  % 1992-01-01T10:00:00Z .. 1992-09-24T05:00:00Z
          {62893087200,63019314000,-300,"EST"},  % 1993-01-01T06:00:00Z .. 1997-01-01T05:00:00Z
          {63280332000,63295448400,-300,"CDT"},  % 2005-04-10T06:00:00Z .. 2005-10-02T05:00:00Z
-         {63313603200,63326901600,-300,"CDT"}]},  % 2006-04-30T08:00:00Z .. 2006-10-01T06:00:00Z
-      {"America/Manaus",
+         {63313603200,63326901600,-300,"CDT"}],  % 2006-04-30T08:00:00Z .. 2006-10-01T06:00:00Z
+      "America/Manaus" =>
         [{62666971200,62678458800,-180,"-03"},  % 1985-11-02T04:00:00Z .. 1986-03-15T03:00:00Z
          {62697816000,62707489200,-180,"-03"},  % 1986-10-25T04:00:00Z .. 1987-02-14T03:00:00Z
          {62729352000,62738420400,-180,"-03"},  % 1987-10-25T04:00:00Z .. 1988-02-07T03:00:00Z
-         {62918049600,62928932400,-180,"-03"}]},  % 1993-10-17T04:00:00Z .. 1994-02-20T03:00:00Z
-      {"America/Martinique",
-        [{62491060800,62506177200,-180,"ADT"}]},  % 1980-04-06T04:00:00Z .. 1980-09-28T03:00:00Z
-      {"America/Matamoros",
+         {62918049600,62928932400,-180,"-03"}],  % 1993-10-17T04:00:00Z .. 1994-02-20T03:00:00Z
+      "America/Martinique" =>
+        [{62491060800,62506177200,-180,"ADT"}],  % 1980-04-06T04:00:00Z .. 1980-09-28T03:00:00Z
+      "America/Matamoros" =>
         [{62172950400,62193510000,-360,"CST"},  % 1970-03-08T08:00:00Z .. 1970-11-01T07:00:00Z
          {62205004800,62225564400,-360,"CST"},  % 1971-03-14T08:00:00Z .. 1971-11-07T07:00:00Z
          {62236454400,62257014000,-360,"CST"},  % 1972-03-12T08:00:00Z .. 1972-11-05T07:00:00Z
@@ -4086,8 +4683,8 @@
          {63372268800,63374688000,-360,"CST"},  % 2008-03-09T08:00:00Z .. 2008-04-06T08:00:00Z
          {63392223600,63392828400,-360,"CST"},  % 2008-10-26T07:00:00Z .. 2008-11-02T07:00:00Z
          {63403718400,63406137600,-360,"CST"},  % 2009-03-08T08:00:00Z .. 2009-04-05T08:00:00Z
-         {63423673200,63424278000,-360,"CST"}]},  % 2009-10-25T07:00:00Z .. 2009-11-01T07:00:00Z
-      {"America/Mazatlan",
+         {63423673200,63424278000,-360,"CST"}],  % 2009-10-25T07:00:00Z .. 2009-11-01T07:00:00Z
+      "America/Mazatlan" =>
         [{62996086800,63013622400,-360,"MDT"},  % 1996-04-07T09:00:00Z .. 1996-10-27T08:00:00Z
          {63027536400,63045072000,-360,"MDT"},  % 1997-04-06T09:00:00Z .. 1997-10-26T08:00:00Z
          {63058986000,63076521600,-360,"MDT"},  % 1998-04-05T09:00:00Z .. 1998-10-25T08:00:00Z
@@ -4114,8 +4711,8 @@
          {63721846800,63739382400,-360,"MDT"},  % 2019-04-07T09:00:00Z .. 2019-10-27T08:00:00Z
          {63753296400,63770832000,-360,"MDT"},  % 2020-04-05T09:00:00Z .. 2020-10-25T08:00:00Z
          {63784746000,63802886400,-360,"MDT"},  % 2021-04-04T09:00:00Z .. 2021-10-31T08:00:00Z
-         {63816195600,63834336000,-360,"MDT"}]},  % 2022-04-03T09:00:00Z .. 2022-10-30T08:00:00Z
-      {"America/Mendoza",
+         {63816195600,63834336000,-360,"MDT"}],  % 2022-04-03T09:00:00Z .. 2022-10-30T08:00:00Z
+      "America/Mendoza" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -4124,8 +4721,8 @@
          {62866638000,62886600000,-240,"-04"},  % 1992-03-01T03:00:00Z .. 1992-10-18T04:00:00Z
          {62886600000,62898688800,-120,"-02"},  % 1992-10-18T04:00:00Z .. 1993-03-07T02:00:00Z
          {63252500400,63263390400,-240,"-04"},  % 2004-05-23T03:00:00Z .. 2004-09-26T04:00:00Z
-         {63366202800,63372852000,-120,"-02"}]},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-      {"America/Menominee",
+         {63366202800,63372852000,-120,"-02"}],  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
+      "America/Menominee" =>
         [{62167219200,62272134000,-300,"EST"},  % 1970-01-01T00:00:00Z .. 1973-04-29T07:00:00Z
          {62287858800,62288463600,-360,"CST"},  % 1973-10-28T07:00:00Z .. 1973-11-04T07:00:00Z
          {62293910400,62299353600,-300,"CDT"},  % 1974-01-06T08:00:00Z .. 1974-03-10T08:00:00Z
@@ -4193,8 +4790,8 @@
          {63277920000,63279734400,-360,"CST"},  % 2005-03-13T08:00:00Z .. 2005-04-03T08:00:00Z
          {63297874800,63298479600,-360,"CST"},  % 2005-10-30T07:00:00Z .. 2005-11-06T07:00:00Z
          {63309369600,63311184000,-360,"CST"},  % 2006-03-12T08:00:00Z .. 2006-04-02T08:00:00Z
-         {63329324400,63329929200,-360,"CST"}]},  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
-      {"America/Merida",
+         {63329324400,63329929200,-360,"CST"}],  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
+      "America/Merida" =>
         [{62545420800,62572287600,-300,"EST"},  % 1981-12-26T08:00:00Z .. 1982-11-02T07:00:00Z
          {62996083200,63013618800,-300,"CDT"},  % 1996-04-07T08:00:00Z .. 1996-10-27T07:00:00Z
          {63027532800,63045068400,-300,"CDT"},  % 1997-04-06T08:00:00Z .. 1997-10-26T07:00:00Z
@@ -4222,8 +4819,8 @@
          {63721843200,63739378800,-300,"CDT"},  % 2019-04-07T08:00:00Z .. 2019-10-27T07:00:00Z
          {63753292800,63770828400,-300,"CDT"},  % 2020-04-05T08:00:00Z .. 2020-10-25T07:00:00Z
          {63784742400,63802882800,-300,"CDT"},  % 2021-04-04T08:00:00Z .. 2021-10-31T07:00:00Z
-         {63816192000,63834332400,-300,"CDT"}]},  % 2022-04-03T08:00:00Z .. 2022-10-30T07:00:00Z
-      {"America/Metlakatla",
+         {63816192000,63834332400,-300,"CDT"}],  % 2022-04-03T08:00:00Z .. 2022-10-30T07:00:00Z
+      "America/Metlakatla" =>
         [{62167219200,62177191200,-480,"PST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T10:00:00Z
          {62177191200,62192912400,-420,"PDT"},  % 1970-04-26T10:00:00Z .. 1970-10-25T09:00:00Z
          {62192912400,62208640800,-480,"PST"},  % 1970-10-25T09:00:00Z .. 1971-04-25T10:00:00Z
@@ -4253,8 +4850,8 @@
          {62572122000,62587245600,-480,"PST"},  % 1982-10-31T09:00:00Z .. 1983-04-24T10:00:00Z
          {62587245600,62603571600,-420,"PDT"},  % 1983-04-24T10:00:00Z .. 1983-10-30T09:00:00Z
          {62603571600,63613591200,-480,"PST"},  % 1983-10-30T09:00:00Z .. 2015-11-01T10:00:00Z
-         {63708544800,63715197600,-480,"PST"}]},  % 2018-11-04T10:00:00Z .. 2019-01-20T10:00:00Z
-      {"America/Mexico_City",
+         {63708544800,63715197600,-480,"PST"}],  % 2018-11-04T10:00:00Z .. 2019-01-20T10:00:00Z
+      "America/Mexico_City" =>
         [{62996083200,63013618800,-300,"CDT"},  % 1996-04-07T08:00:00Z .. 1996-10-27T07:00:00Z
          {63027532800,63045068400,-300,"CDT"},  % 1997-04-06T08:00:00Z .. 1997-10-26T07:00:00Z
          {63058982400,63076518000,-300,"CDT"},  % 1998-04-05T08:00:00Z .. 1998-10-25T07:00:00Z
@@ -4281,8 +4878,8 @@
          {63721843200,63739378800,-300,"CDT"},  % 2019-04-07T08:00:00Z .. 2019-10-27T07:00:00Z
          {63753292800,63770828400,-300,"CDT"},  % 2020-04-05T08:00:00Z .. 2020-10-25T07:00:00Z
          {63784742400,63802882800,-300,"CDT"},  % 2021-04-04T08:00:00Z .. 2021-10-31T07:00:00Z
-         {63816192000,63834332400,-300,"CDT"}]},  % 2022-04-03T08:00:00Z .. 2022-10-30T07:00:00Z
-      {"America/Miquelon",
+         {63816192000,63834332400,-300,"CDT"}],  % 2022-04-03T08:00:00Z .. 2022-10-30T07:00:00Z
+      "America/Miquelon" =>
         [{62167219200,62493220800,-240,"AST"},  % 1970-01-01T00:00:00Z .. 1980-05-01T04:00:00Z
          {62493220800,62509204800,-180,"-03"},  % 1980-05-01T04:00:00Z .. 1980-11-02T04:00:00Z
          {62520094800,62540654400,-180,"-03"},  % 1981-03-08T05:00:00Z .. 1981-11-01T04:00:00Z
@@ -4330,8 +4927,8 @@
          {63277909200,63279723600,-180,"-03"},  % 2005-03-13T05:00:00Z .. 2005-04-03T05:00:00Z
          {63297864000,63298468800,-180,"-03"},  % 2005-10-30T04:00:00Z .. 2005-11-06T04:00:00Z
          {63309358800,63311173200,-180,"-03"},  % 2006-03-12T05:00:00Z .. 2006-04-02T05:00:00Z
-         {63329313600,63329918400,-180,"-03"}]},  % 2006-10-29T04:00:00Z .. 2006-11-05T04:00:00Z
-      {"America/Moncton",
+         {63329313600,63329918400,-180,"-03"}],  % 2006-10-29T04:00:00Z .. 2006-11-05T04:00:00Z
+      "America/Moncton" =>
         [{62172943200,62177176800,-240,"AST"},  % 1970-03-08T06:00:00Z .. 1970-04-26T06:00:00Z
          {62192898000,62193502800,-240,"AST"},  % 1970-10-25T05:00:00Z .. 1970-11-01T05:00:00Z
          {62204997600,62208626400,-240,"AST"},  % 1971-03-14T06:00:00Z .. 1971-04-25T06:00:00Z
@@ -4404,8 +5001,8 @@
          {63277912800,63279720060,-240,"AST"},  % 2005-03-13T06:00:00Z .. 2005-04-03T04:01:00Z
          {63297860460,63298472400,-240,"AST"},  % 2005-10-30T03:01:00Z .. 2005-11-06T05:00:00Z
          {63309362400,63311169660,-240,"AST"},  % 2006-03-12T06:00:00Z .. 2006-04-02T04:01:00Z
-         {63329310060,63329922000,-240,"AST"}]},  % 2006-10-29T03:01:00Z .. 2006-11-05T05:00:00Z
-      {"America/Monterrey",
+         {63329310060,63329922000,-240,"AST"}],  % 2006-10-29T03:01:00Z .. 2006-11-05T05:00:00Z
+      "America/Monterrey" =>
         [{62743276800,62761417200,-300,"CDT"},  % 1988-04-03T08:00:00Z .. 1988-10-30T07:00:00Z
          {62996083200,63013618800,-300,"CDT"},  % 1996-04-07T08:00:00Z .. 1996-10-27T07:00:00Z
          {63027532800,63045068400,-300,"CDT"},  % 1997-04-06T08:00:00Z .. 1997-10-26T07:00:00Z
@@ -4433,8 +5030,8 @@
          {63721843200,63739378800,-300,"CDT"},  % 2019-04-07T08:00:00Z .. 2019-10-27T07:00:00Z
          {63753292800,63770828400,-300,"CDT"},  % 2020-04-05T08:00:00Z .. 2020-10-25T07:00:00Z
          {63784742400,63802882800,-300,"CDT"},  % 2021-04-04T08:00:00Z .. 2021-10-31T07:00:00Z
-         {63816192000,63834332400,-300,"CDT"}]},  % 2022-04-03T08:00:00Z .. 2022-10-30T07:00:00Z
-      {"America/Montevideo",
+         {63816192000,63834332400,-300,"CDT"}],  % 2022-04-03T08:00:00Z .. 2022-10-30T07:00:00Z
+      "America/Montevideo" =>
         [{62177079600,62181396000,-120,"-02"},  % 1970-04-25T03:00:00Z .. 1970-06-14T02:00:00Z
          {62240065200,62247319200,-120,"-02"},  % 1972-04-23T03:00:00Z .. 1972-07-16T02:00:00Z
          {62294497200,62299330200,-90,"-0130"},  % 1974-01-13T03:00:00Z .. 1974-03-10T01:30:00Z
@@ -4460,8 +5057,8 @@
          {63484750800,63498657600,-120,"-02"},  % 2011-10-02T05:00:00Z .. 2012-03-11T04:00:00Z
          {63516805200,63530107200,-120,"-02"},  % 2012-10-07T05:00:00Z .. 2013-03-10T04:00:00Z
          {63548254800,63561556800,-120,"-02"},  % 2013-10-06T05:00:00Z .. 2014-03-09T04:00:00Z
-         {63579704400,63593006400,-120,"-02"}]},  % 2014-10-05T05:00:00Z .. 2015-03-08T04:00:00Z
-      {"America/Montreal",
+         {63579704400,63593006400,-120,"-02"}],  % 2014-10-05T05:00:00Z .. 2015-03-08T04:00:00Z
+      "America/Montreal" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62208630000,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-04-25T07:00:00Z
@@ -4535,8 +5132,8 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Nassau",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Nassau" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62208630000,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-04-25T07:00:00Z
@@ -4610,8 +5207,8 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/New_York",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/New_York" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62208630000,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-04-25T07:00:00Z
@@ -4685,8 +5282,8 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Nipigon",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Nipigon" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62208630000,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-04-25T07:00:00Z
@@ -4760,8 +5357,8 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Nome",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Nome" =>
         [{62167219200,62177202000,-660,"BST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T13:00:00Z
          {62177202000,62192923200,-600,"BDT"},  % 1970-04-26T13:00:00Z .. 1970-10-25T12:00:00Z
          {62192923200,62208651600,-660,"BST"},  % 1970-10-25T12:00:00Z .. 1971-04-25T13:00:00Z
@@ -4836,8 +5433,8 @@
          {63277930800,63279745200,-540,"AKST"},  % 2005-03-13T11:00:00Z .. 2005-04-03T11:00:00Z
          {63297885600,63298490400,-540,"AKST"},  % 2005-10-30T10:00:00Z .. 2005-11-06T10:00:00Z
          {63309380400,63311194800,-540,"AKST"},  % 2006-03-12T11:00:00Z .. 2006-04-02T11:00:00Z
-         {63329335200,63329940000,-540,"AKST"}]},  % 2006-10-29T10:00:00Z .. 2006-11-05T10:00:00Z
-      {"America/Noronha",
+         {63329335200,63329940000,-540,"AKST"}],  % 2006-10-29T10:00:00Z .. 2006-11-05T10:00:00Z
+      "America/Noronha" =>
         [{62666964000,62678451600,-60,"-01"},  % 1985-11-02T02:00:00Z .. 1986-03-15T01:00:00Z
          {62697808800,62707482000,-60,"-01"},  % 1986-10-25T02:00:00Z .. 1987-02-14T01:00:00Z
          {62729344800,62738413200,-60,"-01"},  % 1987-10-25T02:00:00Z .. 1988-02-07T01:00:00Z
@@ -4845,8 +5442,8 @@
          {62791639200,62801917200,-60,"-01"},  % 1989-10-15T02:00:00Z .. 1990-02-11T01:00:00Z
          {63106135200,63118832400,-60,"-01"},  % 1999-10-03T02:00:00Z .. 2000-02-27T01:00:00Z
          {63138189600,63138790800,-60,"-01"},  % 2000-10-08T02:00:00Z .. 2000-10-15T01:00:00Z
-         {63170244000,63181126800,-60,"-01"}]},  % 2001-10-14T02:00:00Z .. 2002-02-17T01:00:00Z
-      {"America/North_Dakota/Beulah",
+         {63170244000,63181126800,-60,"-01"}],  % 2001-10-14T02:00:00Z .. 2002-02-17T01:00:00Z
+      "America/North_Dakota/Beulah" =>
         [{62167219200,62177187600,-420,"MST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T09:00:00Z
          {62177187600,62192908800,-360,"MDT"},  % 1970-04-26T09:00:00Z .. 1970-10-25T08:00:00Z
          {62192908800,62208637200,-420,"MST"},  % 1970-10-25T08:00:00Z .. 1971-04-25T09:00:00Z
@@ -4928,8 +5525,8 @@
          {63392832000,63403722000,-420,"MST"},  % 2008-11-02T08:00:00Z .. 2009-03-08T09:00:00Z
          {63403722000,63424281600,-360,"MDT"},  % 2009-03-08T09:00:00Z .. 2009-11-01T08:00:00Z
          {63424281600,63435776400,-420,"MST"},  % 2009-11-01T08:00:00Z .. 2010-03-14T09:00:00Z
-         {63435776400,63456336000,-360,"MDT"}]},  % 2010-03-14T09:00:00Z .. 2010-11-07T08:00:00Z
-      {"America/North_Dakota/Center",
+         {63435776400,63456336000,-360,"MDT"}],  % 2010-03-14T09:00:00Z .. 2010-11-07T08:00:00Z
+      "America/North_Dakota/Center" =>
         [{62167219200,62177187600,-420,"MST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T09:00:00Z
          {62177187600,62192908800,-360,"MDT"},  % 1970-04-26T09:00:00Z .. 1970-10-25T08:00:00Z
          {62192908800,62208637200,-420,"MST"},  % 1970-10-25T08:00:00Z .. 1971-04-25T09:00:00Z
@@ -5004,8 +5601,8 @@
          {63277920000,63279734400,-360,"CST"},  % 2005-03-13T08:00:00Z .. 2005-04-03T08:00:00Z
          {63297874800,63298479600,-360,"CST"},  % 2005-10-30T07:00:00Z .. 2005-11-06T07:00:00Z
          {63309369600,63311184000,-360,"CST"},  % 2006-03-12T08:00:00Z .. 2006-04-02T08:00:00Z
-         {63329324400,63329929200,-360,"CST"}]},  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
-      {"America/North_Dakota/New_Salem",
+         {63329324400,63329929200,-360,"CST"}],  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
+      "America/North_Dakota/New_Salem" =>
         [{62167219200,62177187600,-420,"MST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T09:00:00Z
          {62177187600,62192908800,-360,"MDT"},  % 1970-04-26T09:00:00Z .. 1970-10-25T08:00:00Z
          {62192908800,62208637200,-420,"MST"},  % 1970-10-25T08:00:00Z .. 1971-04-25T09:00:00Z
@@ -5080,8 +5677,8 @@
          {63277920000,63279734400,-360,"CST"},  % 2005-03-13T08:00:00Z .. 2005-04-03T08:00:00Z
          {63297874800,63298479600,-360,"CST"},  % 2005-10-30T07:00:00Z .. 2005-11-06T07:00:00Z
          {63309369600,63311184000,-360,"CST"},  % 2006-03-12T08:00:00Z .. 2006-04-02T08:00:00Z
-         {63329324400,63329929200,-360,"CST"}]},  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
-      {"America/Nuuk",
+         {63329324400,63329929200,-360,"CST"}],  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
+      "America/Nuuk" =>
         [{62167219200,62491064400,-180,"-03"},  % 1970-01-01T00:00:00Z .. 1980-04-06T05:00:00Z
          {62491064400,62506170000,-120,"-02"},  % 1980-04-06T05:00:00Z .. 1980-09-28T01:00:00Z
          {62506170000,62521894800,-180,"-03"},  % 1980-09-28T01:00:00Z .. 1981-03-29T01:00:00Z
@@ -5169,8 +5766,8 @@
          {63802861200,63815562000,-180,"-03"},  % 2021-10-31T01:00:00Z .. 2022-03-27T01:00:00Z
          {63815562000,63834310800,-120,"-02"},  % 2022-03-27T01:00:00Z .. 2022-10-30T01:00:00Z
          {63834310800,63847011600,-180,"-03"},  % 2022-10-30T01:00:00Z .. 2023-03-26T01:00:00Z
-         {63847011600,63865760400,-120,"-02"}]},  % 2023-03-26T01:00:00Z .. 2023-10-29T01:00:00Z
-      {"America/Ojinaga",
+         {63847011600,63865760400,-120,"-02"}],  % 2023-03-26T01:00:00Z .. 2023-10-29T01:00:00Z
+      "America/Ojinaga" =>
         [{62172950400,62193510000,-360,"CST"},  % 1970-03-08T08:00:00Z .. 1970-11-01T07:00:00Z
          {62205004800,62225564400,-360,"CST"},  % 1971-03-14T08:00:00Z .. 1971-11-07T07:00:00Z
          {62236454400,62257014000,-360,"CST"},  % 1972-03-12T08:00:00Z .. 1972-11-05T07:00:00Z
@@ -5251,8 +5848,8 @@
          {63782931600,63803491200,-360,"MDT"},  % 2021-03-14T09:00:00Z .. 2021-11-07T08:00:00Z
          {63803491200,63814381200,-420,"MST"},  % 2021-11-07T08:00:00Z .. 2022-03-13T09:00:00Z
          {63814381200,63834336000,-360,"MDT"},  % 2022-03-13T09:00:00Z .. 2022-10-30T08:00:00Z
-         {63834336000,63834937200,-360,"CST"}]},  % 2022-10-30T08:00:00Z .. 2022-11-06T07:00:00Z
-      {"America/Pangnirtung",
+         {63834336000,63834937200,-360,"CST"}],  % 2022-10-30T08:00:00Z .. 2022-11-06T07:00:00Z
+      "America/Pangnirtung" =>
         [{62172946800,62193506400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62225560800,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-11-07T06:00:00Z
          {62236450800,62240684400,-300,"EST"},  % 1972-03-12T07:00:00Z .. 1972-04-30T07:00:00Z
@@ -5324,10 +5921,10 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Paramaribo",
-        [{62167219200,62632668600,-210,"-0330"}]},  % 1970-01-01T00:00:00Z .. 1984-10-01T03:30:00Z
-      {"America/Port-au-Prince",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Paramaribo" =>
+        [{62167219200,62632668600,-210,"-0330"}],  % 1970-01-01T00:00:00Z .. 1984-10-01T03:30:00Z
+      "America/Port-au-Prince" =>
         [{62172946800,62193506400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62225560800,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-11-07T06:00:00Z
          {62236450800,62257010400,-300,"EST"},  % 1972-03-12T07:00:00Z .. 1972-11-05T06:00:00Z
@@ -5387,17 +5984,17 @@
          {63403714800,63424274400,-300,"EST"},  % 2009-03-08T07:00:00Z .. 2009-11-01T06:00:00Z
          {63435769200,63456328800,-300,"EST"},  % 2010-03-14T07:00:00Z .. 2010-11-07T06:00:00Z
          {63467218800,63487778400,-300,"EST"},  % 2011-03-13T07:00:00Z .. 2011-11-06T06:00:00Z
-         {63625071600,63645631200,-300,"EST"}]},  % 2016-03-13T07:00:00Z .. 2016-11-06T06:00:00Z
-      {"America/Porto_Acre",
+         {63625071600,63645631200,-300,"EST"}],  % 2016-03-13T07:00:00Z .. 2016-11-06T06:00:00Z
+      "America/Porto_Acre" =>
         [{62666974800,62678462400,-240,"-04"},  % 1985-11-02T05:00:00Z .. 1986-03-15T04:00:00Z
          {62697819600,62707492800,-240,"-04"},  % 1986-10-25T05:00:00Z .. 1987-02-14T04:00:00Z
          {62729355600,62738424000,-240,"-04"},  % 1987-10-25T05:00:00Z .. 1988-02-07T04:00:00Z
-         {63381502800,63551275200,-240,"-04"}]},  % 2008-06-24T05:00:00Z .. 2013-11-10T04:00:00Z
-      {"America/Porto_Velho",
+         {63381502800,63551275200,-240,"-04"}],  % 2008-06-24T05:00:00Z .. 2013-11-10T04:00:00Z
+      "America/Porto_Velho" =>
         [{62666971200,62678458800,-180,"-03"},  % 1985-11-02T04:00:00Z .. 1986-03-15T03:00:00Z
          {62697816000,62707489200,-180,"-03"},  % 1986-10-25T04:00:00Z .. 1987-02-14T03:00:00Z
-         {62729352000,62738420400,-180,"-03"}]},  % 1987-10-25T04:00:00Z .. 1988-02-07T03:00:00Z
-      {"America/Punta_Arenas",
+         {62729352000,62738420400,-180,"-03"}],  % 1987-10-25T04:00:00Z .. 1988-02-07T03:00:00Z
+      "America/Punta_Arenas" =>
         [{62174746800,62191684800,-240,"-04"},  % 1970-03-29T03:00:00Z .. 1970-10-11T04:00:00Z
          {62204986800,62223134400,-240,"-04"},  % 1971-03-14T03:00:00Z .. 1971-10-10T04:00:00Z
          {62236436400,62255188800,-240,"-04"},  % 1972-03-12T03:00:00Z .. 1972-10-15T04:00:00Z
@@ -5443,8 +6040,8 @@
          {63502887600,63513777600,-240,"-04"},  % 2012-04-29T03:00:00Z .. 2012-09-02T04:00:00Z
          {63534337200,63545832000,-240,"-04"},  % 2013-04-28T03:00:00Z .. 2013-09-08T04:00:00Z
          {63565786800,63577281600,-240,"-04"},  % 2014-04-27T03:00:00Z .. 2014-09-07T04:00:00Z
-         {63630500400,63638366400,-240,"-04"}]},  % 2016-05-15T03:00:00Z .. 2016-08-14T04:00:00Z
-      {"America/Rainy_River",
+         {63630500400,63638366400,-240,"-04"}],  % 2016-05-15T03:00:00Z .. 2016-08-14T04:00:00Z
+      "America/Rainy_River" =>
         [{62167219200,62177184000,-360,"CST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T08:00:00Z
          {62177184000,62192908800,-300,"CDT"},  % 1970-04-26T08:00:00Z .. 1970-10-25T08:00:00Z
          {62192908800,62208633600,-360,"CST"},  % 1970-10-25T08:00:00Z .. 1971-04-25T08:00:00Z
@@ -5558,8 +6155,8 @@
          {63897836400,63908726400,-360,"CST"},  % 2024-11-03T07:00:00Z .. 2025-03-09T08:00:00Z
          {63908726400,63929286000,-300,"CDT"},  % 2025-03-09T08:00:00Z .. 2025-11-02T07:00:00Z
          {63929286000,63940176000,-360,"CST"},  % 2025-11-02T07:00:00Z .. 2026-03-08T08:00:00Z
-         {63940176000,63960735600,-300,"CDT"}]},  % 2026-03-08T08:00:00Z .. 2026-11-01T07:00:00Z
-      {"America/Rankin_Inlet",
+         {63940176000,63960735600,-300,"CDT"}],  % 2026-03-08T08:00:00Z .. 2026-11-01T07:00:00Z
+      "America/Rankin_Inlet" =>
         [{62172950400,62193510000,-360,"CST"},  % 1970-03-08T08:00:00Z .. 1970-11-01T07:00:00Z
          {62205004800,62225564400,-360,"CST"},  % 1971-03-14T08:00:00Z .. 1971-11-07T07:00:00Z
          {62236454400,62240688000,-360,"CST"},  % 1972-03-12T08:00:00Z .. 1972-04-30T08:00:00Z
@@ -5630,8 +6227,8 @@
          {63277920000,63279734400,-360,"CST"},  % 2005-03-13T08:00:00Z .. 2005-04-03T08:00:00Z
          {63297874800,63298479600,-360,"CST"},  % 2005-10-30T07:00:00Z .. 2005-11-06T07:00:00Z
          {63309369600,63311184000,-360,"CST"},  % 2006-03-12T08:00:00Z .. 2006-04-02T08:00:00Z
-         {63329324400,63329929200,-360,"CST"}]},  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
-      {"America/Recife",
+         {63329324400,63329929200,-360,"CST"}],  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
+      "America/Recife" =>
         [{62666967600,62678455200,-120,"-02"},  % 1985-11-02T03:00:00Z .. 1986-03-15T02:00:00Z
          {62697812400,62707485600,-120,"-02"},  % 1986-10-25T03:00:00Z .. 1987-02-14T02:00:00Z
          {62729348400,62738416800,-120,"-02"},  % 1987-10-25T03:00:00Z .. 1988-02-07T02:00:00Z
@@ -5639,8 +6236,8 @@
          {62791642800,62801920800,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-02-11T02:00:00Z
          {63106138800,63118836000,-120,"-02"},  % 1999-10-03T03:00:00Z .. 2000-02-27T02:00:00Z
          {63138193200,63138794400,-120,"-02"},  % 2000-10-08T03:00:00Z .. 2000-10-15T02:00:00Z
-         {63170247600,63181130400,-120,"-02"}]},  % 2001-10-14T03:00:00Z .. 2002-02-17T02:00:00Z
-      {"America/Resolute",
+         {63170247600,63181130400,-120,"-02"}],  % 2001-10-14T03:00:00Z .. 2002-02-17T02:00:00Z
+      "America/Resolute" =>
         [{62172950400,62193510000,-360,"CST"},  % 1970-03-08T08:00:00Z .. 1970-11-01T07:00:00Z
          {62205004800,62225564400,-360,"CST"},  % 1971-03-14T08:00:00Z .. 1971-11-07T07:00:00Z
          {62236454400,62240688000,-360,"CST"},  % 1972-03-12T08:00:00Z .. 1972-04-30T08:00:00Z
@@ -5711,13 +6308,13 @@
          {63277920000,63279734400,-360,"CST"},  % 2005-03-13T08:00:00Z .. 2005-04-03T08:00:00Z
          {63297874800,63298479600,-360,"CST"},  % 2005-10-30T07:00:00Z .. 2005-11-06T07:00:00Z
          {63309369600,63311184000,-360,"CST"},  % 2006-03-12T08:00:00Z .. 2006-04-02T08:00:00Z
-         {63329324400,63340819200,-300,"EST"}]},  % 2006-10-29T07:00:00Z .. 2007-03-11T08:00:00Z
-      {"America/Rio_Branco",
+         {63329324400,63340819200,-300,"EST"}],  % 2006-10-29T07:00:00Z .. 2007-03-11T08:00:00Z
+      "America/Rio_Branco" =>
         [{62666974800,62678462400,-240,"-04"},  % 1985-11-02T05:00:00Z .. 1986-03-15T04:00:00Z
          {62697819600,62707492800,-240,"-04"},  % 1986-10-25T05:00:00Z .. 1987-02-14T04:00:00Z
          {62729355600,62738424000,-240,"-04"},  % 1987-10-25T05:00:00Z .. 1988-02-07T04:00:00Z
-         {63381502800,63551275200,-240,"-04"}]},  % 2008-06-24T05:00:00Z .. 2013-11-10T04:00:00Z
-      {"America/Rosario",
+         {63381502800,63551275200,-240,"-04"}],  % 2008-06-24T05:00:00Z .. 2013-11-10T04:00:00Z
+      "America/Rosario" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62764167600,62772285600,-120,"-02"},  % 1988-12-01T03:00:00Z .. 1989-03-05T02:00:00Z
          {62791642800,62803735200,-120,"-02"},  % 1989-10-15T03:00:00Z .. 1990-03-04T02:00:00Z
@@ -5726,8 +6323,8 @@
          {62855150400,62866634400,-120,"-02"},  % 1991-10-20T04:00:00Z .. 1992-03-01T02:00:00Z
          {62886596400,62898688800,-120,"-02"},  % 1992-10-18T03:00:00Z .. 1993-03-07T02:00:00Z
          {63366202800,63372852000,-120,"-02"},  % 2007-12-30T03:00:00Z .. 2008-03-16T02:00:00Z
-         {63391604400,63404301600,-120,"-02"}]},  % 2008-10-19T03:00:00Z .. 2009-03-15T02:00:00Z
-      {"America/Santa_Isabel",
+         {63391604400,63404301600,-120,"-02"}],  % 2008-10-19T03:00:00Z .. 2009-03-15T02:00:00Z
+      "America/Santa_Isabel" =>
         [{62172957600,62177191200,-480,"PST"},  % 1970-03-08T10:00:00Z .. 1970-04-26T10:00:00Z
          {62192912400,62193517200,-480,"PST"},  % 1970-10-25T09:00:00Z .. 1970-11-01T09:00:00Z
          {62205012000,62208640800,-480,"PST"},  % 1971-03-14T10:00:00Z .. 1971-04-25T10:00:00Z
@@ -5807,13 +6404,13 @@
          {63372276000,63374695200,-480,"PST"},  % 2008-03-09T10:00:00Z .. 2008-04-06T10:00:00Z
          {63392230800,63392835600,-480,"PST"},  % 2008-10-26T09:00:00Z .. 2008-11-02T09:00:00Z
          {63403725600,63406144800,-480,"PST"},  % 2009-03-08T10:00:00Z .. 2009-04-05T10:00:00Z
-         {63423680400,63424285200,-480,"PST"}]},  % 2009-10-25T09:00:00Z .. 2009-11-01T09:00:00Z
-      {"America/Santarem",
+         {63423680400,63424285200,-480,"PST"}],  % 2009-10-25T09:00:00Z .. 2009-11-01T09:00:00Z
+      "America/Santarem" =>
         [{62167219200,62666971200,-240,"-04"},  % 1970-01-01T00:00:00Z .. 1985-11-02T04:00:00Z
          {62678458800,62697816000,-240,"-04"},  % 1986-03-15T03:00:00Z .. 1986-10-25T04:00:00Z
          {62707489200,62729352000,-240,"-04"},  % 1987-02-14T03:00:00Z .. 1987-10-25T04:00:00Z
-         {62738420400,63381499200,-240,"-04"}]},  % 1988-02-07T03:00:00Z .. 2008-06-24T04:00:00Z
-      {"America/Santiago",
+         {62738420400,63381499200,-240,"-04"}],  % 1988-02-07T03:00:00Z .. 2008-06-24T04:00:00Z
+      "America/Santiago" =>
         [{62174746800,62175351600,-240,"-04"},  % 1970-03-29T03:00:00Z .. 1970-04-05T03:00:00Z
          {62188660800,62191684800,-240,"-04"},  % 1970-09-06T04:00:00Z .. 1970-10-11T04:00:00Z
          {62204986800,62206801200,-240,"-04"},  % 1971-03-14T03:00:00Z .. 1971-04-04T03:00:00Z
@@ -5906,8 +6503,8 @@
          {63669816000,63671630400,-180,"-03"},  % 2017-08-13T04:00:00Z .. 2017-09-03T04:00:00Z
          {63690375600,63693399600,-180,"-03"},  % 2018-04-08T03:00:00Z .. 2018-05-13T03:00:00Z
          {63701265600,63703080000,-180,"-03"},  % 2018-08-12T04:00:00Z .. 2018-09-02T04:00:00Z
-         {63829483200,63830088000,-240,"-04"}]},  % 2022-09-04T04:00:00Z .. 2022-09-11T04:00:00Z
-      {"America/Santo_Domingo",
+         {63829483200,63830088000,-240,"-04"}],  % 2022-09-04T04:00:00Z .. 2022-09-11T04:00:00Z
+      "America/Santo_Domingo" =>
         [{62167219200,62171641800,-270,"-0430"},  % 1970-01-01T00:00:00Z .. 1970-02-21T04:30:00Z
          {62171641800,62192898000,-300,"EST"},  % 1970-02-21T04:30:00Z .. 1970-10-25T05:00:00Z
          {62192898000,62200413000,-270,"-0430"},  % 1970-10-25T05:00:00Z .. 1971-01-20T04:30:00Z
@@ -5918,8 +6515,8 @@
          {62263657800,62287851600,-300,"EST"},  % 1973-01-21T04:30:00Z .. 1973-10-28T05:00:00Z
          {62287851600,62295193800,-270,"-0430"},  % 1973-10-28T05:00:00Z .. 1974-01-21T04:30:00Z
          {62295193800,62319301200,-300,"EST"},  % 1974-01-21T04:30:00Z .. 1974-10-27T05:00:00Z
-         {63140018400,63143042400,-300,"EST"}]},  % 2000-10-29T06:00:00Z .. 2000-12-03T06:00:00Z
-      {"America/Sao_Paulo",
+         {63140018400,63143042400,-300,"EST"}],  % 2000-10-29T06:00:00Z .. 2000-12-03T06:00:00Z
+      "America/Sao_Paulo" =>
         [{62666967600,62678455200,-120,"-02"},  % 1985-11-02T03:00:00Z .. 1986-03-15T02:00:00Z
          {62697812400,62707485600,-120,"-02"},  % 1986-10-25T03:00:00Z .. 1987-02-14T02:00:00Z
          {62729348400,62738416800,-120,"-02"},  % 1987-10-25T03:00:00Z .. 1988-02-07T02:00:00Z
@@ -5953,8 +6550,8 @@
          {63612356400,63623239200,-120,"-02"},  % 2015-10-18T03:00:00Z .. 2016-02-21T02:00:00Z
          {63643806000,63654688800,-120,"-02"},  % 2016-10-16T03:00:00Z .. 2017-02-19T02:00:00Z
          {63675255600,63686138400,-120,"-02"},  % 2017-10-15T03:00:00Z .. 2018-02-18T02:00:00Z
-         {63708519600,63717588000,-120,"-02"}]},  % 2018-11-04T03:00:00Z .. 2019-02-17T02:00:00Z
-      {"America/Scoresbysund",
+         {63708519600,63717588000,-120,"-02"}],  % 2018-11-04T03:00:00Z .. 2019-02-17T02:00:00Z
+      "America/Scoresbysund" =>
         [{62174739600,62192883600,-120,"-02"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,-120,"-02"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,-120,"-02"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -6053,8 +6650,8 @@
          {63815562000,63834310800,0,"+00"},  % 2022-03-27T01:00:00Z .. 2022-10-30T01:00:00Z
          {63834310800,63847011600,-60,"-01"},  % 2022-10-30T01:00:00Z .. 2023-03-26T01:00:00Z
          {63847011600,63865760400,0,"+00"},  % 2023-03-26T01:00:00Z .. 2023-10-29T01:00:00Z
-         {63865760400,63879066000,-60,"-01"}]},  % 2023-10-29T01:00:00Z .. 2024-03-31T01:00:00Z
-      {"America/Shiprock",
+         {63865760400,63879066000,-60,"-01"}],  % 2023-10-29T01:00:00Z .. 2024-03-31T01:00:00Z
+      "America/Shiprock" =>
         [{62172954000,62177187600,-420,"MST"},  % 1970-03-08T09:00:00Z .. 1970-04-26T09:00:00Z
          {62192908800,62193513600,-420,"MST"},  % 1970-10-25T08:00:00Z .. 1970-11-01T08:00:00Z
          {62205008400,62208637200,-420,"MST"},  % 1971-03-14T09:00:00Z .. 1971-04-25T09:00:00Z
@@ -6128,8 +6725,8 @@
          {63277923600,63279738000,-420,"MST"},  % 2005-03-13T09:00:00Z .. 2005-04-03T09:00:00Z
          {63297878400,63298483200,-420,"MST"},  % 2005-10-30T08:00:00Z .. 2005-11-06T08:00:00Z
          {63309373200,63311187600,-420,"MST"},  % 2006-03-12T09:00:00Z .. 2006-04-02T09:00:00Z
-         {63329328000,63329932800,-420,"MST"}]},  % 2006-10-29T08:00:00Z .. 2006-11-05T08:00:00Z
-      {"America/Sitka",
+         {63329328000,63329932800,-420,"MST"}],  % 2006-10-29T08:00:00Z .. 2006-11-05T08:00:00Z
+      "America/Sitka" =>
         [{62167219200,62177191200,-480,"PST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T10:00:00Z
          {62177191200,62192912400,-420,"PDT"},  % 1970-04-26T10:00:00Z .. 1970-10-25T09:00:00Z
          {62192912400,62208640800,-480,"PST"},  % 1970-10-25T09:00:00Z .. 1971-04-25T10:00:00Z
@@ -6204,8 +6801,8 @@
          {63277930800,63279745200,-540,"AKST"},  % 2005-03-13T11:00:00Z .. 2005-04-03T11:00:00Z
          {63297885600,63298490400,-540,"AKST"},  % 2005-10-30T10:00:00Z .. 2005-11-06T10:00:00Z
          {63309380400,63311194800,-540,"AKST"},  % 2006-03-12T11:00:00Z .. 2006-04-02T11:00:00Z
-         {63329335200,63329940000,-540,"AKST"}]},  % 2006-10-29T10:00:00Z .. 2006-11-05T10:00:00Z
-      {"America/St_Johns",
+         {63329335200,63329940000,-540,"AKST"}],  % 2006-10-29T10:00:00Z .. 2006-11-05T10:00:00Z
+      "America/St_Johns" =>
         [{62172941400,62177175000,-210,"NST"},  % 1970-03-08T05:30:00Z .. 1970-04-26T05:30:00Z
          {62192896200,62193501000,-210,"NST"},  % 1970-10-25T04:30:00Z .. 1970-11-01T04:30:00Z
          {62204995800,62208624600,-210,"NST"},  % 1971-03-14T05:30:00Z .. 1971-04-25T05:30:00Z
@@ -6289,14 +6886,14 @@
          {63424261860,63424269000,-210,"NST"},  % 2009-11-01T02:31:00Z .. 2009-11-01T04:30:00Z
          {63435756660,63435763800,-150,"NDT"},  % 2010-03-14T03:31:00Z .. 2010-03-14T05:30:00Z
          {63456316260,63456323400,-210,"NST"},  % 2010-11-07T02:31:00Z .. 2010-11-07T04:30:00Z
-         {63467206260,63467213400,-150,"NDT"}]},  % 2011-03-13T03:31:00Z .. 2011-03-13T05:30:00Z
-      {"America/Swift_Current",
-        [{62167219200,62240691600,-420,"MST"}]},  % 1970-01-01T00:00:00Z .. 1972-04-30T09:00:00Z
-      {"America/Tegucigalpa",
+         {63467206260,63467213400,-150,"NDT"}],  % 2011-03-13T03:31:00Z .. 2011-03-13T05:30:00Z
+      "America/Swift_Current" =>
+        [{62167219200,62240691600,-420,"MST"}],  % 1970-01-01T00:00:00Z .. 1972-04-30T09:00:00Z
+      "America/Tegucigalpa" =>
         [{62714239200,62726936400,-300,"CDT"},  % 1987-05-03T06:00:00Z .. 1987-09-27T05:00:00Z
          {62745688800,62758386000,-300,"CDT"},  % 1988-05-01T06:00:00Z .. 1988-09-25T05:00:00Z
-         {63314200800,63322146000,-300,"CDT"}]},  % 2006-05-07T06:00:00Z .. 2006-08-07T05:00:00Z
-      {"America/Thule",
+         {63314200800,63322146000,-300,"CDT"}],  % 2006-05-07T06:00:00Z .. 2006-08-07T05:00:00Z
+      "America/Thule" =>
         [{62172943200,62193502800,-240,"AST"},  % 1970-03-08T06:00:00Z .. 1970-11-01T05:00:00Z
          {62204997600,62225557200,-240,"AST"},  % 1971-03-14T06:00:00Z .. 1971-11-07T05:00:00Z
          {62236447200,62257006800,-240,"AST"},  % 1972-03-12T06:00:00Z .. 1972-11-05T05:00:00Z
@@ -6349,8 +6946,8 @@
          {63277912800,63279727200,-240,"AST"},  % 2005-03-13T06:00:00Z .. 2005-04-03T06:00:00Z
          {63297867600,63298472400,-240,"AST"},  % 2005-10-30T05:00:00Z .. 2005-11-06T05:00:00Z
          {63309362400,63311176800,-240,"AST"},  % 2006-03-12T06:00:00Z .. 2006-04-02T06:00:00Z
-         {63329317200,63329922000,-240,"AST"}]},  % 2006-10-29T05:00:00Z .. 2006-11-05T05:00:00Z
-      {"America/Thunder_Bay",
+         {63329317200,63329922000,-240,"AST"}],  % 2006-10-29T05:00:00Z .. 2006-11-05T05:00:00Z
+      "America/Thunder_Bay" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62208630000,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-04-25T07:00:00Z
@@ -6424,8 +7021,8 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Tijuana",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Tijuana" =>
         [{62172957600,62177191200,-480,"PST"},  % 1970-03-08T10:00:00Z .. 1970-04-26T10:00:00Z
          {62192912400,62193517200,-480,"PST"},  % 1970-10-25T09:00:00Z .. 1970-11-01T09:00:00Z
          {62205012000,62208640800,-480,"PST"},  % 1971-03-14T10:00:00Z .. 1971-04-25T10:00:00Z
@@ -6505,8 +7102,8 @@
          {63372276000,63374695200,-480,"PST"},  % 2008-03-09T10:00:00Z .. 2008-04-06T10:00:00Z
          {63392230800,63392835600,-480,"PST"},  % 2008-10-26T09:00:00Z .. 2008-11-02T09:00:00Z
          {63403725600,63406144800,-480,"PST"},  % 2009-03-08T10:00:00Z .. 2009-04-05T10:00:00Z
-         {63423680400,63424285200,-480,"PST"}]},  % 2009-10-25T09:00:00Z .. 2009-11-01T09:00:00Z
-      {"America/Toronto",
+         {63423680400,63424285200,-480,"PST"}],  % 2009-10-25T09:00:00Z .. 2009-11-01T09:00:00Z
+      "America/Toronto" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62208630000,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-04-25T07:00:00Z
@@ -6580,8 +7177,8 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"America/Vancouver",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "America/Vancouver" =>
         [{62167219200,62177191200,-480,"PST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T10:00:00Z
          {62177191200,62192912400,-420,"PDT"},  % 1970-04-26T10:00:00Z .. 1970-10-25T09:00:00Z
          {62192912400,62208640800,-480,"PST"},  % 1970-10-25T09:00:00Z .. 1971-04-25T10:00:00Z
@@ -6695,8 +7292,8 @@
          {63897843600,63908733600,-480,"PST"},  % 2024-11-03T09:00:00Z .. 2025-03-09T10:00:00Z
          {63908733600,63929293200,-420,"PDT"},  % 2025-03-09T10:00:00Z .. 2025-11-02T09:00:00Z
          {63929293200,63940183200,-480,"PST"},  % 2025-11-02T09:00:00Z .. 2026-03-08T10:00:00Z
-         {63940183200,63960742800,-420,"PDT"}]},  % 2026-03-08T10:00:00Z .. 2026-11-01T09:00:00Z
-      {"America/Whitehorse",
+         {63940183200,63960742800,-420,"PDT"}],  % 2026-03-08T10:00:00Z .. 2026-11-01T09:00:00Z
+      "America/Whitehorse" =>
         [{62167219200,62492896800,-480,"PST"},  % 1970-01-01T00:00:00Z .. 1980-04-27T10:00:00Z
          {62492896800,62508618000,-420,"PDT"},  % 1980-04-27T10:00:00Z .. 1980-10-26T09:00:00Z
          {62508618000,62524346400,-480,"PST"},  % 1980-10-26T09:00:00Z .. 1981-04-26T10:00:00Z
@@ -6778,8 +7375,8 @@
          {63708541200,63719431200,-480,"PST"},  % 2018-11-04T09:00:00Z .. 2019-03-10T10:00:00Z
          {63719431200,63739990800,-420,"PDT"},  % 2019-03-10T10:00:00Z .. 2019-11-03T09:00:00Z
          {63739990800,63750880800,-480,"PST"},  % 2019-11-03T09:00:00Z .. 2020-03-08T10:00:00Z
-         {63750880800,63771433200,-420,"PDT"}]},  % 2020-03-08T10:00:00Z .. 2020-11-01T07:00:00Z
-      {"America/Winnipeg",
+         {63750880800,63771433200,-420,"PDT"}],  % 2020-03-08T10:00:00Z .. 2020-11-01T07:00:00Z
+      "America/Winnipeg" =>
         [{62167219200,62177184000,-360,"CST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T08:00:00Z
          {62177184000,62192908800,-300,"CDT"},  % 1970-04-26T08:00:00Z .. 1970-10-25T08:00:00Z
          {62192908800,62208633600,-360,"CST"},  % 1970-10-25T08:00:00Z .. 1971-04-25T08:00:00Z
@@ -6893,8 +7490,8 @@
          {63897836400,63908726400,-360,"CST"},  % 2024-11-03T07:00:00Z .. 2025-03-09T08:00:00Z
          {63908726400,63929286000,-300,"CDT"},  % 2025-03-09T08:00:00Z .. 2025-11-02T07:00:00Z
          {63929286000,63940176000,-360,"CST"},  % 2025-11-02T07:00:00Z .. 2026-03-08T08:00:00Z
-         {63940176000,63960735600,-300,"CDT"}]},  % 2026-03-08T08:00:00Z .. 2026-11-01T07:00:00Z
-      {"America/Yakutat",
+         {63940176000,63960735600,-300,"CDT"}],  % 2026-03-08T08:00:00Z .. 2026-11-01T07:00:00Z
+      "America/Yakutat" =>
         [{62167219200,62177194800,-540,"YST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T11:00:00Z
          {62177194800,62192916000,-480,"YDT"},  % 1970-04-26T11:00:00Z .. 1970-10-25T10:00:00Z
          {62192916000,62208644400,-540,"YST"},  % 1970-10-25T10:00:00Z .. 1971-04-25T11:00:00Z
@@ -6969,8 +7566,8 @@
          {63277930800,63279745200,-540,"AKST"},  % 2005-03-13T11:00:00Z .. 2005-04-03T11:00:00Z
          {63297885600,63298490400,-540,"AKST"},  % 2005-10-30T10:00:00Z .. 2005-11-06T10:00:00Z
          {63309380400,63311194800,-540,"AKST"},  % 2006-03-12T11:00:00Z .. 2006-04-02T11:00:00Z
-         {63329335200,63329940000,-540,"AKST"}]},  % 2006-10-29T10:00:00Z .. 2006-11-05T10:00:00Z
-      {"America/Yellowknife",
+         {63329335200,63329940000,-540,"AKST"}],  % 2006-10-29T10:00:00Z .. 2006-11-05T10:00:00Z
+      "America/Yellowknife" =>
         [{62167219200,62240691600,-420,"MST"},  % 1970-01-01T00:00:00Z .. 1972-04-30T09:00:00Z
          {62240691600,62256412800,-360,"MDT"},  % 1972-04-30T09:00:00Z .. 1972-10-29T08:00:00Z
          {62256412800,62272141200,-420,"MST"},  % 1972-10-29T08:00:00Z .. 1973-04-29T09:00:00Z
@@ -7080,8 +7677,8 @@
          {63897840000,63908730000,-420,"MST"},  % 2024-11-03T08:00:00Z .. 2025-03-09T09:00:00Z
          {63908730000,63929289600,-360,"MDT"},  % 2025-03-09T09:00:00Z .. 2025-11-02T08:00:00Z
          {63929289600,63940179600,-420,"MST"},  % 2025-11-02T08:00:00Z .. 2026-03-08T09:00:00Z
-         {63940179600,63960739200,-360,"MDT"}]},  % 2026-03-08T09:00:00Z .. 2026-11-01T08:00:00Z
-      {"Antarctica/Casey",
+         {63940179600,63960739200,-360,"MDT"}],  % 2026-03-08T09:00:00Z .. 2026-11-01T08:00:00Z
+      "Antarctica/Casey" =>
         [{63423021600,63434934000,660,"+11"},  % 2009-10-17T18:00:00Z .. 2010-03-04T15:00:00Z
          {63486957600,63497062800,660,"+11"},  % 2011-10-27T18:00:00Z .. 2012-02-21T17:00:00Z
          {63644284800,63687920400,660,"+11"},  % 2016-10-21T16:00:00Z .. 2018-03-10T17:00:00Z
@@ -7089,11 +7686,11 @@
          {63737348400,63750816000,660,"+11"},  % 2019-10-03T19:00:00Z .. 2020-03-07T16:00:00Z
          {63768960060,63782859600,660,"+11"},  % 2020-10-03T16:01:00Z .. 2021-03-13T13:00:00Z
          {63800409660,63814309200,660,"+11"},  % 2021-10-02T16:01:00Z .. 2022-03-12T13:00:00Z
-         {63831859260,63845510400,660,"+11"}]},  % 2022-10-01T16:01:00Z .. 2023-03-08T16:00:00Z
-      {"Antarctica/Davis",
+         {63831859260,63845510400,660,"+11"}],  % 2022-10-01T16:01:00Z .. 2023-03-08T16:00:00Z
+      "Antarctica/Davis" =>
         [{63423025200,63435470400,300,"+05"},  % 2009-10-17T19:00:00Z .. 2010-03-10T20:00:00Z
-         {63486961200,63497073600,300,"+05"}]},  % 2011-10-27T19:00:00Z .. 2012-02-21T20:00:00Z
-      {"Antarctica/Macquarie",
+         {63486961200,63497073600,300,"+05"}],  % 2011-10-27T19:00:00Z .. 2012-02-21T20:00:00Z
+      "Antarctica/Macquarie" =>
         [{62172892800,62175312000,600,"AEST"},  % 1970-03-07T16:00:00Z .. 1970-04-04T16:00:00Z
          {62191036800,62192851200,600,"AEST"},  % 1970-10-03T16:00:00Z .. 1970-10-24T16:00:00Z
          {62204947200,62206761600,600,"AEST"},  % 1971-03-13T16:00:00Z .. 1971-04-03T16:00:00Z
@@ -7153,10 +7750,10 @@
          {63247622400,63248227200,600,"AEST"},  % 2004-03-27T16:00:00Z .. 2004-04-03T16:00:00Z
          {63279072000,63279676800,600,"AEST"},  % 2005-03-26T16:00:00Z .. 2005-04-02T16:00:00Z
          {63341971200,63342576000,600,"AEST"},  % 2007-03-24T16:00:00Z .. 2007-03-31T16:00:00Z
-         {63437529600,63453254400,660,"AEDT"}]},  % 2010-04-03T16:00:00Z .. 2010-10-02T16:00:00Z
-      {"Antarctica/Mawson",
-        [{62167219200,63423028800,360,"+06"}]},  % 1970-01-01T00:00:00Z .. 2009-10-17T20:00:00Z
-      {"Antarctica/McMurdo",
+         {63437529600,63453254400,660,"AEDT"}],  % 2010-04-03T16:00:00Z .. 2010-10-02T16:00:00Z
+      "Antarctica/Mawson" =>
+        [{62167219200,63423028800,360,"+06"}],  % 1970-01-01T00:00:00Z .. 2009-10-17T20:00:00Z
+      "Antarctica/McMurdo" =>
         [{62167219200,62175304800,720,"NZST"},  % 1970-01-01T00:00:00Z .. 1970-04-04T14:00:00Z
          {62190424800,62206754400,720,"NZST"},  % 1970-09-26T14:00:00Z .. 1971-04-03T14:00:00Z
          {62221874400,62238204000,720,"NZST"},  % 1971-09-25T14:00:00Z .. 1972-04-01T14:00:00Z
@@ -7227,8 +7824,8 @@
          {63294789600,63295394400,720,"NZST"},  % 2005-09-24T14:00:00Z .. 2005-10-01T14:00:00Z
          {63309909600,63311119200,720,"NZST"},  % 2006-03-18T14:00:00Z .. 2006-04-01T14:00:00Z
          {63326239200,63326844000,720,"NZST"},  % 2006-09-23T14:00:00Z .. 2006-09-30T14:00:00Z
-         {63341359200,63342568800,720,"NZST"}]},  % 2007-03-17T14:00:00Z .. 2007-03-31T14:00:00Z
-      {"Antarctica/Palmer",
+         {63341359200,63342568800,720,"NZST"}],  % 2007-03-17T14:00:00Z .. 2007-03-31T14:00:00Z
+      "Antarctica/Palmer" =>
         [{62295361200,62303824800,-120,"-02"},  % 1974-01-23T03:00:00Z .. 1974-05-01T02:00:00Z
          {62556289200,62570289600,-240,"-04"},  % 1982-05-01T03:00:00Z .. 1982-10-10T04:00:00Z
          {62583591600,62601739200,-240,"-04"},  % 1983-03-13T03:00:00Z .. 1983-10-09T04:00:00Z
@@ -7263,10 +7860,10 @@
          {63502887600,63513777600,-240,"-04"},  % 2012-04-29T03:00:00Z .. 2012-09-02T04:00:00Z
          {63534337200,63545832000,-240,"-04"},  % 2013-04-28T03:00:00Z .. 2013-09-08T04:00:00Z
          {63565786800,63577281600,-240,"-04"},  % 2014-04-27T03:00:00Z .. 2014-09-07T04:00:00Z
-         {63630500400,63638366400,-240,"-04"}]},  % 2016-05-15T03:00:00Z .. 2016-08-14T04:00:00Z
-      {"Antarctica/Rothera",
-        [{62167219200,62385465600,0,"-00"}]},  % 1970-01-01T00:00:00Z .. 1976-12-01T00:00:00Z
-      {"Antarctica/South_Pole",
+         {63630500400,63638366400,-240,"-04"}],  % 2016-05-15T03:00:00Z .. 2016-08-14T04:00:00Z
+      "Antarctica/Rothera" =>
+        [{62167219200,62385465600,0,"-00"}],  % 1970-01-01T00:00:00Z .. 1976-12-01T00:00:00Z
+      "Antarctica/South_Pole" =>
         [{62167219200,62175304800,720,"NZST"},  % 1970-01-01T00:00:00Z .. 1970-04-04T14:00:00Z
          {62190424800,62206754400,720,"NZST"},  % 1970-09-26T14:00:00Z .. 1971-04-03T14:00:00Z
          {62221874400,62238204000,720,"NZST"},  % 1971-09-25T14:00:00Z .. 1972-04-01T14:00:00Z
@@ -7337,14 +7934,14 @@
          {63294789600,63295394400,720,"NZST"},  % 2005-09-24T14:00:00Z .. 2005-10-01T14:00:00Z
          {63309909600,63311119200,720,"NZST"},  % 2006-03-18T14:00:00Z .. 2006-04-01T14:00:00Z
          {63326239200,63326844000,720,"NZST"},  % 2006-09-23T14:00:00Z .. 2006-09-30T14:00:00Z
-         {63341359200,63342568800,720,"NZST"}]},  % 2007-03-17T14:00:00Z .. 2007-03-31T14:00:00Z
-      {"Antarctica/Troll",
-        [{62167219200,63275385600,0,"-00"}]},  % 1970-01-01T00:00:00Z .. 2005-02-12T00:00:00Z
-      {"Antarctica/Vostok",
+         {63341359200,63342568800,720,"NZST"}],  % 2007-03-17T14:00:00Z .. 2007-03-31T14:00:00Z
+      "Antarctica/Troll" =>
+        [{62167219200,63275385600,0,"-00"}],  % 1970-01-01T00:00:00Z .. 2005-02-12T00:00:00Z
+      "Antarctica/Vostok" =>
         [{62167219200,62927254800,420,"+07"},  % 1970-01-01T00:00:00Z .. 1994-01-31T17:00:00Z
          {62927254800,62950867200,0,"-00"},  % 1994-01-31T17:00:00Z .. 1994-11-01T00:00:00Z
-         {62950867200,63870058800,420,"+07"}]},  % 1994-11-01T00:00:00Z .. 2023-12-17T19:00:00Z
-      {"Arctic/Longyearbyen",
+         {62950867200,63870058800,420,"+07"}],  % 1994-11-01T00:00:00Z .. 2023-12-17T19:00:00Z
+      "Arctic/Longyearbyen" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -7371,8 +7968,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Asia/Almaty",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Asia/Almaty" =>
         [{62167219200,62522128800,360,"+06"},  % 1970-01-01T00:00:00Z .. 1981-03-31T18:00:00Z
          {62522128800,62537936400,420,"+07"},  % 1981-03-31T18:00:00Z .. 1981-09-30T17:00:00Z
          {62537936400,62553664800,360,"+06"},  % 1981-09-30T17:00:00Z .. 1982-03-31T18:00:00Z
@@ -7420,8 +8017,8 @@
          {63216187200,63234331200,420,"+07"},  % 2003-03-29T20:00:00Z .. 2003-10-25T20:00:00Z
          {63234331200,63247636800,360,"+06"},  % 2003-10-25T20:00:00Z .. 2004-03-27T20:00:00Z
          {63247636800,63266385600,420,"+07"},  % 2004-03-27T20:00:00Z .. 2004-10-30T20:00:00Z
-         {63266385600,63876448800,360,"+06"}]},  % 2004-10-30T20:00:00Z .. 2024-02-29T18:00:00Z
-      {"Asia/Amman",
+         {63266385600,63876448800,360,"+06"}],  % 2004-10-30T20:00:00Z .. 2024-02-29T18:00:00Z
+      "Asia/Amman" =>
         [{62167219200,62275384800,120,"EET"},  % 1970-01-01T00:00:00Z .. 1973-06-05T22:00:00Z
          {62275384800,62285490000,180,"EEST"},  % 1973-06-05T22:00:00Z .. 1973-09-30T21:00:00Z
          {62285490000,62303810400,120,"EET"},  % 1973-09-30T21:00:00Z .. 1974-04-30T22:00:00Z
@@ -7507,8 +8104,8 @@
          {63771228000,63783928800,120,"EET"},  % 2020-10-29T22:00:00Z .. 2021-03-25T22:00:00Z
          {63783928800,63802677600,180,"EEST"},  % 2021-03-25T22:00:00Z .. 2021-10-28T22:00:00Z
          {63802677600,63812959200,120,"EET"},  % 2021-10-28T22:00:00Z .. 2022-02-24T22:00:00Z
-         {63812959200,63834127200,180,"EEST"}]},  % 2022-02-24T22:00:00Z .. 2022-10-27T22:00:00Z
-      {"Asia/Anadyr",
+         {63812959200,63834127200,180,"EEST"}],  % 2022-02-24T22:00:00Z .. 2022-10-27T22:00:00Z
+      "Asia/Anadyr" =>
         [{62167219200,62522103600,780,"+13"},  % 1970-01-01T00:00:00Z .. 1981-03-31T11:00:00Z
          {62522103600,62537911200,840,"+14"},  % 1981-03-31T11:00:00Z .. 1981-09-30T10:00:00Z
          {62537911200,62569450800,780,"+13"},  % 1981-09-30T10:00:00Z .. 1982-09-30T11:00:00Z
@@ -7539,8 +8136,8 @@
          {63341964000,63360712800,780,"+13"},  % 2007-03-24T14:00:00Z .. 2007-10-27T14:00:00Z
          {63374018400,63392162400,780,"+13"},  % 2008-03-29T14:00:00Z .. 2008-10-25T14:00:00Z
          {63405468000,63423612000,780,"+13"},  % 2009-03-28T14:00:00Z .. 2009-10-24T14:00:00Z
-         {63455670000,63468370800,660,"+11"}]},  % 2010-10-30T15:00:00Z .. 2011-03-26T15:00:00Z
-      {"Asia/Aqtau",
+         {63455670000,63468370800,660,"+11"}],  % 2010-10-30T15:00:00Z .. 2011-03-26T15:00:00Z
+      "Asia/Aqtau" =>
         [{62537943600,62569476000,360,"+06"},  % 1981-09-30T19:00:00Z .. 1982-09-30T18:00:00Z
          {62585204400,62601012000,360,"+06"},  % 1983-03-31T19:00:00Z .. 1983-09-30T18:00:00Z
          {62616826800,62632558800,360,"+06"},  % 1984-03-31T19:00:00Z .. 1984-09-29T21:00:00Z
@@ -7563,8 +8160,8 @@
          {63139989600,63152690400,240,"+04"},  % 2000-10-28T22:00:00Z .. 2001-03-24T22:00:00Z
          {63171439200,63184744800,240,"+04"},  % 2001-10-27T22:00:00Z .. 2002-03-30T22:00:00Z
          {63202888800,63216194400,240,"+04"},  % 2002-10-26T22:00:00Z .. 2003-03-29T22:00:00Z
-         {63234338400,63247644000,240,"+04"}]},  % 2003-10-25T22:00:00Z .. 2004-03-27T22:00:00Z
-      {"Asia/Aqtobe",
+         {63234338400,63247644000,240,"+04"}],  % 2003-10-25T22:00:00Z .. 2004-03-27T22:00:00Z
+      "Asia/Aqtobe" =>
         [{62522132400,62569476000,360,"+06"},  % 1981-03-31T19:00:00Z .. 1982-09-30T18:00:00Z
          {62585204400,62601012000,360,"+06"},  % 1983-03-31T19:00:00Z .. 1983-09-30T18:00:00Z
          {62616826800,62632558800,360,"+06"},  % 1984-03-31T19:00:00Z .. 1984-09-29T21:00:00Z
@@ -7587,8 +8184,8 @@
          {63152686800,63171435600,360,"+06"},  % 2001-03-24T21:00:00Z .. 2001-10-27T21:00:00Z
          {63184741200,63202885200,360,"+06"},  % 2002-03-30T21:00:00Z .. 2002-10-26T21:00:00Z
          {63216190800,63234334800,360,"+06"},  % 2003-03-29T21:00:00Z .. 2003-10-25T21:00:00Z
-         {63247640400,63266389200,360,"+06"}]},  % 2004-03-27T21:00:00Z .. 2004-10-30T21:00:00Z
-      {"Asia/Ashgabat",
+         {63247640400,63266389200,360,"+06"}],  % 2004-03-27T21:00:00Z .. 2004-10-30T21:00:00Z
+      "Asia/Ashgabat" =>
         [{62522132400,62537940000,360,"+06"},  % 1981-03-31T19:00:00Z .. 1981-09-30T18:00:00Z
          {62553668400,62569476000,360,"+06"},  % 1982-03-31T19:00:00Z .. 1982-09-30T18:00:00Z
          {62585204400,62601012000,360,"+06"},  % 1983-03-31T19:00:00Z .. 1983-09-30T18:00:00Z
@@ -7599,8 +8196,8 @@
          {62742632400,62758357200,360,"+06"},  % 1988-03-26T21:00:00Z .. 1988-09-24T21:00:00Z
          {62774082000,62789806800,360,"+06"},  % 1989-03-25T21:00:00Z .. 1989-09-23T21:00:00Z
          {62805531600,62821861200,360,"+06"},  % 1990-03-24T21:00:00Z .. 1990-09-29T21:00:00Z
-         {62853314400,62862991200,240,"+04"}]},  % 1991-09-28T22:00:00Z .. 1992-01-18T22:00:00Z
-      {"Asia/Ashkhabad",
+         {62853314400,62862991200,240,"+04"}],  % 1991-09-28T22:00:00Z .. 1992-01-18T22:00:00Z
+      "Asia/Ashkhabad" =>
         [{62522132400,62537940000,360,"+06"},  % 1981-03-31T19:00:00Z .. 1981-09-30T18:00:00Z
          {62553668400,62569476000,360,"+06"},  % 1982-03-31T19:00:00Z .. 1982-09-30T18:00:00Z
          {62585204400,62601012000,360,"+06"},  % 1983-03-31T19:00:00Z .. 1983-09-30T18:00:00Z
@@ -7611,8 +8208,8 @@
          {62742632400,62758357200,360,"+06"},  % 1988-03-26T21:00:00Z .. 1988-09-24T21:00:00Z
          {62774082000,62789806800,360,"+06"},  % 1989-03-25T21:00:00Z .. 1989-09-23T21:00:00Z
          {62805531600,62821861200,360,"+06"},  % 1990-03-24T21:00:00Z .. 1990-09-29T21:00:00Z
-         {62853314400,62862991200,240,"+04"}]},  % 1991-09-28T22:00:00Z .. 1992-01-18T22:00:00Z
-      {"Asia/Atyrau",
+         {62853314400,62862991200,240,"+04"}],  % 1991-09-28T22:00:00Z .. 1992-01-18T22:00:00Z
+      "Asia/Atyrau" =>
         [{62537943600,62569476000,360,"+06"},  % 1981-09-30T19:00:00Z .. 1982-09-30T18:00:00Z
          {62585204400,62601012000,360,"+06"},  % 1983-03-31T19:00:00Z .. 1983-09-30T18:00:00Z
          {62616826800,62632558800,360,"+06"},  % 1984-03-31T19:00:00Z .. 1984-09-29T21:00:00Z
@@ -7634,8 +8231,8 @@
          {63139989600,63152690400,240,"+04"},  % 2000-10-28T22:00:00Z .. 2001-03-24T22:00:00Z
          {63171439200,63184744800,240,"+04"},  % 2001-10-27T22:00:00Z .. 2002-03-30T22:00:00Z
          {63202888800,63216194400,240,"+04"},  % 2002-10-26T22:00:00Z .. 2003-03-29T22:00:00Z
-         {63234338400,63247644000,240,"+04"}]},  % 2003-10-25T22:00:00Z .. 2004-03-27T22:00:00Z
-      {"Asia/Baghdad",
+         {63234338400,63247644000,240,"+04"}],  % 2003-10-25T22:00:00Z .. 2004-03-27T22:00:00Z
+      "Asia/Baghdad" =>
         [{62556267600,62569483200,240,"+04"},  % 1982-04-30T21:00:00Z .. 1982-09-30T20:00:00Z
          {62585125200,62601019200,240,"+04"},  % 1983-03-30T21:00:00Z .. 1983-09-30T20:00:00Z
          {62616834000,62632641600,240,"+04"},  % 1984-03-31T21:00:00Z .. 1984-09-30T20:00:00Z
@@ -7661,10 +8258,10 @@
          {63247996800,63263808000,240,"+04"},  % 2004-04-01T00:00:00Z .. 2004-10-01T00:00:00Z
          {63279532800,63295344000,240,"+04"},  % 2005-04-01T00:00:00Z .. 2005-10-01T00:00:00Z
          {63311068800,63326880000,240,"+04"},  % 2006-04-01T00:00:00Z .. 2006-10-01T00:00:00Z
-         {63342604800,63358416000,240,"+04"}]},  % 2007-04-01T00:00:00Z .. 2007-10-01T00:00:00Z
-      {"Asia/Bahrain",
-        [{62167219200,62243409600,240,"+04"}]},  % 1970-01-01T00:00:00Z .. 1972-05-31T20:00:00Z
-      {"Asia/Baku",
+         {63342604800,63358416000,240,"+04"}],  % 2007-04-01T00:00:00Z .. 2007-10-01T00:00:00Z
+      "Asia/Bahrain" =>
+        [{62167219200,62243409600,240,"+04"}],  % 1970-01-01T00:00:00Z .. 1972-05-31T20:00:00Z
+      "Asia/Baku" =>
         [{62522136000,62537943600,300,"+05"},  % 1981-03-31T20:00:00Z .. 1981-09-30T19:00:00Z
          {62553672000,62569479600,300,"+05"},  % 1982-03-31T20:00:00Z .. 1982-09-30T19:00:00Z
          {62585208000,62601015600,300,"+05"},  % 1983-03-31T20:00:00Z .. 1983-09-30T19:00:00Z
@@ -7695,8 +8292,8 @@
          {63499852800,63518601600,300,"+05"},  % 2012-03-25T00:00:00Z .. 2012-10-28T00:00:00Z
          {63531907200,63550051200,300,"+05"},  % 2013-03-31T00:00:00Z .. 2013-10-27T00:00:00Z
          {63563356800,63581500800,300,"+05"},  % 2014-03-30T00:00:00Z .. 2014-10-26T00:00:00Z
-         {63594806400,63612950400,300,"+05"}]},  % 2015-03-29T00:00:00Z .. 2015-10-25T00:00:00Z
-      {"Asia/Barnaul",
+         {63594806400,63612950400,300,"+05"}],  % 2015-03-29T00:00:00Z .. 2015-10-25T00:00:00Z
+      "Asia/Barnaul" =>
         [{62522125200,62537932800,480,"+08"},  % 1981-03-31T17:00:00Z .. 1981-09-30T16:00:00Z
          {62553661200,62569468800,480,"+08"},  % 1982-03-31T17:00:00Z .. 1982-09-30T16:00:00Z
          {62585197200,62601004800,480,"+08"},  % 1983-03-31T17:00:00Z .. 1983-09-30T16:00:00Z
@@ -7728,8 +8325,8 @@
          {63392184000,63405489600,360,"+06"},  % 2008-10-25T20:00:00Z .. 2009-03-28T20:00:00Z
          {63423633600,63436939200,360,"+06"},  % 2009-10-24T20:00:00Z .. 2010-03-27T20:00:00Z
          {63455688000,63468388800,360,"+06"},  % 2010-10-30T20:00:00Z .. 2011-03-26T20:00:00Z
-         {63581482800,63626241600,360,"+06"}]},  % 2014-10-25T19:00:00Z .. 2016-03-26T20:00:00Z
-      {"Asia/Beirut",
+         {63581482800,63626241600,360,"+06"}],  % 2014-10-25T19:00:00Z .. 2016-03-26T20:00:00Z
+      "Asia/Beirut" =>
         [{62174728800,62192869200,120,"EET"},  % 1970-03-28T22:00:00Z .. 1970-10-24T21:00:00Z
          {62206178400,62224923600,120,"EET"},  % 1971-03-27T22:00:00Z .. 1971-10-30T21:00:00Z
          {62237628000,62245231200,120,"EET"},  % 1972-03-25T22:00:00Z .. 1972-06-21T22:00:00Z
@@ -7774,8 +8371,8 @@
          {62979109200,62982133200,120,"EET"},  % 1995-09-23T21:00:00Z .. 1995-10-28T21:00:00Z
          {63011163600,63013582800,120,"EET"},  % 1996-09-28T21:00:00Z .. 1996-10-26T21:00:00Z
          {63042613200,63045032400,120,"EET"},  % 1997-09-27T21:00:00Z .. 1997-10-25T21:00:00Z
-         {63074062800,63076482000,120,"EET"}]},  % 1998-09-26T21:00:00Z .. 1998-10-24T21:00:00Z
-      {"Asia/Bishkek",
+         {63074062800,63076482000,120,"EET"}],  % 1998-09-26T21:00:00Z .. 1998-10-24T21:00:00Z
+      "Asia/Bishkek" =>
         [{62522128800,62537936400,420,"+07"},  % 1981-03-31T18:00:00Z .. 1981-09-30T17:00:00Z
          {62553664800,62569472400,420,"+07"},  % 1982-03-31T18:00:00Z .. 1982-09-30T17:00:00Z
          {62585200800,62601008400,420,"+07"},  % 1983-03-31T18:00:00Z .. 1983-09-30T17:00:00Z
@@ -7799,8 +8396,8 @@
          {63171433800,63184743000,300,"+05"},  % 2001-10-27T20:30:00Z .. 2002-03-30T21:30:00Z
          {63202883400,63216192600,300,"+05"},  % 2002-10-26T20:30:00Z .. 2003-03-29T21:30:00Z
          {63234333000,63247642200,300,"+05"},  % 2003-10-25T20:30:00Z .. 2004-03-27T21:30:00Z
-         {63266387400,63279091800,300,"+05"}]},  % 2004-10-30T20:30:00Z .. 2005-03-26T21:30:00Z
-      {"Asia/Chita",
+         {63266387400,63279091800,300,"+05"}],  % 2004-10-30T20:30:00Z .. 2005-03-26T21:30:00Z
+      "Asia/Chita" =>
         [{62522118000,62537925600,600,"+10"},  % 1981-03-31T15:00:00Z .. 1981-09-30T14:00:00Z
          {62553654000,62569461600,600,"+10"},  % 1982-03-31T15:00:00Z .. 1982-09-30T14:00:00Z
          {62585190000,62600997600,600,"+10"},  % 1983-03-31T15:00:00Z .. 1983-09-30T14:00:00Z
@@ -7832,8 +8429,8 @@
          {63405478800,63423622800,600,"+10"},  % 2009-03-28T17:00:00Z .. 2009-10-24T17:00:00Z
          {63436928400,63455677200,600,"+10"},  % 2010-03-27T17:00:00Z .. 2010-10-30T17:00:00Z
          {63468378000,63581472000,600,"+10"},  % 2011-03-26T17:00:00Z .. 2014-10-25T16:00:00Z
-         {63581472000,63626234400,480,"+08"}]},  % 2014-10-25T16:00:00Z .. 2016-03-26T18:00:00Z
-      {"Asia/Choibalsan",
+         {63581472000,63626234400,480,"+08"}],  % 2014-10-25T16:00:00Z .. 2016-03-26T18:00:00Z
+      "Asia/Choibalsan" =>
         [{62167219200,62419654800,420,"+07"},  % 1970-01-01T00:00:00Z .. 1977-12-31T17:00:00Z
          {62585193600,62601001200,540,"+09"},  % 1983-03-31T16:00:00Z .. 1983-09-30T15:00:00Z
          {62616816000,62632537200,540,"+09"},  % 1984-03-31T16:00:00Z .. 1984-09-29T15:00:00Z
@@ -7858,27 +8455,27 @@
          {63278992800,63294714000,540,"+09"},  % 2005-03-25T18:00:00Z .. 2005-09-23T17:00:00Z
          {63310442400,63326768400,540,"+09"},  % 2006-03-24T18:00:00Z .. 2006-09-29T17:00:00Z
          {63594698400,63610412400,540,"+09"},  % 2015-03-27T18:00:00Z .. 2015-09-25T15:00:00Z
-         {63626148000,63641862000,540,"+09"}]},  % 2016-03-25T18:00:00Z .. 2016-09-23T15:00:00Z
-      {"Asia/Chongqing",
+         {63626148000,63641862000,540,"+09"}],  % 2016-03-25T18:00:00Z .. 2016-09-23T15:00:00Z
+      "Asia/Chongqing" =>
         [{62682746400,62694234000,540,"CDT"},  % 1986-05-03T18:00:00Z .. 1986-09-13T17:00:00Z
          {62712381600,62725683600,540,"CDT"},  % 1987-04-11T18:00:00Z .. 1987-09-12T17:00:00Z
          {62744436000,62757133200,540,"CDT"},  % 1988-04-16T18:00:00Z .. 1988-09-10T17:00:00Z
          {62775885600,62789187600,540,"CDT"},  % 1989-04-15T18:00:00Z .. 1989-09-16T17:00:00Z
          {62807335200,62820637200,540,"CDT"},  % 1990-04-14T18:00:00Z .. 1990-09-15T17:00:00Z
-         {62838784800,62852086800,540,"CDT"}]},  % 1991-04-13T18:00:00Z .. 1991-09-14T17:00:00Z
-      {"Asia/Chungking",
+         {62838784800,62852086800,540,"CDT"}],  % 1991-04-13T18:00:00Z .. 1991-09-14T17:00:00Z
+      "Asia/Chungking" =>
         [{62682746400,62694234000,540,"CDT"},  % 1986-05-03T18:00:00Z .. 1986-09-13T17:00:00Z
          {62712381600,62725683600,540,"CDT"},  % 1987-04-11T18:00:00Z .. 1987-09-12T17:00:00Z
          {62744436000,62757133200,540,"CDT"},  % 1988-04-16T18:00:00Z .. 1988-09-10T17:00:00Z
          {62775885600,62789187600,540,"CDT"},  % 1989-04-15T18:00:00Z .. 1989-09-16T17:00:00Z
          {62807335200,62820637200,540,"CDT"},  % 1990-04-14T18:00:00Z .. 1990-09-15T17:00:00Z
-         {62838784800,62852086800,540,"CDT"}]},  % 1991-04-13T18:00:00Z .. 1991-09-14T17:00:00Z
-      {"Asia/Colombo",
+         {62838784800,62852086800,540,"CDT"}],  % 1991-04-13T18:00:00Z .. 1991-09-14T17:00:00Z
+      "Asia/Colombo" =>
         [{63000181800,63013485600,390,"+0630"},  % 1996-05-24T18:30:00Z .. 1996-10-25T18:00:00Z
-         {63013485600,63312258600,360,"+06"}]},  % 1996-10-25T18:00:00Z .. 2006-04-14T18:30:00Z
-      {"Asia/Dacca",
-        [{63412650000,63429498000,420,"+07"}]},  % 2009-06-19T17:00:00Z .. 2009-12-31T17:00:00Z
-      {"Asia/Damascus",
+         {63013485600,63312258600,360,"+06"}],  % 1996-10-25T18:00:00Z .. 2006-04-14T18:30:00Z
+      "Asia/Dacca" =>
+        [{63412650000,63429498000,420,"+07"}],  % 2009-06-19T17:00:00Z .. 2009-12-31T17:00:00Z
+      "Asia/Damascus" =>
         [{62167219200,62177587200,120,"EET"},  % 1970-01-01T00:00:00Z .. 1970-05-01T00:00:00Z
          {62177587200,62190802800,180,"EEST"},  % 1970-05-01T00:00:00Z .. 1970-09-30T23:00:00Z
          {62190802800,62209123200,120,"EET"},  % 1970-09-30T23:00:00Z .. 1971-05-01T00:00:00Z
@@ -7974,12 +8571,12 @@
          {63771224400,63783928800,120,"EET"},  % 2020-10-29T21:00:00Z .. 2021-03-25T22:00:00Z
          {63783928800,63802674000,180,"EEST"},  % 2021-03-25T22:00:00Z .. 2021-10-28T21:00:00Z
          {63802674000,63815378400,120,"EET"},  % 2021-10-28T21:00:00Z .. 2022-03-24T22:00:00Z
-         {63815378400,63834123600,180,"EEST"}]},  % 2022-03-24T22:00:00Z .. 2022-10-27T21:00:00Z
-      {"Asia/Dhaka",
-        [{63412650000,63429498000,420,"+07"}]},  % 2009-06-19T17:00:00Z .. 2009-12-31T17:00:00Z
-      {"Asia/Dili",
-        [{62367116400,63136339200,480,"+08"}]},  % 1976-05-02T15:00:00Z .. 2000-09-16T16:00:00Z
-      {"Asia/Dushanbe",
+         {63815378400,63834123600,180,"EEST"}],  % 2022-03-24T22:00:00Z .. 2022-10-27T21:00:00Z
+      "Asia/Dhaka" =>
+        [{63412650000,63429498000,420,"+07"}],  % 2009-06-19T17:00:00Z .. 2009-12-31T17:00:00Z
+      "Asia/Dili" =>
+        [{62367116400,63136339200,480,"+08"}],  % 1976-05-02T15:00:00Z .. 2000-09-16T16:00:00Z
+      "Asia/Dushanbe" =>
         [{62167219200,62522128800,360,"+06"},  % 1970-01-01T00:00:00Z .. 1981-03-31T18:00:00Z
          {62522128800,62537936400,420,"+07"},  % 1981-03-31T18:00:00Z .. 1981-09-30T17:00:00Z
          {62537936400,62553664800,360,"+06"},  % 1981-09-30T17:00:00Z .. 1982-03-31T18:00:00Z
@@ -8000,8 +8597,8 @@
          {62774078400,62789803200,420,"+07"},  % 1989-03-25T20:00:00Z .. 1989-09-23T20:00:00Z
          {62789803200,62805528000,360,"+06"},  % 1989-09-23T20:00:00Z .. 1990-03-24T20:00:00Z
          {62805528000,62821857600,420,"+07"},  % 1990-03-24T20:00:00Z .. 1990-09-29T20:00:00Z
-         {62821857600,62851582800,360,"+06"}]},  % 1990-09-29T20:00:00Z .. 1991-09-08T21:00:00Z
-      {"Asia/Famagusta",
+         {62821857600,62851582800,360,"+06"}],  % 1990-09-29T20:00:00Z .. 1991-09-08T21:00:00Z
+      "Asia/Famagusta" =>
         [{62174739600,62192883600,120,"EET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,120,"EET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,120,"EET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -8054,8 +8651,8 @@
          {63026892000,63026902800,180,"EEST"},  % 1997-03-29T22:00:00Z .. 1997-03-30T01:00:00Z
          {63042613200,63045046800,120,"EET"},  % 1997-09-27T21:00:00Z .. 1997-10-26T01:00:00Z
          {63058341600,63058352400,180,"EEST"},  % 1998-03-28T22:00:00Z .. 1998-03-29T01:00:00Z
-         {63640501200,63676458000,180,"+03"}]},  % 2016-09-07T21:00:00Z .. 2017-10-29T01:00:00Z
-      {"Asia/Gaza",
+         {63640501200,63676458000,180,"+03"}],  % 2016-09-07T21:00:00Z .. 2017-10-29T01:00:00Z
+      "Asia/Gaza" =>
         [{62167219200,62309599200,120,"IST"},  % 1970-01-01T00:00:00Z .. 1974-07-06T22:00:00Z
          {62309599200,62318062800,180,"IDT"},  % 1974-07-06T22:00:00Z .. 1974-10-12T21:00:00Z
          {62318062800,62334396000,120,"IST"},  % 1974-10-12T21:00:00Z .. 1975-04-19T22:00:00Z
@@ -8153,15 +8750,15 @@
          {64489215600,64493452800,120,"EET"},  % 2043-07-31T23:00:00Z .. 2043-09-19T00:00:00Z
          {64520060400,64523692800,120,"EET"},  % 2044-07-22T23:00:00Z .. 2044-09-03T00:00:00Z
          {64550905200,64554537600,120,"EET"},  % 2045-07-14T23:00:00Z .. 2045-08-26T00:00:00Z
-         {64581145200,64585382400,120,"EET"}]},  % 2046-06-29T23:00:00Z .. 2046-08-18T00:00:00Z
-      {"Asia/Harbin",
+         {64581145200,64585382400,120,"EET"}],  % 2046-06-29T23:00:00Z .. 2046-08-18T00:00:00Z
+      "Asia/Harbin" =>
         [{62682746400,62694234000,540,"CDT"},  % 1986-05-03T18:00:00Z .. 1986-09-13T17:00:00Z
          {62712381600,62725683600,540,"CDT"},  % 1987-04-11T18:00:00Z .. 1987-09-12T17:00:00Z
          {62744436000,62757133200,540,"CDT"},  % 1988-04-16T18:00:00Z .. 1988-09-10T17:00:00Z
          {62775885600,62789187600,540,"CDT"},  % 1989-04-15T18:00:00Z .. 1989-09-16T17:00:00Z
          {62807335200,62820637200,540,"CDT"},  % 1990-04-14T18:00:00Z .. 1990-09-15T17:00:00Z
-         {62838784800,62852086800,540,"CDT"}]},  % 1991-04-13T18:00:00Z .. 1991-09-14T17:00:00Z
-      {"Asia/Hebron",
+         {62838784800,62852086800,540,"CDT"}],  % 1991-04-13T18:00:00Z .. 1991-09-14T17:00:00Z
+      "Asia/Hebron" =>
         [{62167219200,62309599200,120,"IST"},  % 1970-01-01T00:00:00Z .. 1974-07-06T22:00:00Z
          {62309599200,62318062800,180,"IDT"},  % 1974-07-06T22:00:00Z .. 1974-10-12T21:00:00Z
          {62318062800,62334396000,120,"IST"},  % 1974-10-12T21:00:00Z .. 1975-04-19T22:00:00Z
@@ -8260,10 +8857,10 @@
          {64489215600,64493452800,120,"EET"},  % 2043-07-31T23:00:00Z .. 2043-09-19T00:00:00Z
          {64520060400,64523692800,120,"EET"},  % 2044-07-22T23:00:00Z .. 2044-09-03T00:00:00Z
          {64550905200,64554537600,120,"EET"},  % 2045-07-14T23:00:00Z .. 2045-08-26T00:00:00Z
-         {64581145200,64585382400,120,"EET"}]},  % 2046-06-29T23:00:00Z .. 2046-08-18T00:00:00Z
-      {"Asia/Ho_Chi_Minh",
-        [{62167219200,62339040000,480,"+08"}]},  % 1970-01-01T00:00:00Z .. 1975-06-12T16:00:00Z
-      {"Asia/Hong_Kong",
+         {64581145200,64585382400,120,"EET"}],  % 2046-06-29T23:00:00Z .. 2046-08-18T00:00:00Z
+      "Asia/Ho_Chi_Minh" =>
+        [{62167219200,62339040000,480,"+08"}],  % 1970-01-01T00:00:00Z .. 1975-06-12T16:00:00Z
+      "Asia/Hong_Kong" =>
         [{62176534200,62192255400,540,"HKST"},  % 1970-04-18T19:30:00Z .. 1970-10-17T18:30:00Z
          {62207983800,62223705000,540,"HKST"},  % 1971-04-17T19:30:00Z .. 1971-10-16T18:30:00Z
          {62239433400,62255759400,540,"HKST"},  % 1972-04-15T19:30:00Z .. 1972-10-21T18:30:00Z
@@ -8271,8 +8868,8 @@
          {62293260600,62318658600,540,"HKST"},  % 1973-12-29T19:30:00Z .. 1974-10-19T18:30:00Z
          {62334387000,62350108200,540,"HKST"},  % 1975-04-19T19:30:00Z .. 1975-10-18T18:30:00Z
          {62365836600,62381557800,540,"HKST"},  % 1976-04-17T19:30:00Z .. 1976-10-16T18:30:00Z
-         {62462604600,62476511400,540,"HKST"}]},  % 1979-05-12T19:30:00Z .. 1979-10-20T18:30:00Z
-      {"Asia/Hovd",
+         {62462604600,62476511400,540,"HKST"}],  % 1979-05-12T19:30:00Z .. 1979-10-20T18:30:00Z
+      "Asia/Hovd" =>
         [{62167219200,62419658400,360,"+06"},  % 1970-01-01T00:00:00Z .. 1977-12-31T18:00:00Z
          {62585197200,62601004800,480,"+08"},  % 1983-03-31T17:00:00Z .. 1983-09-30T16:00:00Z
          {62616819600,62632540800,480,"+08"},  % 1984-03-31T17:00:00Z .. 1984-09-29T16:00:00Z
@@ -8297,8 +8894,8 @@
          {63278996400,63294717600,480,"+08"},  % 2005-03-25T19:00:00Z .. 2005-09-23T18:00:00Z
          {63310446000,63326772000,480,"+08"},  % 2006-03-24T19:00:00Z .. 2006-09-29T18:00:00Z
          {63594702000,63610416000,480,"+08"},  % 2015-03-27T19:00:00Z .. 2015-09-25T16:00:00Z
-         {63626151600,63641865600,480,"+08"}]},  % 2016-03-25T19:00:00Z .. 2016-09-23T16:00:00Z
-      {"Asia/Irkutsk",
+         {63626151600,63641865600,480,"+08"}],  % 2016-03-25T19:00:00Z .. 2016-09-23T16:00:00Z
+      "Asia/Irkutsk" =>
         [{62522121600,62537929200,540,"+09"},  % 1981-03-31T16:00:00Z .. 1981-09-30T15:00:00Z
          {62553657600,62569465200,540,"+09"},  % 1982-03-31T16:00:00Z .. 1982-09-30T15:00:00Z
          {62585193600,62601001200,540,"+09"},  % 1983-03-31T16:00:00Z .. 1983-09-30T15:00:00Z
@@ -8329,8 +8926,8 @@
          {63374032800,63392176800,540,"+09"},  % 2008-03-29T18:00:00Z .. 2008-10-25T18:00:00Z
          {63405482400,63423626400,540,"+09"},  % 2009-03-28T18:00:00Z .. 2009-10-24T18:00:00Z
          {63436932000,63455680800,540,"+09"},  % 2010-03-27T18:00:00Z .. 2010-10-30T18:00:00Z
-         {63468381600,63581475600,540,"+09"}]},  % 2011-03-26T18:00:00Z .. 2014-10-25T17:00:00Z
-      {"Asia/Istanbul",
+         {63468381600,63581475600,540,"+09"}],  % 2011-03-26T18:00:00Z .. 2014-10-25T17:00:00Z
+      "Asia/Istanbul" =>
         [{62167219200,62275129200,120,"EET"},  % 1970-01-01T00:00:00Z .. 1973-06-02T23:00:00Z
          {62275129200,62288434800,180,"EEST"},  % 1973-06-02T23:00:00Z .. 1973-11-03T23:00:00Z
          {62288434800,62301139200,120,"EET"},  % 1973-11-03T23:00:00Z .. 1974-03-31T00:00:00Z
@@ -8407,8 +9004,8 @@
          {63581504400,63594810000,120,"EET"},  % 2014-10-26T01:00:00Z .. 2015-03-29T01:00:00Z
          {63594810000,63614163600,180,"EEST"},  % 2015-03-29T01:00:00Z .. 2015-11-08T01:00:00Z
          {63614163600,63626259600,120,"EET"},  % 2015-11-08T01:00:00Z .. 2016-03-27T01:00:00Z
-         {63626259600,63640414800,180,"EEST"}]},  % 2016-03-27T01:00:00Z .. 2016-09-06T21:00:00Z
-      {"Asia/Jerusalem",
+         {63626259600,63640414800,180,"EEST"}],  % 2016-03-27T01:00:00Z .. 2016-09-06T21:00:00Z
+      "Asia/Jerusalem" =>
         [{62174563200,62192876400,120,"IST"},  % 1970-03-27T00:00:00Z .. 1970-10-24T23:00:00Z
          {62206012800,62224930800,120,"IST"},  % 1971-03-26T00:00:00Z .. 1971-10-30T23:00:00Z
          {62237462400,62256380400,120,"IST"},  % 1972-03-24T00:00:00Z .. 1972-10-28T23:00:00Z
@@ -8480,8 +9077,8 @@
          {63468230400,63468835200,120,"IST"},  % 2011-03-25T00:00:00Z .. 2011-04-01T00:00:00Z
          {63484729200,63487148400,120,"IST"},  % 2011-10-01T23:00:00Z .. 2011-10-29T23:00:00Z
          {63499680000,63500284800,120,"IST"},  % 2012-03-23T00:00:00Z .. 2012-03-30T00:00:00Z
-         {63515574000,63518598000,120,"IST"}]},  % 2012-09-22T23:00:00Z .. 2012-10-27T23:00:00Z
-      {"Asia/Kamchatka",
+         {63515574000,63518598000,120,"IST"}],  % 2012-09-22T23:00:00Z .. 2012-10-27T23:00:00Z
+      "Asia/Kamchatka" =>
         [{62522107200,62537914800,780,"+13"},  % 1981-03-31T12:00:00Z .. 1981-09-30T11:00:00Z
          {62553643200,62569450800,780,"+13"},  % 1982-03-31T12:00:00Z .. 1982-09-30T11:00:00Z
          {62585179200,62600986800,780,"+13"},  % 1983-03-31T12:00:00Z .. 1983-09-30T11:00:00Z
@@ -8511,17 +9108,17 @@
          {63341964000,63360712800,780,"+13"},  % 2007-03-24T14:00:00Z .. 2007-10-27T14:00:00Z
          {63374018400,63392162400,780,"+13"},  % 2008-03-29T14:00:00Z .. 2008-10-25T14:00:00Z
          {63405468000,63423612000,780,"+13"},  % 2009-03-28T14:00:00Z .. 2009-10-24T14:00:00Z
-         {63455670000,63468370800,660,"+11"}]},  % 2010-10-30T15:00:00Z .. 2011-03-26T15:00:00Z
-      {"Asia/Karachi",
+         {63455670000,63468370800,660,"+11"}],  % 2010-10-30T15:00:00Z .. 2011-03-26T15:00:00Z
+      "Asia/Karachi" =>
         [{62167219200,62205994800,300,"+05"},  % 1970-01-01T00:00:00Z .. 1971-03-25T19:00:00Z
          {63185338800,63201060000,360,"PKST"},  % 2002-04-06T19:00:00Z .. 2002-10-05T18:00:00Z
          {63379479600,63392695200,360,"PKST"},  % 2008-05-31T19:00:00Z .. 2008-10-31T18:00:00Z
-         {63406954800,63424231200,360,"PKST"}]},  % 2009-04-14T19:00:00Z .. 2009-10-31T18:00:00Z
-      {"Asia/Kathmandu",
-        [{62167219200,62672121000,330,"+0530"}]},  % 1970-01-01T00:00:00Z .. 1985-12-31T18:30:00Z
-      {"Asia/Katmandu",
-        [{62167219200,62672121000,330,"+0530"}]},  % 1970-01-01T00:00:00Z .. 1985-12-31T18:30:00Z
-      {"Asia/Khandyga",
+         {63406954800,63424231200,360,"PKST"}],  % 2009-04-14T19:00:00Z .. 2009-10-31T18:00:00Z
+      "Asia/Kathmandu" =>
+        [{62167219200,62672121000,330,"+0530"}],  % 1970-01-01T00:00:00Z .. 1985-12-31T18:30:00Z
+      "Asia/Katmandu" =>
+        [{62167219200,62672121000,330,"+0530"}],  % 1970-01-01T00:00:00Z .. 1985-12-31T18:30:00Z
+      "Asia/Khandyga" =>
         [{62522118000,62537925600,600,"+10"},  % 1981-03-31T15:00:00Z .. 1981-09-30T14:00:00Z
          {62553654000,62569461600,600,"+10"},  % 1982-03-31T15:00:00Z .. 1982-09-30T14:00:00Z
          {62585190000,62600997600,600,"+10"},  % 1983-03-31T15:00:00Z .. 1983-09-30T14:00:00Z
@@ -8561,8 +9158,8 @@
          {63436924800,63455673600,660,"+11"},  % 2010-03-27T16:00:00Z .. 2010-10-30T16:00:00Z
          {63455673600,63468374400,600,"+10"},  % 2010-10-30T16:00:00Z .. 2011-03-26T16:00:00Z
          {63468374400,63483051600,660,"+11"},  % 2011-03-26T16:00:00Z .. 2011-09-12T13:00:00Z
-         {63483051600,63581472000,600,"+10"}]},  % 2011-09-12T13:00:00Z .. 2014-10-25T16:00:00Z
-      {"Asia/Krasnoyarsk",
+         {63483051600,63581472000,600,"+10"}],  % 2011-09-12T13:00:00Z .. 2014-10-25T16:00:00Z
+      "Asia/Krasnoyarsk" =>
         [{62522125200,62537932800,480,"+08"},  % 1981-03-31T17:00:00Z .. 1981-09-30T16:00:00Z
          {62553661200,62569468800,480,"+08"},  % 1982-03-31T17:00:00Z .. 1982-09-30T16:00:00Z
          {62585197200,62601004800,480,"+08"},  % 1983-03-31T17:00:00Z .. 1983-09-30T16:00:00Z
@@ -8593,10 +9190,10 @@
          {63374036400,63392180400,480,"+08"},  % 2008-03-29T19:00:00Z .. 2008-10-25T19:00:00Z
          {63405486000,63423630000,480,"+08"},  % 2009-03-28T19:00:00Z .. 2009-10-24T19:00:00Z
          {63436935600,63455684400,480,"+08"},  % 2010-03-27T19:00:00Z .. 2010-10-30T19:00:00Z
-         {63468385200,63581479200,480,"+08"}]},  % 2011-03-26T19:00:00Z .. 2014-10-25T18:00:00Z
-      {"Asia/Kuala_Lumpur",
-        [{62167219200,62545881600,450,"+0730"}]},  % 1970-01-01T00:00:00Z .. 1981-12-31T16:00:00Z
-      {"Asia/Macao",
+         {63468385200,63581479200,480,"+08"}],  % 2011-03-26T19:00:00Z .. 2014-10-25T18:00:00Z
+      "Asia/Kuala_Lumpur" =>
+        [{62167219200,62545881600,450,"+0730"}],  % 1970-01-01T00:00:00Z .. 1981-12-31T16:00:00Z
+      "Asia/Macao" =>
         [{62176534200,62192255400,540,"CDT"},  % 1970-04-18T19:30:00Z .. 1970-10-17T18:30:00Z
          {62207983800,62223705000,540,"CDT"},  % 1971-04-17T19:30:00Z .. 1971-10-16T18:30:00Z
          {62239433400,62255759400,540,"CDT"},  % 1972-04-15T19:30:00Z .. 1972-10-21T18:30:00Z
@@ -8604,8 +9201,8 @@
          {62293260600,62318658600,540,"CDT"},  % 1973-12-29T19:30:00Z .. 1974-10-19T18:30:00Z
          {62334387000,62350108200,540,"CDT"},  % 1975-04-19T19:30:00Z .. 1975-10-18T18:30:00Z
          {62365836600,62381557800,540,"CDT"},  % 1976-04-17T19:30:00Z .. 1976-10-16T18:30:00Z
-         {62462604600,62476511400,540,"CDT"}]},  % 1979-05-12T19:30:00Z .. 1979-10-20T18:30:00Z
-      {"Asia/Macau",
+         {62462604600,62476511400,540,"CDT"}],  % 1979-05-12T19:30:00Z .. 1979-10-20T18:30:00Z
+      "Asia/Macau" =>
         [{62176534200,62192255400,540,"CDT"},  % 1970-04-18T19:30:00Z .. 1970-10-17T18:30:00Z
          {62207983800,62223705000,540,"CDT"},  % 1971-04-17T19:30:00Z .. 1971-10-16T18:30:00Z
          {62239433400,62255759400,540,"CDT"},  % 1972-04-15T19:30:00Z .. 1972-10-21T18:30:00Z
@@ -8613,8 +9210,8 @@
          {62293260600,62318658600,540,"CDT"},  % 1973-12-29T19:30:00Z .. 1974-10-19T18:30:00Z
          {62334387000,62350108200,540,"CDT"},  % 1975-04-19T19:30:00Z .. 1975-10-18T18:30:00Z
          {62365836600,62381557800,540,"CDT"},  % 1976-04-17T19:30:00Z .. 1976-10-16T18:30:00Z
-         {62462604600,62476511400,540,"CDT"}]},  % 1979-05-12T19:30:00Z .. 1979-10-20T18:30:00Z
-      {"Asia/Magadan",
+         {62462604600,62476511400,540,"CDT"}],  % 1979-05-12T19:30:00Z .. 1979-10-20T18:30:00Z
+      "Asia/Magadan" =>
         [{62522110800,62537918400,720,"+12"},  % 1981-03-31T13:00:00Z .. 1981-09-30T12:00:00Z
          {62553646800,62569454400,720,"+12"},  % 1982-03-31T13:00:00Z .. 1982-09-30T12:00:00Z
          {62585182800,62600990400,720,"+12"},  % 1983-03-31T13:00:00Z .. 1983-09-30T12:00:00Z
@@ -8646,11 +9243,11 @@
          {63405471600,63423615600,720,"+12"},  % 2009-03-28T15:00:00Z .. 2009-10-24T15:00:00Z
          {63436921200,63455670000,720,"+12"},  % 2010-03-27T15:00:00Z .. 2010-10-30T15:00:00Z
          {63468370800,63581464800,720,"+12"},  % 2011-03-26T15:00:00Z .. 2014-10-25T14:00:00Z
-         {63581464800,63628646400,600,"+10"}]},  % 2014-10-25T14:00:00Z .. 2016-04-23T16:00:00Z
-      {"Asia/Manila",
+         {63581464800,63628646400,600,"+10"}],  % 2014-10-25T14:00:00Z .. 2016-04-23T16:00:00Z
+      "Asia/Manila" =>
         [{62395545600,62410921200,540,"PDT"},  % 1977-03-27T16:00:00Z .. 1977-09-21T15:00:00Z
-         {62810438400,62816396400,540,"PDT"}]},  % 1990-05-20T16:00:00Z .. 1990-07-28T15:00:00Z
-      {"Asia/Nicosia",
+         {62810438400,62816396400,540,"PDT"}],  % 1990-05-20T16:00:00Z .. 1990-07-28T15:00:00Z
+      "Asia/Nicosia" =>
         [{62174739600,62192883600,120,"EET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,120,"EET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,120,"EET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -8702,8 +9299,8 @@
          {63011163600,63013597200,120,"EET"},  % 1996-09-28T21:00:00Z .. 1996-10-27T01:00:00Z
          {63026892000,63026902800,180,"EEST"},  % 1997-03-29T22:00:00Z .. 1997-03-30T01:00:00Z
          {63042613200,63045046800,120,"EET"},  % 1997-09-27T21:00:00Z .. 1997-10-26T01:00:00Z
-         {63058341600,63058352400,180,"EEST"}]},  % 1998-03-28T22:00:00Z .. 1998-03-29T01:00:00Z
-      {"Asia/Novokuznetsk",
+         {63058341600,63058352400,180,"EEST"}],  % 1998-03-28T22:00:00Z .. 1998-03-29T01:00:00Z
+      "Asia/Novokuznetsk" =>
         [{62522125200,62537932800,480,"+08"},  % 1981-03-31T17:00:00Z .. 1981-09-30T16:00:00Z
          {62553661200,62569468800,480,"+08"},  % 1982-03-31T17:00:00Z .. 1982-09-30T16:00:00Z
          {62585197200,62601004800,480,"+08"},  % 1983-03-31T17:00:00Z .. 1983-09-30T16:00:00Z
@@ -8733,8 +9330,8 @@
          {63341982000,63360730800,480,"+08"},  % 2007-03-24T19:00:00Z .. 2007-10-27T19:00:00Z
          {63374036400,63392180400,480,"+08"},  % 2008-03-29T19:00:00Z .. 2008-10-25T19:00:00Z
          {63405486000,63423630000,480,"+08"},  % 2009-03-28T19:00:00Z .. 2009-10-24T19:00:00Z
-         {63455688000,63468388800,360,"+06"}]},  % 2010-10-30T20:00:00Z .. 2011-03-26T20:00:00Z
-      {"Asia/Novosibirsk",
+         {63455688000,63468388800,360,"+06"}],  % 2010-10-30T20:00:00Z .. 2011-03-26T20:00:00Z
+      "Asia/Novosibirsk" =>
         [{62522125200,62537932800,480,"+08"},  % 1981-03-31T17:00:00Z .. 1981-09-30T16:00:00Z
          {62553661200,62569468800,480,"+08"},  % 1982-03-31T17:00:00Z .. 1982-09-30T16:00:00Z
          {62585197200,62601004800,480,"+08"},  % 1983-03-31T17:00:00Z .. 1983-09-30T16:00:00Z
@@ -8766,8 +9363,8 @@
          {63392184000,63405489600,360,"+06"},  % 2008-10-25T20:00:00Z .. 2009-03-28T20:00:00Z
          {63423633600,63436939200,360,"+06"},  % 2009-10-24T20:00:00Z .. 2010-03-27T20:00:00Z
          {63455688000,63468388800,360,"+06"},  % 2010-10-30T20:00:00Z .. 2011-03-26T20:00:00Z
-         {63581482800,63636523200,360,"+06"}]},  % 2014-10-25T19:00:00Z .. 2016-07-23T20:00:00Z
-      {"Asia/Omsk",
+         {63581482800,63636523200,360,"+06"}],  % 2014-10-25T19:00:00Z .. 2016-07-23T20:00:00Z
+      "Asia/Omsk" =>
         [{62522128800,62537936400,420,"+07"},  % 1981-03-31T18:00:00Z .. 1981-09-30T17:00:00Z
          {62553664800,62569472400,420,"+07"},  % 1982-03-31T18:00:00Z .. 1982-09-30T17:00:00Z
          {62585200800,62601008400,420,"+07"},  % 1983-03-31T18:00:00Z .. 1983-09-30T17:00:00Z
@@ -8798,8 +9395,8 @@
          {63374040000,63392184000,420,"+07"},  % 2008-03-29T20:00:00Z .. 2008-10-25T20:00:00Z
          {63405489600,63423633600,420,"+07"},  % 2009-03-28T20:00:00Z .. 2009-10-24T20:00:00Z
          {63436939200,63455688000,420,"+07"},  % 2010-03-27T20:00:00Z .. 2010-10-30T20:00:00Z
-         {63468388800,63581482800,420,"+07"}]},  % 2011-03-26T20:00:00Z .. 2014-10-25T19:00:00Z
-      {"Asia/Oral",
+         {63468388800,63581482800,420,"+07"}],  % 2011-03-26T20:00:00Z .. 2014-10-25T19:00:00Z
+      "Asia/Oral" =>
         [{62522132400,62569476000,360,"+06"},  % 1981-03-31T19:00:00Z .. 1982-09-30T18:00:00Z
          {62585204400,62601012000,360,"+06"},  % 1983-03-31T19:00:00Z .. 1983-09-30T18:00:00Z
          {62616826800,62632558800,360,"+06"},  % 1984-03-31T19:00:00Z .. 1984-09-29T21:00:00Z
@@ -8821,14 +9418,14 @@
          {63139989600,63152690400,240,"+04"},  % 2000-10-28T22:00:00Z .. 2001-03-24T22:00:00Z
          {63171439200,63184744800,240,"+04"},  % 2001-10-27T22:00:00Z .. 2002-03-30T22:00:00Z
          {63202888800,63216194400,240,"+04"},  % 2002-10-26T22:00:00Z .. 2003-03-29T22:00:00Z
-         {63234338400,63247644000,240,"+04"}]},  % 2003-10-25T22:00:00Z .. 2004-03-27T22:00:00Z
-      {"Asia/Pontianak",
-        [{62167219200,62735184000,480,"WITA"}]},  % 1970-01-01T00:00:00Z .. 1987-12-31T16:00:00Z
-      {"Asia/Pyongyang",
-        [{63606783600,63692665200,510,"KST"}]},  % 2015-08-14T15:00:00Z .. 2018-05-04T15:00:00Z
-      {"Asia/Qatar",
-        [{62167219200,62243409600,240,"+04"}]},  % 1970-01-01T00:00:00Z .. 1972-05-31T20:00:00Z
-      {"Asia/Qostanay",
+         {63234338400,63247644000,240,"+04"}],  % 2003-10-25T22:00:00Z .. 2004-03-27T22:00:00Z
+      "Asia/Pontianak" =>
+        [{62167219200,62735184000,480,"WITA"}],  % 1970-01-01T00:00:00Z .. 1987-12-31T16:00:00Z
+      "Asia/Pyongyang" =>
+        [{63606783600,63692665200,510,"KST"}],  % 2015-08-14T15:00:00Z .. 2018-05-04T15:00:00Z
+      "Asia/Qatar" =>
+        [{62167219200,62243409600,240,"+04"}],  % 1970-01-01T00:00:00Z .. 1972-05-31T20:00:00Z
+      "Asia/Qostanay" =>
         [{62522132400,62569476000,360,"+06"},  % 1981-03-31T19:00:00Z .. 1982-09-30T18:00:00Z
          {62585204400,62601012000,360,"+06"},  % 1983-03-31T19:00:00Z .. 1983-09-30T18:00:00Z
          {62616826800,62632558800,360,"+06"},  % 1984-03-31T19:00:00Z .. 1984-09-29T21:00:00Z
@@ -8851,8 +9448,8 @@
          {63152686800,63171435600,360,"+06"},  % 2001-03-24T21:00:00Z .. 2001-10-27T21:00:00Z
          {63184741200,63202885200,360,"+06"},  % 2002-03-30T21:00:00Z .. 2002-10-26T21:00:00Z
          {63216190800,63234334800,360,"+06"},  % 2003-03-29T21:00:00Z .. 2003-10-25T21:00:00Z
-         {63247640400,63876448800,360,"+06"}]},  % 2004-03-27T21:00:00Z .. 2024-02-29T18:00:00Z
-      {"Asia/Qyzylorda",
+         {63247640400,63876448800,360,"+06"}],  % 2004-03-27T21:00:00Z .. 2024-02-29T18:00:00Z
+      "Asia/Qyzylorda" =>
         [{62522132400,62569476000,360,"+06"},  % 1981-03-31T19:00:00Z .. 1982-09-30T18:00:00Z
          {62585204400,62601012000,360,"+06"},  % 1983-03-31T19:00:00Z .. 1983-09-30T18:00:00Z
          {62616826800,62632558800,360,"+06"},  % 1984-03-31T19:00:00Z .. 1984-09-29T21:00:00Z
@@ -8874,10 +9471,10 @@
          {63152686800,63171435600,360,"+06"},  % 2001-03-24T21:00:00Z .. 2001-10-27T21:00:00Z
          {63184741200,63202885200,360,"+06"},  % 2002-03-30T21:00:00Z .. 2002-10-26T21:00:00Z
          {63216190800,63234334800,360,"+06"},  % 2003-03-29T21:00:00Z .. 2003-10-25T21:00:00Z
-         {63247640400,63712548000,360,"+06"}]},  % 2004-03-27T21:00:00Z .. 2018-12-20T18:00:00Z
-      {"Asia/Saigon",
-        [{62167219200,62339040000,480,"+08"}]},  % 1970-01-01T00:00:00Z .. 1975-06-12T16:00:00Z
-      {"Asia/Sakhalin",
+         {63247640400,63712548000,360,"+06"}],  % 2004-03-27T21:00:00Z .. 2018-12-20T18:00:00Z
+      "Asia/Saigon" =>
+        [{62167219200,62339040000,480,"+08"}],  % 1970-01-01T00:00:00Z .. 1975-06-12T16:00:00Z
+      "Asia/Sakhalin" =>
         [{62522110800,62537918400,720,"+12"},  % 1981-03-31T13:00:00Z .. 1981-09-30T12:00:00Z
          {62553646800,62569454400,720,"+12"},  % 1982-03-31T13:00:00Z .. 1982-09-30T12:00:00Z
          {62585182800,62600990400,720,"+12"},  % 1983-03-31T13:00:00Z .. 1983-09-30T12:00:00Z
@@ -8908,8 +9505,8 @@
          {63392169600,63405475200,600,"+10"},  % 2008-10-25T16:00:00Z .. 2009-03-28T16:00:00Z
          {63423619200,63436924800,600,"+10"},  % 2009-10-24T16:00:00Z .. 2010-03-27T16:00:00Z
          {63455673600,63468374400,600,"+10"},  % 2010-10-30T16:00:00Z .. 2011-03-26T16:00:00Z
-         {63581468400,63626227200,600,"+10"}]},  % 2014-10-25T15:00:00Z .. 2016-03-26T16:00:00Z
-      {"Asia/Samarkand",
+         {63581468400,63626227200,600,"+10"}],  % 2014-10-25T15:00:00Z .. 2016-03-26T16:00:00Z
+      "Asia/Samarkand" =>
         [{62522132400,62569476000,360,"+06"},  % 1981-03-31T19:00:00Z .. 1982-09-30T18:00:00Z
          {62585204400,62601012000,360,"+06"},  % 1983-03-31T19:00:00Z .. 1983-09-30T18:00:00Z
          {62616826800,62632558800,360,"+06"},  % 1984-03-31T19:00:00Z .. 1984-09-29T21:00:00Z
@@ -8919,20 +9516,20 @@
          {62742632400,62758357200,360,"+06"},  % 1988-03-26T21:00:00Z .. 1988-09-24T21:00:00Z
          {62774082000,62789806800,360,"+06"},  % 1989-03-25T21:00:00Z .. 1989-09-23T21:00:00Z
          {62805531600,62821861200,360,"+06"},  % 1990-03-24T21:00:00Z .. 1990-09-29T21:00:00Z
-         {62837586000,62853310800,360,"+06"}]},  % 1991-03-30T21:00:00Z .. 1991-09-28T21:00:00Z
-      {"Asia/Seoul",
+         {62837586000,62853310800,360,"+06"}],  % 1991-03-30T21:00:00Z .. 1991-09-28T21:00:00Z
+      "Asia/Seoul" =>
         [{62714797200,62728102800,600,"KDT"},  % 1987-05-09T17:00:00Z .. 1987-10-10T17:00:00Z
-         {62746246800,62759552400,600,"KDT"}]},  % 1988-05-07T17:00:00Z .. 1988-10-08T17:00:00Z
-      {"Asia/Shanghai",
+         {62746246800,62759552400,600,"KDT"}],  % 1988-05-07T17:00:00Z .. 1988-10-08T17:00:00Z
+      "Asia/Shanghai" =>
         [{62682746400,62694234000,540,"CDT"},  % 1986-05-03T18:00:00Z .. 1986-09-13T17:00:00Z
          {62712381600,62725683600,540,"CDT"},  % 1987-04-11T18:00:00Z .. 1987-09-12T17:00:00Z
          {62744436000,62757133200,540,"CDT"},  % 1988-04-16T18:00:00Z .. 1988-09-10T17:00:00Z
          {62775885600,62789187600,540,"CDT"},  % 1989-04-15T18:00:00Z .. 1989-09-16T17:00:00Z
          {62807335200,62820637200,540,"CDT"},  % 1990-04-14T18:00:00Z .. 1990-09-15T17:00:00Z
-         {62838784800,62852086800,540,"CDT"}]},  % 1991-04-13T18:00:00Z .. 1991-09-14T17:00:00Z
-      {"Asia/Singapore",
-        [{62167219200,62545881600,450,"+0730"}]},  % 1970-01-01T00:00:00Z .. 1981-12-31T16:00:00Z
-      {"Asia/Srednekolymsk",
+         {62838784800,62852086800,540,"CDT"}],  % 1991-04-13T18:00:00Z .. 1991-09-14T17:00:00Z
+      "Asia/Singapore" =>
+        [{62167219200,62545881600,450,"+0730"}],  % 1970-01-01T00:00:00Z .. 1981-12-31T16:00:00Z
+      "Asia/Srednekolymsk" =>
         [{62522110800,62537918400,720,"+12"},  % 1981-03-31T13:00:00Z .. 1981-09-30T12:00:00Z
          {62553646800,62569454400,720,"+12"},  % 1982-03-31T13:00:00Z .. 1982-09-30T12:00:00Z
          {62585182800,62600990400,720,"+12"},  % 1983-03-31T13:00:00Z .. 1983-09-30T12:00:00Z
@@ -8963,12 +9560,12 @@
          {63374022000,63392166000,720,"+12"},  % 2008-03-29T15:00:00Z .. 2008-10-25T15:00:00Z
          {63405471600,63423615600,720,"+12"},  % 2009-03-28T15:00:00Z .. 2009-10-24T15:00:00Z
          {63436921200,63455670000,720,"+12"},  % 2010-03-27T15:00:00Z .. 2010-10-30T15:00:00Z
-         {63468370800,63581464800,720,"+12"}]},  % 2011-03-26T15:00:00Z .. 2014-10-25T14:00:00Z
-      {"Asia/Taipei",
+         {63468370800,63581464800,720,"+12"}],  % 2011-03-26T15:00:00Z .. 2014-10-25T14:00:00Z
+      "Asia/Taipei" =>
         [{62301196800,62317004400,540,"CDT"},  % 1974-03-31T16:00:00Z .. 1974-09-30T15:00:00Z
          {62332732800,62348540400,540,"CDT"},  % 1975-03-31T16:00:00Z .. 1975-09-30T15:00:00Z
-         {62466825600,62474770800,540,"CDT"}]},  % 1979-06-30T16:00:00Z .. 1979-09-30T15:00:00Z
-      {"Asia/Tashkent",
+         {62466825600,62474770800,540,"CDT"}],  % 1979-06-30T16:00:00Z .. 1979-09-30T15:00:00Z
+      "Asia/Tashkent" =>
         [{62167219200,62522128800,360,"+06"},  % 1970-01-01T00:00:00Z .. 1981-03-31T18:00:00Z
          {62522128800,62537936400,420,"+07"},  % 1981-03-31T18:00:00Z .. 1981-09-30T17:00:00Z
          {62537936400,62553664800,360,"+06"},  % 1981-09-30T17:00:00Z .. 1982-03-31T18:00:00Z
@@ -8989,8 +9586,8 @@
          {62774078400,62789803200,420,"+07"},  % 1989-03-25T20:00:00Z .. 1989-09-23T20:00:00Z
          {62789803200,62805528000,360,"+06"},  % 1989-09-23T20:00:00Z .. 1990-03-24T20:00:00Z
          {62805528000,62821857600,420,"+07"},  % 1990-03-24T20:00:00Z .. 1990-09-29T20:00:00Z
-         {62821857600,62853310800,360,"+06"}]},  % 1990-09-29T20:00:00Z .. 1991-09-28T21:00:00Z
-      {"Asia/Tbilisi",
+         {62821857600,62853310800,360,"+06"}],  % 1990-09-29T20:00:00Z .. 1991-09-28T21:00:00Z
+      "Asia/Tbilisi" =>
         [{62522136000,62537943600,300,"+05"},  % 1981-03-31T20:00:00Z .. 1981-09-30T19:00:00Z
          {62553672000,62569479600,300,"+05"},  % 1982-03-31T20:00:00Z .. 1982-09-30T19:00:00Z
          {62585208000,62601015600,300,"+05"},  % 1983-03-31T20:00:00Z .. 1983-09-30T19:00:00Z
@@ -9013,8 +9610,8 @@
          {63184737600,63202878000,300,"+05"},  % 2002-03-30T20:00:00Z .. 2002-10-26T19:00:00Z
          {63216187200,63234327600,300,"+05"},  % 2003-03-29T20:00:00Z .. 2003-10-25T19:00:00Z
          {63247636800,63255495600,300,"+05"},  % 2004-03-27T20:00:00Z .. 2004-06-26T19:00:00Z
-         {63266396400,63279097200,180,"+03"}]},  % 2004-10-30T23:00:00Z .. 2005-03-26T23:00:00Z
-      {"Asia/Tehran",
+         {63266396400,63279097200,180,"+03"}],  % 2004-10-30T23:00:00Z .. 2005-03-26T23:00:00Z
+      "Asia/Tehran" =>
         [{62395039800,62413443000,270,"+0430"},  % 1977-03-21T19:30:00Z .. 1977-10-20T19:30:00Z
          {62413443000,62426836800,240,"+04"},  % 1977-10-20T19:30:00Z .. 1978-03-24T20:00:00Z
          {62426836800,62438328000,300,"+05"},  % 1978-03-24T20:00:00Z .. 1978-08-04T20:00:00Z
@@ -9050,8 +9647,8 @@
          {63720419400,63736313400,270,"+0430"},  % 2019-03-21T20:30:00Z .. 2019-09-21T19:30:00Z
          {63751955400,63767849400,270,"+0430"},  % 2020-03-20T20:30:00Z .. 2020-09-20T19:30:00Z
          {63783577800,63799471800,270,"+0430"},  % 2021-03-21T20:30:00Z .. 2021-09-21T19:30:00Z
-         {63815113800,63831007800,270,"+0430"}]},  % 2022-03-21T20:30:00Z .. 2022-09-21T19:30:00Z
-      {"Asia/Tel_Aviv",
+         {63815113800,63831007800,270,"+0430"}],  % 2022-03-21T20:30:00Z .. 2022-09-21T19:30:00Z
+      "Asia/Tel_Aviv" =>
         [{62174563200,62192876400,120,"IST"},  % 1970-03-27T00:00:00Z .. 1970-10-24T23:00:00Z
          {62206012800,62224930800,120,"IST"},  % 1971-03-26T00:00:00Z .. 1971-10-30T23:00:00Z
          {62237462400,62256380400,120,"IST"},  % 1972-03-24T00:00:00Z .. 1972-10-28T23:00:00Z
@@ -9123,12 +9720,12 @@
          {63468230400,63468835200,120,"IST"},  % 2011-03-25T00:00:00Z .. 2011-04-01T00:00:00Z
          {63484729200,63487148400,120,"IST"},  % 2011-10-01T23:00:00Z .. 2011-10-29T23:00:00Z
          {63499680000,63500284800,120,"IST"},  % 2012-03-23T00:00:00Z .. 2012-03-30T00:00:00Z
-         {63515574000,63518598000,120,"IST"}]},  % 2012-09-22T23:00:00Z .. 2012-10-27T23:00:00Z
-      {"Asia/Thimbu",
-        [{62167219200,62727244200,330,"+0530"}]},  % 1970-01-01T00:00:00Z .. 1987-09-30T18:30:00Z
-      {"Asia/Thimphu",
-        [{62167219200,62727244200,330,"+0530"}]},  % 1970-01-01T00:00:00Z .. 1987-09-30T18:30:00Z
-      {"Asia/Tomsk",
+         {63515574000,63518598000,120,"IST"}],  % 2012-09-22T23:00:00Z .. 2012-10-27T23:00:00Z
+      "Asia/Thimbu" =>
+        [{62167219200,62727244200,330,"+0530"}],  % 1970-01-01T00:00:00Z .. 1987-09-30T18:30:00Z
+      "Asia/Thimphu" =>
+        [{62167219200,62727244200,330,"+0530"}],  % 1970-01-01T00:00:00Z .. 1987-09-30T18:30:00Z
+      "Asia/Tomsk" =>
         [{62522125200,62537932800,480,"+08"},  % 1981-03-31T17:00:00Z .. 1981-09-30T16:00:00Z
          {62553661200,62569468800,480,"+08"},  % 1982-03-31T17:00:00Z .. 1982-09-30T16:00:00Z
          {62585197200,62601004800,480,"+08"},  % 1983-03-31T17:00:00Z .. 1983-09-30T16:00:00Z
@@ -9160,8 +9757,8 @@
          {63392184000,63405489600,360,"+06"},  % 2008-10-25T20:00:00Z .. 2009-03-28T20:00:00Z
          {63423633600,63436939200,360,"+06"},  % 2009-10-24T20:00:00Z .. 2010-03-27T20:00:00Z
          {63455688000,63468388800,360,"+06"},  % 2010-10-30T20:00:00Z .. 2011-03-26T20:00:00Z
-         {63581482800,63631684800,360,"+06"}]},  % 2014-10-25T19:00:00Z .. 2016-05-28T20:00:00Z
-      {"Asia/Ulaanbaatar",
+         {63581482800,63631684800,360,"+06"}],  % 2014-10-25T19:00:00Z .. 2016-05-28T20:00:00Z
+      "Asia/Ulaanbaatar" =>
         [{62167219200,62419654800,420,"+07"},  % 1970-01-01T00:00:00Z .. 1977-12-31T17:00:00Z
          {62585193600,62601001200,540,"+09"},  % 1983-03-31T16:00:00Z .. 1983-09-30T15:00:00Z
          {62616816000,62632537200,540,"+09"},  % 1984-03-31T16:00:00Z .. 1984-09-29T15:00:00Z
@@ -9186,8 +9783,8 @@
          {63278992800,63294714000,540,"+09"},  % 2005-03-25T18:00:00Z .. 2005-09-23T17:00:00Z
          {63310442400,63326768400,540,"+09"},  % 2006-03-24T18:00:00Z .. 2006-09-29T17:00:00Z
          {63594698400,63610412400,540,"+09"},  % 2015-03-27T18:00:00Z .. 2015-09-25T15:00:00Z
-         {63626148000,63641862000,540,"+09"}]},  % 2016-03-25T18:00:00Z .. 2016-09-23T15:00:00Z
-      {"Asia/Ulan_Bator",
+         {63626148000,63641862000,540,"+09"}],  % 2016-03-25T18:00:00Z .. 2016-09-23T15:00:00Z
+      "Asia/Ulan_Bator" =>
         [{62167219200,62419654800,420,"+07"},  % 1970-01-01T00:00:00Z .. 1977-12-31T17:00:00Z
          {62585193600,62601001200,540,"+09"},  % 1983-03-31T16:00:00Z .. 1983-09-30T15:00:00Z
          {62616816000,62632537200,540,"+09"},  % 1984-03-31T16:00:00Z .. 1984-09-29T15:00:00Z
@@ -9212,8 +9809,8 @@
          {63278992800,63294714000,540,"+09"},  % 2005-03-25T18:00:00Z .. 2005-09-23T17:00:00Z
          {63310442400,63326768400,540,"+09"},  % 2006-03-24T18:00:00Z .. 2006-09-29T17:00:00Z
          {63594698400,63610412400,540,"+09"},  % 2015-03-27T18:00:00Z .. 2015-09-25T15:00:00Z
-         {63626148000,63641862000,540,"+09"}]},  % 2016-03-25T18:00:00Z .. 2016-09-23T15:00:00Z
-      {"Asia/Ust-Nera",
+         {63626148000,63641862000,540,"+09"}],  % 2016-03-25T18:00:00Z .. 2016-09-23T15:00:00Z
+      "Asia/Ust-Nera" =>
         [{62167219200,62522118000,540,"+09"},  % 1970-01-01T00:00:00Z .. 1981-03-31T15:00:00Z
          {62522118000,62537918400,720,"+12"},  % 1981-03-31T15:00:00Z .. 1981-09-30T12:00:00Z
          {62537918400,62553646800,660,"+11"},  % 1981-09-30T12:00:00Z .. 1982-03-31T13:00:00Z
@@ -9275,8 +9872,8 @@
          {63436921200,63455670000,720,"+12"},  % 2010-03-27T15:00:00Z .. 2010-10-30T15:00:00Z
          {63455670000,63468370800,660,"+11"},  % 2010-10-30T15:00:00Z .. 2011-03-26T15:00:00Z
          {63468370800,63483048000,720,"+12"},  % 2011-03-26T15:00:00Z .. 2011-09-12T12:00:00Z
-         {63483048000,63581468400,660,"+11"}]},  % 2011-09-12T12:00:00Z .. 2014-10-25T15:00:00Z
-      {"Asia/Vladivostok",
+         {63483048000,63581468400,660,"+11"}],  % 2011-09-12T12:00:00Z .. 2014-10-25T15:00:00Z
+      "Asia/Vladivostok" =>
         [{62522114400,62537922000,660,"+11"},  % 1981-03-31T14:00:00Z .. 1981-09-30T13:00:00Z
          {62553650400,62569458000,660,"+11"},  % 1982-03-31T14:00:00Z .. 1982-09-30T13:00:00Z
          {62585186400,62600994000,660,"+11"},  % 1983-03-31T14:00:00Z .. 1983-09-30T13:00:00Z
@@ -9307,8 +9904,8 @@
          {63374025600,63392169600,660,"+11"},  % 2008-03-29T16:00:00Z .. 2008-10-25T16:00:00Z
          {63405475200,63423619200,660,"+11"},  % 2009-03-28T16:00:00Z .. 2009-10-24T16:00:00Z
          {63436924800,63455673600,660,"+11"},  % 2010-03-27T16:00:00Z .. 2010-10-30T16:00:00Z
-         {63468374400,63581468400,660,"+11"}]},  % 2011-03-26T16:00:00Z .. 2014-10-25T15:00:00Z
-      {"Asia/Yakutsk",
+         {63468374400,63581468400,660,"+11"}],  % 2011-03-26T16:00:00Z .. 2014-10-25T15:00:00Z
+      "Asia/Yakutsk" =>
         [{62522118000,62537925600,600,"+10"},  % 1981-03-31T15:00:00Z .. 1981-09-30T14:00:00Z
          {62553654000,62569461600,600,"+10"},  % 1982-03-31T15:00:00Z .. 1982-09-30T14:00:00Z
          {62585190000,62600997600,600,"+10"},  % 1983-03-31T15:00:00Z .. 1983-09-30T14:00:00Z
@@ -9339,8 +9936,8 @@
          {63374029200,63392173200,600,"+10"},  % 2008-03-29T17:00:00Z .. 2008-10-25T17:00:00Z
          {63405478800,63423622800,600,"+10"},  % 2009-03-28T17:00:00Z .. 2009-10-24T17:00:00Z
          {63436928400,63455677200,600,"+10"},  % 2010-03-27T17:00:00Z .. 2010-10-30T17:00:00Z
-         {63468378000,63581472000,600,"+10"}]},  % 2011-03-26T17:00:00Z .. 2014-10-25T16:00:00Z
-      {"Asia/Yekaterinburg",
+         {63468378000,63581472000,600,"+10"}],  % 2011-03-26T17:00:00Z .. 2014-10-25T16:00:00Z
+      "Asia/Yekaterinburg" =>
         [{62522132400,62537940000,360,"+06"},  % 1981-03-31T19:00:00Z .. 1981-09-30T18:00:00Z
          {62553668400,62569476000,360,"+06"},  % 1982-03-31T19:00:00Z .. 1982-09-30T18:00:00Z
          {62585204400,62601012000,360,"+06"},  % 1983-03-31T19:00:00Z .. 1983-09-30T18:00:00Z
@@ -9371,8 +9968,8 @@
          {63374043600,63392187600,360,"+06"},  % 2008-03-29T21:00:00Z .. 2008-10-25T21:00:00Z
          {63405493200,63423637200,360,"+06"},  % 2009-03-28T21:00:00Z .. 2009-10-24T21:00:00Z
          {63436942800,63455691600,360,"+06"},  % 2010-03-27T21:00:00Z .. 2010-10-30T21:00:00Z
-         {63468392400,63581486400,360,"+06"}]},  % 2011-03-26T21:00:00Z .. 2014-10-25T20:00:00Z
-      {"Asia/Yerevan",
+         {63468392400,63581486400,360,"+06"}],  % 2011-03-26T21:00:00Z .. 2014-10-25T20:00:00Z
+      "Asia/Yerevan" =>
         [{62522136000,62537943600,300,"+05"},  % 1981-03-31T20:00:00Z .. 1981-09-30T19:00:00Z
          {62553672000,62569479600,300,"+05"},  % 1982-03-31T20:00:00Z .. 1982-09-30T19:00:00Z
          {62585208000,62601015600,300,"+05"},  % 1983-03-31T20:00:00Z .. 1983-09-30T19:00:00Z
@@ -9401,8 +9998,8 @@
          {63374047200,63392191200,300,"+05"},  % 2008-03-29T22:00:00Z .. 2008-10-25T22:00:00Z
          {63405496800,63423640800,300,"+05"},  % 2009-03-28T22:00:00Z .. 2009-10-24T22:00:00Z
          {63436946400,63455695200,300,"+05"},  % 2010-03-27T22:00:00Z .. 2010-10-30T22:00:00Z
-         {63468396000,63487144800,300,"+05"}]},  % 2011-03-26T22:00:00Z .. 2011-10-29T22:00:00Z
-      {"Atlantic/Azores",
+         {63468396000,63487144800,300,"+05"}],  % 2011-03-26T22:00:00Z .. 2011-10-29T22:00:00Z
+      "Atlantic/Azores" =>
         [{62174739600,62192883600,-60,"-01"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,-60,"-01"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,-60,"-01"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -9430,8 +10027,8 @@
          {62900499600,62907498000,60,"WEST"},  % 1993-03-28T01:00:00Z .. 1993-06-17T01:00:00Z
          {62916224400,62919248400,-60,"-01"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,-60,"-01"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,-60,"-01"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Atlantic/Bermuda",
+         {62979123600,62982147600,-60,"-01"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Atlantic/Bermuda" =>
         [{62172943200,62193502800,-240,"AST"},  % 1970-03-08T06:00:00Z .. 1970-11-01T05:00:00Z
          {62204997600,62225557200,-240,"AST"},  % 1971-03-14T06:00:00Z .. 1971-11-07T05:00:00Z
          {62236447200,62257006800,-240,"AST"},  % 1972-03-12T06:00:00Z .. 1972-11-05T05:00:00Z
@@ -9501,8 +10098,8 @@
          {63277912800,63279727200,-240,"AST"},  % 2005-03-13T06:00:00Z .. 2005-04-03T06:00:00Z
          {63297867600,63298472400,-240,"AST"},  % 2005-10-30T05:00:00Z .. 2005-11-06T05:00:00Z
          {63309362400,63311176800,-240,"AST"},  % 2006-03-12T06:00:00Z .. 2006-04-02T06:00:00Z
-         {63329317200,63329922000,-240,"AST"}]},  % 2006-10-29T05:00:00Z .. 2006-11-05T05:00:00Z
-      {"Atlantic/Canary",
+         {63329317200,63329922000,-240,"AST"}],  % 2006-10-29T05:00:00Z .. 2006-11-05T05:00:00Z
+      "Atlantic/Canary" =>
         [{62174739600,62192883600,0,"WET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,0,"WET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,0,"WET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -9529,10 +10126,10 @@
          {62884774800,62887194000,0,"WET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,0,"WET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,0,"WET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,0,"WET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Atlantic/Cape_Verde",
-        [{62167219200,62353339200,-120,"-02"}]},  % 1970-01-01T00:00:00Z .. 1975-11-25T04:00:00Z
-      {"Atlantic/Faeroe",
+         {62979123600,62982147600,0,"WET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Atlantic/Cape_Verde" =>
+        [{62167219200,62353339200,-120,"-02"}],  % 1970-01-01T00:00:00Z .. 1975-11-25T04:00:00Z
+      "Atlantic/Faeroe" =>
         [{62174739600,62192883600,0,"WET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,0,"WET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,0,"WET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -9558,8 +10155,8 @@
          {62884774800,62887194000,0,"WET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,0,"WET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,0,"WET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,0,"WET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Atlantic/Faroe",
+         {62979123600,62982147600,0,"WET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Atlantic/Faroe" =>
         [{62174739600,62192883600,0,"WET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,0,"WET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,0,"WET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -9585,8 +10182,8 @@
          {62884774800,62887194000,0,"WET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,0,"WET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,0,"WET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,0,"WET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Atlantic/Jan_Mayen",
+         {62979123600,62982147600,0,"WET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Atlantic/Jan_Mayen" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -9613,8 +10210,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Atlantic/Madeira",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Atlantic/Madeira" =>
         [{62174739600,62192883600,0,"WET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,0,"WET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,0,"WET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -9645,8 +10242,8 @@
          {62884774800,62887194000,0,"WET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,0,"WET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,0,"WET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,0,"WET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Atlantic/Stanley",
+         {62979123600,62982147600,0,"WET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Atlantic/Stanley" =>
         [{62167219200,62587828800,-240,"-04"},  % 1970-01-01T00:00:00Z .. 1983-05-01T04:00:00Z
          {62600526000,62619271200,-120,"-02"},  % 1983-09-25T03:00:00Z .. 1984-04-29T02:00:00Z
          {62631370800,62650720800,-120,"-02"},  % 1984-09-16T03:00:00Z .. 1985-04-28T02:00:00Z
@@ -9674,8 +10271,8 @@
          {63343832400,63355932000,-240,"-04"},  % 2007-04-15T05:00:00Z .. 2007-09-02T06:00:00Z
          {63375886800,63387986400,-240,"-04"},  % 2008-04-20T05:00:00Z .. 2008-09-07T06:00:00Z
          {63407336400,63419436000,-240,"-04"},  % 2009-04-19T05:00:00Z .. 2009-09-06T06:00:00Z
-         {63438786000,63450885600,-240,"-04"}]},  % 2010-04-18T05:00:00Z .. 2010-09-05T06:00:00Z
-      {"Australia/ACT",
+         {63438786000,63450885600,-240,"-04"}],  % 2010-04-18T05:00:00Z .. 2010-09-05T06:00:00Z
+      "Australia/ACT" =>
         [{62167219200,62175312000,600,"AEST"},  % 1970-01-01T00:00:00Z .. 1970-04-04T16:00:00Z
          {62191036800,62206761600,600,"AEST"},  % 1970-10-03T16:00:00Z .. 1971-04-03T16:00:00Z
          {62222486400,62224905600,600,"AEST"},  % 1971-10-02T16:00:00Z .. 1971-10-30T16:00:00Z
@@ -9748,8 +10345,8 @@
          {63295401600,63297820800,600,"AEST"},  % 2005-10-01T16:00:00Z .. 2005-10-29T16:00:00Z
          {63326851200,63329270400,600,"AEST"},  % 2006-09-30T16:00:00Z .. 2006-10-28T16:00:00Z
          {63341971200,63342576000,600,"AEST"},  % 2007-03-24T16:00:00Z .. 2007-03-31T16:00:00Z
-         {63358905600,63360720000,600,"AEST"}]},  % 2007-10-06T16:00:00Z .. 2007-10-27T16:00:00Z
-      {"Australia/Adelaide",
+         {63358905600,63360720000,600,"AEST"}],  % 2007-10-06T16:00:00Z .. 2007-10-27T16:00:00Z
+      "Australia/Adelaide" =>
         [{62167219200,62175313800,570,"ACST"},  % 1970-01-01T00:00:00Z .. 1970-04-04T16:30:00Z
          {62191038600,62206763400,570,"ACST"},  % 1970-10-03T16:30:00Z .. 1971-04-03T16:30:00Z
          {62222488200,62224907400,570,"ACST"},  % 1971-10-02T16:30:00Z .. 1971-10-30T16:30:00Z
@@ -9823,13 +10420,13 @@
          {63295403400,63297822600,570,"ACST"},  % 2005-10-01T16:30:00Z .. 2005-10-29T16:30:00Z
          {63326853000,63329272200,570,"ACST"},  % 2006-09-30T16:30:00Z .. 2006-10-28T16:30:00Z
          {63341973000,63342577800,570,"ACST"},  % 2007-03-24T16:30:00Z .. 2007-03-31T16:30:00Z
-         {63358907400,63360721800,570,"ACST"}]},  % 2007-10-06T16:30:00Z .. 2007-10-27T16:30:00Z
-      {"Australia/Brisbane",
+         {63358907400,63360721800,570,"ACST"}],  % 2007-10-06T16:30:00Z .. 2007-10-27T16:30:00Z
+      "Australia/Brisbane" =>
         [{62224905600,62235187200,660,"AEDT"},  % 1971-10-30T16:00:00Z .. 1972-02-26T16:00:00Z
          {62792812800,62803699200,660,"AEDT"},  % 1989-10-28T16:00:00Z .. 1990-03-03T16:00:00Z
          {62824262400,62835148800,660,"AEDT"},  % 1990-10-27T16:00:00Z .. 1991-03-02T16:00:00Z
-         {62855712000,62866598400,660,"AEDT"}]},  % 1991-10-26T16:00:00Z .. 1992-02-29T16:00:00Z
-      {"Australia/Broken_Hill",
+         {62855712000,62866598400,660,"AEDT"}],  % 1991-10-26T16:00:00Z .. 1992-02-29T16:00:00Z
+      "Australia/Broken_Hill" =>
         [{62167219200,62175313800,570,"ACST"},  % 1970-01-01T00:00:00Z .. 1970-04-04T16:30:00Z
          {62191038600,62206763400,570,"ACST"},  % 1970-10-03T16:30:00Z .. 1971-04-03T16:30:00Z
          {62222488200,62224907400,570,"ACST"},  % 1971-10-02T16:30:00Z .. 1971-10-30T16:30:00Z
@@ -9902,8 +10499,8 @@
          {63295403400,63297822600,570,"ACST"},  % 2005-10-01T16:30:00Z .. 2005-10-29T16:30:00Z
          {63326853000,63329272200,570,"ACST"},  % 2006-09-30T16:30:00Z .. 2006-10-28T16:30:00Z
          {63341973000,63342577800,570,"ACST"},  % 2007-03-24T16:30:00Z .. 2007-03-31T16:30:00Z
-         {63358907400,63360721800,570,"ACST"}]},  % 2007-10-06T16:30:00Z .. 2007-10-27T16:30:00Z
-      {"Australia/Canberra",
+         {63358907400,63360721800,570,"ACST"}],  % 2007-10-06T16:30:00Z .. 2007-10-27T16:30:00Z
+      "Australia/Canberra" =>
         [{62167219200,62175312000,600,"AEST"},  % 1970-01-01T00:00:00Z .. 1970-04-04T16:00:00Z
          {62191036800,62206761600,600,"AEST"},  % 1970-10-03T16:00:00Z .. 1971-04-03T16:00:00Z
          {62222486400,62224905600,600,"AEST"},  % 1971-10-02T16:00:00Z .. 1971-10-30T16:00:00Z
@@ -9976,8 +10573,8 @@
          {63295401600,63297820800,600,"AEST"},  % 2005-10-01T16:00:00Z .. 2005-10-29T16:00:00Z
          {63326851200,63329270400,600,"AEST"},  % 2006-09-30T16:00:00Z .. 2006-10-28T16:00:00Z
          {63341971200,63342576000,600,"AEST"},  % 2007-03-24T16:00:00Z .. 2007-03-31T16:00:00Z
-         {63358905600,63360720000,600,"AEST"}]},  % 2007-10-06T16:00:00Z .. 2007-10-27T16:00:00Z
-      {"Australia/Currie",
+         {63358905600,63360720000,600,"AEST"}],  % 2007-10-06T16:00:00Z .. 2007-10-27T16:00:00Z
+      "Australia/Currie" =>
         [{62172892800,62175312000,600,"AEST"},  % 1970-03-07T16:00:00Z .. 1970-04-04T16:00:00Z
          {62191036800,62192851200,600,"AEST"},  % 1970-10-03T16:00:00Z .. 1970-10-24T16:00:00Z
          {62204947200,62206761600,600,"AEST"},  % 1971-03-13T16:00:00Z .. 1971-04-03T16:00:00Z
@@ -10036,15 +10633,15 @@
          {63216172800,63216777600,600,"AEST"},  % 2003-03-29T16:00:00Z .. 2003-04-05T16:00:00Z
          {63247622400,63248227200,600,"AEST"},  % 2004-03-27T16:00:00Z .. 2004-04-03T16:00:00Z
          {63279072000,63279676800,600,"AEST"},  % 2005-03-26T16:00:00Z .. 2005-04-02T16:00:00Z
-         {63341971200,63342576000,600,"AEST"}]},  % 2007-03-24T16:00:00Z .. 2007-03-31T16:00:00Z
-      {"Australia/Eucla",
+         {63341971200,63342576000,600,"AEST"}],  % 2007-03-24T16:00:00Z .. 2007-03-31T16:00:00Z
+      "Australia/Eucla" =>
         [{62319258900,62330145300,585,"+0945"},  % 1974-10-26T17:15:00Z .. 1975-03-01T17:15:00Z
          {62603514900,62614401300,585,"+0945"},  % 1983-10-29T17:15:00Z .. 1984-03-03T17:15:00Z
          {62857530900,62866602900,585,"+0945"},  % 1991-11-16T17:15:00Z .. 1992-02-29T17:15:00Z
          {63332298900,63341975700,585,"+0945"},  % 2006-12-02T17:15:00Z .. 2007-03-24T17:15:00Z
          {63360724500,63374030100,585,"+0945"},  % 2007-10-27T17:15:00Z .. 2008-03-29T17:15:00Z
-         {63392174100,63405479700,585,"+0945"}]},  % 2008-10-25T17:15:00Z .. 2009-03-28T17:15:00Z
-      {"Australia/Hobart",
+         {63392174100,63405479700,585,"+0945"}],  % 2008-10-25T17:15:00Z .. 2009-03-28T17:15:00Z
+      "Australia/Hobart" =>
         [{62172892800,62175312000,600,"AEST"},  % 1970-03-07T16:00:00Z .. 1970-04-04T16:00:00Z
          {62191036800,62192851200,600,"AEST"},  % 1970-10-03T16:00:00Z .. 1970-10-24T16:00:00Z
          {62204947200,62206761600,600,"AEST"},  % 1971-03-13T16:00:00Z .. 1971-04-03T16:00:00Z
@@ -10103,8 +10700,8 @@
          {63216172800,63216777600,600,"AEST"},  % 2003-03-29T16:00:00Z .. 2003-04-05T16:00:00Z
          {63247622400,63248227200,600,"AEST"},  % 2004-03-27T16:00:00Z .. 2004-04-03T16:00:00Z
          {63279072000,63279676800,600,"AEST"},  % 2005-03-26T16:00:00Z .. 2005-04-02T16:00:00Z
-         {63341971200,63342576000,600,"AEST"}]},  % 2007-03-24T16:00:00Z .. 2007-03-31T16:00:00Z
-      {"Australia/LHI",
+         {63341971200,63342576000,600,"AEST"}],  % 2007-03-24T16:00:00Z .. 2007-03-31T16:00:00Z
+      "Australia/LHI" =>
         [{62167219200,62519436000,600,"AEST"},  % 1970-01-01T00:00:00Z .. 1981-02-28T14:00:00Z
          {62519436000,62522463600,630,"+1030"},  % 1981-02-28T14:00:00Z .. 1981-04-04T15:00:00Z
          {62538190200,62540004600,630,"+1030"},  % 1981-10-03T15:30:00Z .. 1981-10-24T15:30:00Z
@@ -10162,15 +10759,15 @@
          {63295399800,63297819000,630,"+1030"},  % 2005-10-01T15:30:00Z .. 2005-10-29T15:30:00Z
          {63326849400,63329268600,630,"+1030"},  % 2006-09-30T15:30:00Z .. 2006-10-28T15:30:00Z
          {63341967600,63342572400,630,"+1030"},  % 2007-03-24T15:00:00Z .. 2007-03-31T15:00:00Z
-         {63358903800,63360718200,630,"+1030"}]},  % 2007-10-06T15:30:00Z .. 2007-10-27T15:30:00Z
-      {"Australia/Lindeman",
+         {63358903800,63360718200,630,"+1030"}],  % 2007-10-06T15:30:00Z .. 2007-10-27T15:30:00Z
+      "Australia/Lindeman" =>
         [{62224905600,62235187200,660,"AEDT"},  % 1971-10-30T16:00:00Z .. 1972-02-26T16:00:00Z
          {62792812800,62803699200,660,"AEDT"},  % 1989-10-28T16:00:00Z .. 1990-03-03T16:00:00Z
          {62824262400,62835148800,660,"AEDT"},  % 1990-10-27T16:00:00Z .. 1991-03-02T16:00:00Z
          {62855712000,62866598400,660,"AEDT"},  % 1991-10-26T16:00:00Z .. 1992-02-29T16:00:00Z
          {62887161600,62898652800,660,"AEDT"},  % 1992-10-24T16:00:00Z .. 1993-03-06T16:00:00Z
-         {62919216000,62930102400,660,"AEDT"}]},  % 1993-10-30T16:00:00Z .. 1994-03-05T16:00:00Z
-      {"Australia/Lord_Howe",
+         {62919216000,62930102400,660,"AEDT"}],  % 1993-10-30T16:00:00Z .. 1994-03-05T16:00:00Z
+      "Australia/Lord_Howe" =>
         [{62167219200,62519436000,600,"AEST"},  % 1970-01-01T00:00:00Z .. 1981-02-28T14:00:00Z
          {62519436000,62522463600,630,"+1030"},  % 1981-02-28T14:00:00Z .. 1981-04-04T15:00:00Z
          {62538190200,62540004600,630,"+1030"},  % 1981-10-03T15:30:00Z .. 1981-10-24T15:30:00Z
@@ -10228,8 +10825,8 @@
          {63295399800,63297819000,630,"+1030"},  % 2005-10-01T15:30:00Z .. 2005-10-29T15:30:00Z
          {63326849400,63329268600,630,"+1030"},  % 2006-09-30T15:30:00Z .. 2006-10-28T15:30:00Z
          {63341967600,63342572400,630,"+1030"},  % 2007-03-24T15:00:00Z .. 2007-03-31T15:00:00Z
-         {63358903800,63360718200,630,"+1030"}]},  % 2007-10-06T15:30:00Z .. 2007-10-27T15:30:00Z
-      {"Australia/Melbourne",
+         {63358903800,63360718200,630,"+1030"}],  % 2007-10-06T15:30:00Z .. 2007-10-27T15:30:00Z
+      "Australia/Melbourne" =>
         [{62167219200,62175312000,600,"AEST"},  % 1970-01-01T00:00:00Z .. 1970-04-04T16:00:00Z
          {62191036800,62206761600,600,"AEST"},  % 1970-10-03T16:00:00Z .. 1971-04-03T16:00:00Z
          {62222486400,62224905600,600,"AEST"},  % 1971-10-02T16:00:00Z .. 1971-10-30T16:00:00Z
@@ -10303,8 +10900,8 @@
          {63295401600,63297820800,600,"AEST"},  % 2005-10-01T16:00:00Z .. 2005-10-29T16:00:00Z
          {63326851200,63329270400,600,"AEST"},  % 2006-09-30T16:00:00Z .. 2006-10-28T16:00:00Z
          {63341971200,63342576000,600,"AEST"},  % 2007-03-24T16:00:00Z .. 2007-03-31T16:00:00Z
-         {63358905600,63360720000,600,"AEST"}]},  % 2007-10-06T16:00:00Z .. 2007-10-27T16:00:00Z
-      {"Australia/NSW",
+         {63358905600,63360720000,600,"AEST"}],  % 2007-10-06T16:00:00Z .. 2007-10-27T16:00:00Z
+      "Australia/NSW" =>
         [{62167219200,62175312000,600,"AEST"},  % 1970-01-01T00:00:00Z .. 1970-04-04T16:00:00Z
          {62191036800,62206761600,600,"AEST"},  % 1970-10-03T16:00:00Z .. 1971-04-03T16:00:00Z
          {62222486400,62224905600,600,"AEST"},  % 1971-10-02T16:00:00Z .. 1971-10-30T16:00:00Z
@@ -10377,20 +10974,20 @@
          {63295401600,63297820800,600,"AEST"},  % 2005-10-01T16:00:00Z .. 2005-10-29T16:00:00Z
          {63326851200,63329270400,600,"AEST"},  % 2006-09-30T16:00:00Z .. 2006-10-28T16:00:00Z
          {63341971200,63342576000,600,"AEST"},  % 2007-03-24T16:00:00Z .. 2007-03-31T16:00:00Z
-         {63358905600,63360720000,600,"AEST"}]},  % 2007-10-06T16:00:00Z .. 2007-10-27T16:00:00Z
-      {"Australia/Perth",
+         {63358905600,63360720000,600,"AEST"}],  % 2007-10-06T16:00:00Z .. 2007-10-27T16:00:00Z
+      "Australia/Perth" =>
         [{62319261600,62330148000,540,"AWDT"},  % 1974-10-26T18:00:00Z .. 1975-03-01T18:00:00Z
          {62603517600,62614404000,540,"AWDT"},  % 1983-10-29T18:00:00Z .. 1984-03-03T18:00:00Z
          {62857533600,62866605600,540,"AWDT"},  % 1991-11-16T18:00:00Z .. 1992-02-29T18:00:00Z
          {63332301600,63341978400,540,"AWDT"},  % 2006-12-02T18:00:00Z .. 2007-03-24T18:00:00Z
          {63360727200,63374032800,540,"AWDT"},  % 2007-10-27T18:00:00Z .. 2008-03-29T18:00:00Z
-         {63392176800,63405482400,540,"AWDT"}]},  % 2008-10-25T18:00:00Z .. 2009-03-28T18:00:00Z
-      {"Australia/Queensland",
+         {63392176800,63405482400,540,"AWDT"}],  % 2008-10-25T18:00:00Z .. 2009-03-28T18:00:00Z
+      "Australia/Queensland" =>
         [{62224905600,62235187200,660,"AEDT"},  % 1971-10-30T16:00:00Z .. 1972-02-26T16:00:00Z
          {62792812800,62803699200,660,"AEDT"},  % 1989-10-28T16:00:00Z .. 1990-03-03T16:00:00Z
          {62824262400,62835148800,660,"AEDT"},  % 1990-10-27T16:00:00Z .. 1991-03-02T16:00:00Z
-         {62855712000,62866598400,660,"AEDT"}]},  % 1991-10-26T16:00:00Z .. 1992-02-29T16:00:00Z
-      {"Australia/South",
+         {62855712000,62866598400,660,"AEDT"}],  % 1991-10-26T16:00:00Z .. 1992-02-29T16:00:00Z
+      "Australia/South" =>
         [{62167219200,62175313800,570,"ACST"},  % 1970-01-01T00:00:00Z .. 1970-04-04T16:30:00Z
          {62191038600,62206763400,570,"ACST"},  % 1970-10-03T16:30:00Z .. 1971-04-03T16:30:00Z
          {62222488200,62224907400,570,"ACST"},  % 1971-10-02T16:30:00Z .. 1971-10-30T16:30:00Z
@@ -10464,8 +11061,8 @@
          {63295403400,63297822600,570,"ACST"},  % 2005-10-01T16:30:00Z .. 2005-10-29T16:30:00Z
          {63326853000,63329272200,570,"ACST"},  % 2006-09-30T16:30:00Z .. 2006-10-28T16:30:00Z
          {63341973000,63342577800,570,"ACST"},  % 2007-03-24T16:30:00Z .. 2007-03-31T16:30:00Z
-         {63358907400,63360721800,570,"ACST"}]},  % 2007-10-06T16:30:00Z .. 2007-10-27T16:30:00Z
-      {"Australia/Sydney",
+         {63358907400,63360721800,570,"ACST"}],  % 2007-10-06T16:30:00Z .. 2007-10-27T16:30:00Z
+      "Australia/Sydney" =>
         [{62167219200,62175312000,600,"AEST"},  % 1970-01-01T00:00:00Z .. 1970-04-04T16:00:00Z
          {62191036800,62206761600,600,"AEST"},  % 1970-10-03T16:00:00Z .. 1971-04-03T16:00:00Z
          {62222486400,62224905600,600,"AEST"},  % 1971-10-02T16:00:00Z .. 1971-10-30T16:00:00Z
@@ -10538,8 +11135,8 @@
          {63295401600,63297820800,600,"AEST"},  % 2005-10-01T16:00:00Z .. 2005-10-29T16:00:00Z
          {63326851200,63329270400,600,"AEST"},  % 2006-09-30T16:00:00Z .. 2006-10-28T16:00:00Z
          {63341971200,63342576000,600,"AEST"},  % 2007-03-24T16:00:00Z .. 2007-03-31T16:00:00Z
-         {63358905600,63360720000,600,"AEST"}]},  % 2007-10-06T16:00:00Z .. 2007-10-27T16:00:00Z
-      {"Australia/Tasmania",
+         {63358905600,63360720000,600,"AEST"}],  % 2007-10-06T16:00:00Z .. 2007-10-27T16:00:00Z
+      "Australia/Tasmania" =>
         [{62172892800,62175312000,600,"AEST"},  % 1970-03-07T16:00:00Z .. 1970-04-04T16:00:00Z
          {62191036800,62192851200,600,"AEST"},  % 1970-10-03T16:00:00Z .. 1970-10-24T16:00:00Z
          {62204947200,62206761600,600,"AEST"},  % 1971-03-13T16:00:00Z .. 1971-04-03T16:00:00Z
@@ -10598,8 +11195,8 @@
          {63216172800,63216777600,600,"AEST"},  % 2003-03-29T16:00:00Z .. 2003-04-05T16:00:00Z
          {63247622400,63248227200,600,"AEST"},  % 2004-03-27T16:00:00Z .. 2004-04-03T16:00:00Z
          {63279072000,63279676800,600,"AEST"},  % 2005-03-26T16:00:00Z .. 2005-04-02T16:00:00Z
-         {63341971200,63342576000,600,"AEST"}]},  % 2007-03-24T16:00:00Z .. 2007-03-31T16:00:00Z
-      {"Australia/Victoria",
+         {63341971200,63342576000,600,"AEST"}],  % 2007-03-24T16:00:00Z .. 2007-03-31T16:00:00Z
+      "Australia/Victoria" =>
         [{62167219200,62175312000,600,"AEST"},  % 1970-01-01T00:00:00Z .. 1970-04-04T16:00:00Z
          {62191036800,62206761600,600,"AEST"},  % 1970-10-03T16:00:00Z .. 1971-04-03T16:00:00Z
          {62222486400,62224905600,600,"AEST"},  % 1971-10-02T16:00:00Z .. 1971-10-30T16:00:00Z
@@ -10673,15 +11270,15 @@
          {63295401600,63297820800,600,"AEST"},  % 2005-10-01T16:00:00Z .. 2005-10-29T16:00:00Z
          {63326851200,63329270400,600,"AEST"},  % 2006-09-30T16:00:00Z .. 2006-10-28T16:00:00Z
          {63341971200,63342576000,600,"AEST"},  % 2007-03-24T16:00:00Z .. 2007-03-31T16:00:00Z
-         {63358905600,63360720000,600,"AEST"}]},  % 2007-10-06T16:00:00Z .. 2007-10-27T16:00:00Z
-      {"Australia/West",
+         {63358905600,63360720000,600,"AEST"}],  % 2007-10-06T16:00:00Z .. 2007-10-27T16:00:00Z
+      "Australia/West" =>
         [{62319261600,62330148000,540,"AWDT"},  % 1974-10-26T18:00:00Z .. 1975-03-01T18:00:00Z
          {62603517600,62614404000,540,"AWDT"},  % 1983-10-29T18:00:00Z .. 1984-03-03T18:00:00Z
          {62857533600,62866605600,540,"AWDT"},  % 1991-11-16T18:00:00Z .. 1992-02-29T18:00:00Z
          {63332301600,63341978400,540,"AWDT"},  % 2006-12-02T18:00:00Z .. 2007-03-24T18:00:00Z
          {63360727200,63374032800,540,"AWDT"},  % 2007-10-27T18:00:00Z .. 2008-03-29T18:00:00Z
-         {63392176800,63405482400,540,"AWDT"}]},  % 2008-10-25T18:00:00Z .. 2009-03-28T18:00:00Z
-      {"Australia/Yancowinna",
+         {63392176800,63405482400,540,"AWDT"}],  % 2008-10-25T18:00:00Z .. 2009-03-28T18:00:00Z
+      "Australia/Yancowinna" =>
         [{62167219200,62175313800,570,"ACST"},  % 1970-01-01T00:00:00Z .. 1970-04-04T16:30:00Z
          {62191038600,62206763400,570,"ACST"},  % 1970-10-03T16:30:00Z .. 1971-04-03T16:30:00Z
          {62222488200,62224907400,570,"ACST"},  % 1971-10-02T16:30:00Z .. 1971-10-30T16:30:00Z
@@ -10754,13 +11351,13 @@
          {63295403400,63297822600,570,"ACST"},  % 2005-10-01T16:30:00Z .. 2005-10-29T16:30:00Z
          {63326853000,63329272200,570,"ACST"},  % 2006-09-30T16:30:00Z .. 2006-10-28T16:30:00Z
          {63341973000,63342577800,570,"ACST"},  % 2007-03-24T16:30:00Z .. 2007-03-31T16:30:00Z
-         {63358907400,63360721800,570,"ACST"}]},  % 2007-10-06T16:30:00Z .. 2007-10-27T16:30:00Z
-      {"Brazil/Acre",
+         {63358907400,63360721800,570,"ACST"}],  % 2007-10-06T16:30:00Z .. 2007-10-27T16:30:00Z
+      "Brazil/Acre" =>
         [{62666974800,62678462400,-240,"-04"},  % 1985-11-02T05:00:00Z .. 1986-03-15T04:00:00Z
          {62697819600,62707492800,-240,"-04"},  % 1986-10-25T05:00:00Z .. 1987-02-14T04:00:00Z
          {62729355600,62738424000,-240,"-04"},  % 1987-10-25T05:00:00Z .. 1988-02-07T04:00:00Z
-         {63381502800,63551275200,-240,"-04"}]},  % 2008-06-24T05:00:00Z .. 2013-11-10T04:00:00Z
-      {"Brazil/DeNoronha",
+         {63381502800,63551275200,-240,"-04"}],  % 2008-06-24T05:00:00Z .. 2013-11-10T04:00:00Z
+      "Brazil/DeNoronha" =>
         [{62666964000,62678451600,-60,"-01"},  % 1985-11-02T02:00:00Z .. 1986-03-15T01:00:00Z
          {62697808800,62707482000,-60,"-01"},  % 1986-10-25T02:00:00Z .. 1987-02-14T01:00:00Z
          {62729344800,62738413200,-60,"-01"},  % 1987-10-25T02:00:00Z .. 1988-02-07T01:00:00Z
@@ -10768,8 +11365,8 @@
          {62791639200,62801917200,-60,"-01"},  % 1989-10-15T02:00:00Z .. 1990-02-11T01:00:00Z
          {63106135200,63118832400,-60,"-01"},  % 1999-10-03T02:00:00Z .. 2000-02-27T01:00:00Z
          {63138189600,63138790800,-60,"-01"},  % 2000-10-08T02:00:00Z .. 2000-10-15T01:00:00Z
-         {63170244000,63181126800,-60,"-01"}]},  % 2001-10-14T02:00:00Z .. 2002-02-17T01:00:00Z
-      {"Brazil/East",
+         {63170244000,63181126800,-60,"-01"}],  % 2001-10-14T02:00:00Z .. 2002-02-17T01:00:00Z
+      "Brazil/East" =>
         [{62666967600,62678455200,-120,"-02"},  % 1985-11-02T03:00:00Z .. 1986-03-15T02:00:00Z
          {62697812400,62707485600,-120,"-02"},  % 1986-10-25T03:00:00Z .. 1987-02-14T02:00:00Z
          {62729348400,62738416800,-120,"-02"},  % 1987-10-25T03:00:00Z .. 1988-02-07T02:00:00Z
@@ -10803,13 +11400,13 @@
          {63612356400,63623239200,-120,"-02"},  % 2015-10-18T03:00:00Z .. 2016-02-21T02:00:00Z
          {63643806000,63654688800,-120,"-02"},  % 2016-10-16T03:00:00Z .. 2017-02-19T02:00:00Z
          {63675255600,63686138400,-120,"-02"},  % 2017-10-15T03:00:00Z .. 2018-02-18T02:00:00Z
-         {63708519600,63717588000,-120,"-02"}]},  % 2018-11-04T03:00:00Z .. 2019-02-17T02:00:00Z
-      {"Brazil/West",
+         {63708519600,63717588000,-120,"-02"}],  % 2018-11-04T03:00:00Z .. 2019-02-17T02:00:00Z
+      "Brazil/West" =>
         [{62666971200,62678458800,-180,"-03"},  % 1985-11-02T04:00:00Z .. 1986-03-15T03:00:00Z
          {62697816000,62707489200,-180,"-03"},  % 1986-10-25T04:00:00Z .. 1987-02-14T03:00:00Z
          {62729352000,62738420400,-180,"-03"},  % 1987-10-25T04:00:00Z .. 1988-02-07T03:00:00Z
-         {62918049600,62928932400,-180,"-03"}]},  % 1993-10-17T04:00:00Z .. 1994-02-20T03:00:00Z
-      {"CET",
+         {62918049600,62928932400,-180,"-03"}],  % 1993-10-17T04:00:00Z .. 1994-02-20T03:00:00Z
+      "CET" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -10839,8 +11436,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"CST6CDT",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "CST6CDT" =>
         [{62172950400,62177184000,-360,"CST"},  % 1970-03-08T08:00:00Z .. 1970-04-26T08:00:00Z
          {62192905200,62193510000,-360,"CST"},  % 1970-10-25T07:00:00Z .. 1970-11-01T07:00:00Z
          {62205004800,62208633600,-360,"CST"},  % 1971-03-14T08:00:00Z .. 1971-04-25T08:00:00Z
@@ -10914,8 +11511,8 @@
          {63277920000,63279734400,-360,"CST"},  % 2005-03-13T08:00:00Z .. 2005-04-03T08:00:00Z
          {63297874800,63298479600,-360,"CST"},  % 2005-10-30T07:00:00Z .. 2005-11-06T07:00:00Z
          {63309369600,63311184000,-360,"CST"},  % 2006-03-12T08:00:00Z .. 2006-04-02T08:00:00Z
-         {63329324400,63329929200,-360,"CST"}]},  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
-      {"Canada/Atlantic",
+         {63329324400,63329929200,-360,"CST"}],  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
+      "Canada/Atlantic" =>
         [{62172943200,62177176800,-240,"AST"},  % 1970-03-08T06:00:00Z .. 1970-04-26T06:00:00Z
          {62192898000,62193502800,-240,"AST"},  % 1970-10-25T05:00:00Z .. 1970-11-01T05:00:00Z
          {62204997600,62208626400,-240,"AST"},  % 1971-03-14T06:00:00Z .. 1971-04-25T06:00:00Z
@@ -10989,8 +11586,8 @@
          {63277912800,63279727200,-240,"AST"},  % 2005-03-13T06:00:00Z .. 2005-04-03T06:00:00Z
          {63297867600,63298472400,-240,"AST"},  % 2005-10-30T05:00:00Z .. 2005-11-06T05:00:00Z
          {63309362400,63311176800,-240,"AST"},  % 2006-03-12T06:00:00Z .. 2006-04-02T06:00:00Z
-         {63329317200,63329922000,-240,"AST"}]},  % 2006-10-29T05:00:00Z .. 2006-11-05T05:00:00Z
-      {"Canada/Central",
+         {63329317200,63329922000,-240,"AST"}],  % 2006-10-29T05:00:00Z .. 2006-11-05T05:00:00Z
+      "Canada/Central" =>
         [{62167219200,62177184000,-360,"CST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T08:00:00Z
          {62177184000,62192908800,-300,"CDT"},  % 1970-04-26T08:00:00Z .. 1970-10-25T08:00:00Z
          {62192908800,62208633600,-360,"CST"},  % 1970-10-25T08:00:00Z .. 1971-04-25T08:00:00Z
@@ -11104,8 +11701,8 @@
          {63897836400,63908726400,-360,"CST"},  % 2024-11-03T07:00:00Z .. 2025-03-09T08:00:00Z
          {63908726400,63929286000,-300,"CDT"},  % 2025-03-09T08:00:00Z .. 2025-11-02T07:00:00Z
          {63929286000,63940176000,-360,"CST"},  % 2025-11-02T07:00:00Z .. 2026-03-08T08:00:00Z
-         {63940176000,63960735600,-300,"CDT"}]},  % 2026-03-08T08:00:00Z .. 2026-11-01T07:00:00Z
-      {"Canada/Eastern",
+         {63940176000,63960735600,-300,"CDT"}],  % 2026-03-08T08:00:00Z .. 2026-11-01T07:00:00Z
+      "Canada/Eastern" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62208630000,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-04-25T07:00:00Z
@@ -11179,8 +11776,8 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"Canada/Mountain",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "Canada/Mountain" =>
         [{62167219200,62240691600,-420,"MST"},  % 1970-01-01T00:00:00Z .. 1972-04-30T09:00:00Z
          {62240691600,62256412800,-360,"MDT"},  % 1972-04-30T09:00:00Z .. 1972-10-29T08:00:00Z
          {62256412800,62272141200,-420,"MST"},  % 1972-10-29T08:00:00Z .. 1973-04-29T09:00:00Z
@@ -11290,8 +11887,8 @@
          {63897840000,63908730000,-420,"MST"},  % 2024-11-03T08:00:00Z .. 2025-03-09T09:00:00Z
          {63908730000,63929289600,-360,"MDT"},  % 2025-03-09T09:00:00Z .. 2025-11-02T08:00:00Z
          {63929289600,63940179600,-420,"MST"},  % 2025-11-02T08:00:00Z .. 2026-03-08T09:00:00Z
-         {63940179600,63960739200,-360,"MDT"}]},  % 2026-03-08T09:00:00Z .. 2026-11-01T08:00:00Z
-      {"Canada/Newfoundland",
+         {63940179600,63960739200,-360,"MDT"}],  % 2026-03-08T09:00:00Z .. 2026-11-01T08:00:00Z
+      "Canada/Newfoundland" =>
         [{62172941400,62177175000,-210,"NST"},  % 1970-03-08T05:30:00Z .. 1970-04-26T05:30:00Z
          {62192896200,62193501000,-210,"NST"},  % 1970-10-25T04:30:00Z .. 1970-11-01T04:30:00Z
          {62204995800,62208624600,-210,"NST"},  % 1971-03-14T05:30:00Z .. 1971-04-25T05:30:00Z
@@ -11375,8 +11972,8 @@
          {63424261860,63424269000,-210,"NST"},  % 2009-11-01T02:31:00Z .. 2009-11-01T04:30:00Z
          {63435756660,63435763800,-150,"NDT"},  % 2010-03-14T03:31:00Z .. 2010-03-14T05:30:00Z
          {63456316260,63456323400,-210,"NST"},  % 2010-11-07T02:31:00Z .. 2010-11-07T04:30:00Z
-         {63467206260,63467213400,-150,"NDT"}]},  % 2011-03-13T03:31:00Z .. 2011-03-13T05:30:00Z
-      {"Canada/Pacific",
+         {63467206260,63467213400,-150,"NDT"}],  % 2011-03-13T03:31:00Z .. 2011-03-13T05:30:00Z
+      "Canada/Pacific" =>
         [{62167219200,62177191200,-480,"PST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T10:00:00Z
          {62177191200,62192912400,-420,"PDT"},  % 1970-04-26T10:00:00Z .. 1970-10-25T09:00:00Z
          {62192912400,62208640800,-480,"PST"},  % 1970-10-25T09:00:00Z .. 1971-04-25T10:00:00Z
@@ -11490,8 +12087,8 @@
          {63897843600,63908733600,-480,"PST"},  % 2024-11-03T09:00:00Z .. 2025-03-09T10:00:00Z
          {63908733600,63929293200,-420,"PDT"},  % 2025-03-09T10:00:00Z .. 2025-11-02T09:00:00Z
          {63929293200,63940183200,-480,"PST"},  % 2025-11-02T09:00:00Z .. 2026-03-08T10:00:00Z
-         {63940183200,63960742800,-420,"PDT"}]},  % 2026-03-08T10:00:00Z .. 2026-11-01T09:00:00Z
-      {"Canada/Yukon",
+         {63940183200,63960742800,-420,"PDT"}],  % 2026-03-08T10:00:00Z .. 2026-11-01T09:00:00Z
+      "Canada/Yukon" =>
         [{62167219200,62492896800,-480,"PST"},  % 1970-01-01T00:00:00Z .. 1980-04-27T10:00:00Z
          {62492896800,62508618000,-420,"PDT"},  % 1980-04-27T10:00:00Z .. 1980-10-26T09:00:00Z
          {62508618000,62524346400,-480,"PST"},  % 1980-10-26T09:00:00Z .. 1981-04-26T10:00:00Z
@@ -11573,8 +12170,8 @@
          {63708541200,63719431200,-480,"PST"},  % 2018-11-04T09:00:00Z .. 2019-03-10T10:00:00Z
          {63719431200,63739990800,-420,"PDT"},  % 2019-03-10T10:00:00Z .. 2019-11-03T09:00:00Z
          {63739990800,63750880800,-480,"PST"},  % 2019-11-03T09:00:00Z .. 2020-03-08T10:00:00Z
-         {63750880800,63771433200,-420,"PDT"}]},  % 2020-03-08T10:00:00Z .. 2020-11-01T07:00:00Z
-      {"Chile/Continental",
+         {63750880800,63771433200,-420,"PDT"}],  % 2020-03-08T10:00:00Z .. 2020-11-01T07:00:00Z
+      "Chile/Continental" =>
         [{62174746800,62175351600,-240,"-04"},  % 1970-03-29T03:00:00Z .. 1970-04-05T03:00:00Z
          {62188660800,62191684800,-240,"-04"},  % 1970-09-06T04:00:00Z .. 1970-10-11T04:00:00Z
          {62204986800,62206801200,-240,"-04"},  % 1971-03-14T03:00:00Z .. 1971-04-04T03:00:00Z
@@ -11667,8 +12264,8 @@
          {63669816000,63671630400,-180,"-03"},  % 2017-08-13T04:00:00Z .. 2017-09-03T04:00:00Z
          {63690375600,63693399600,-180,"-03"},  % 2018-04-08T03:00:00Z .. 2018-05-13T03:00:00Z
          {63701265600,63703080000,-180,"-03"},  % 2018-08-12T04:00:00Z .. 2018-09-02T04:00:00Z
-         {63829483200,63830088000,-240,"-04"}]},  % 2022-09-04T04:00:00Z .. 2022-09-11T04:00:00Z
-      {"Chile/EasterIsland",
+         {63829483200,63830088000,-240,"-04"}],  % 2022-09-04T04:00:00Z .. 2022-09-11T04:00:00Z
+      "Chile/EasterIsland" =>
         [{62167219200,62174746800,-360,"-06"},  % 1970-01-01T00:00:00Z .. 1970-03-29T03:00:00Z
          {62174746800,62191684800,-420,"-07"},  % 1970-03-29T03:00:00Z .. 1970-10-11T04:00:00Z
          {62191684800,62204986800,-360,"-06"},  % 1970-10-11T04:00:00Z .. 1971-03-14T03:00:00Z
@@ -11761,8 +12358,8 @@
          {63669816000,63671630400,-300,"-05"},  % 2017-08-13T04:00:00Z .. 2017-09-03T04:00:00Z
          {63690375600,63693399600,-300,"-05"},  % 2018-04-08T03:00:00Z .. 2018-05-13T03:00:00Z
          {63701265600,63703080000,-300,"-05"},  % 2018-08-12T04:00:00Z .. 2018-09-02T04:00:00Z
-         {63829483200,63830088000,-360,"-06"}]},  % 2022-09-04T04:00:00Z .. 2022-09-11T04:00:00Z
-      {"Cuba",
+         {63829483200,63830088000,-360,"-06"}],  % 2022-09-04T04:00:00Z .. 2022-09-11T04:00:00Z
+      "Cuba" =>
         [{62172939600,62177173200,-300,"CST"},  % 1970-03-08T05:00:00Z .. 1970-04-26T05:00:00Z
          {62192894400,62193502800,-300,"CST"},  % 1970-10-25T04:00:00Z .. 1970-11-01T05:00:00Z
          {62204994000,62208622800,-300,"CST"},  % 1971-03-14T05:00:00Z .. 1971-04-25T05:00:00Z
@@ -11843,8 +12440,8 @@
          {63467211600,63467816400,-300,"CST"},  % 2011-03-13T05:00:00Z .. 2011-03-20T05:00:00Z
          {63487774800,63488379600,-240,"CDT"},  % 2011-11-06T05:00:00Z .. 2011-11-13T05:00:00Z
          {63498661200,63500475600,-300,"CST"},  % 2012-03-11T05:00:00Z .. 2012-04-01T05:00:00Z
-         {63960728400,63972219600,-240,"CDT"}]},  % 2026-11-01T05:00:00Z .. 2027-03-14T05:00:00Z
-      {"EET",
+         {63960728400,63972219600,-240,"CDT"}],  % 2026-11-01T05:00:00Z .. 2027-03-14T05:00:00Z
+      "EET" =>
         [{62174739600,62192883600,120,"EET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,120,"EET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,120,"EET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -11876,8 +12473,8 @@
          {62884774800,62887194000,120,"EET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,120,"EET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,120,"EET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,120,"EET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"EST5EDT",
+         {62979123600,62982147600,120,"EET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "EST5EDT" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62208630000,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-04-25T07:00:00Z
@@ -11951,8 +12548,8 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"Egypt",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "Egypt" =>
         [{62176975200,62177583600,120,"EET"},  % 1970-04-23T22:00:00Z .. 1970-04-30T23:00:00Z
          {62190806400,62193301200,120,"EET"},  % 1970-10-01T00:00:00Z .. 1970-10-29T21:00:00Z
          {62209029600,62209119600,120,"EET"},  % 1971-04-29T22:00:00Z .. 1971-04-30T23:00:00Z
@@ -12033,8 +12630,8 @@
          {63723448800,63739774800,120,"EET"},  % 2019-04-25T22:00:00Z .. 2019-10-31T21:00:00Z
          {63754898400,63771224400,120,"EET"},  % 2020-04-23T22:00:00Z .. 2020-10-29T21:00:00Z
          {63786952800,63802674000,120,"EET"},  % 2021-04-29T22:00:00Z .. 2021-10-28T21:00:00Z
-         {63818402400,63834123600,120,"EET"}]},  % 2022-04-28T22:00:00Z .. 2022-10-27T21:00:00Z
-      {"Eire",
+         {63818402400,63834123600,120,"EET"}],  % 2022-04-28T22:00:00Z .. 2022-10-27T21:00:00Z
+      "Eire" =>
         [{62167219200,62174739600,60,"IST"},  % 1970-01-01T00:00:00Z .. 1970-03-29T01:00:00Z
          {62192883600,62206189200,60,"IST"},  % 1970-10-25T01:00:00Z .. 1971-03-28T01:00:00Z
          {62224938000,62224941600,60,"IST"},  % 1971-10-31T01:00:00Z .. 1971-10-31T02:00:00Z
@@ -12061,8 +12658,8 @@
          {62760790800,62761395600,0,"GMT"},  % 1988-10-23T01:00:00Z .. 1988-10-30T01:00:00Z
          {62918643600,62919248400,0,"GMT"},  % 1993-10-24T01:00:00Z .. 1993-10-31T01:00:00Z
          {62950093200,62950698000,0,"GMT"},  % 1994-10-23T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62981542800,62982147600,0,"GMT"}]},  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Amsterdam",
+         {62981542800,62982147600,0,"GMT"}],  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Amsterdam" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -12092,8 +12689,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Andorra",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Andorra" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -12119,8 +12716,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Astrakhan",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Astrakhan" =>
         [{62522136000,62537943600,300,"+05"},  % 1981-03-31T20:00:00Z .. 1981-09-30T19:00:00Z
          {62553672000,62569479600,300,"+05"},  % 1982-03-31T20:00:00Z .. 1982-09-30T19:00:00Z
          {62585208000,62601015600,300,"+05"},  % 1983-03-31T20:00:00Z .. 1983-09-30T19:00:00Z
@@ -12150,8 +12747,8 @@
          {63392194800,63405500400,180,"+03"},  % 2008-10-25T23:00:00Z .. 2009-03-28T23:00:00Z
          {63423644400,63436950000,180,"+03"},  % 2009-10-24T23:00:00Z .. 2010-03-27T23:00:00Z
          {63455698800,63468399600,180,"+03"},  % 2010-10-30T23:00:00Z .. 2011-03-26T23:00:00Z
-         {63581493600,63626252400,180,"+03"}]},  % 2014-10-25T22:00:00Z .. 2016-03-26T23:00:00Z
-      {"Europe/Athens",
+         {63581493600,63626252400,180,"+03"}],  % 2014-10-25T22:00:00Z .. 2016-03-26T23:00:00Z
+      "Europe/Athens" =>
         [{62174739600,62192883600,120,"EET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,120,"EET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,120,"EET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -12183,8 +12780,8 @@
          {62884774800,62887194000,120,"EET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,120,"EET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,120,"EET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,120,"EET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Belfast",
+         {62979123600,62982147600,120,"EET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Belfast" =>
         [{62167219200,62174739600,60,"BST"},  % 1970-01-01T00:00:00Z .. 1970-03-29T01:00:00Z
          {62192883600,62206189200,60,"BST"},  % 1970-10-25T01:00:00Z .. 1971-03-28T01:00:00Z
          {62224938000,62224941600,60,"BST"},  % 1971-10-31T01:00:00Z .. 1971-10-31T02:00:00Z
@@ -12211,8 +12808,8 @@
          {62760790800,62761395600,0,"GMT"},  % 1988-10-23T01:00:00Z .. 1988-10-30T01:00:00Z
          {62918643600,62919248400,0,"GMT"},  % 1993-10-24T01:00:00Z .. 1993-10-31T01:00:00Z
          {62950093200,62950698000,0,"GMT"},  % 1994-10-23T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62981542800,62982147600,0,"GMT"}]},  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Belgrade",
+         {62981542800,62982147600,0,"GMT"}],  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Belgrade" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -12238,8 +12835,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Berlin",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Berlin" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -12266,8 +12863,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Bratislava",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Bratislava" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -12295,8 +12892,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Brussels",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Brussels" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -12326,8 +12923,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Bucharest",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Bucharest" =>
         [{62174739600,62192883600,120,"EET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,120,"EET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,120,"EET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -12372,8 +12969,8 @@
          {62963388000,62963398800,180,"EEST"},  % 1995-03-25T22:00:00Z .. 1995-03-26T01:00:00Z
          {62979109200,62982147600,120,"EET"},  % 1995-09-23T21:00:00Z .. 1995-10-29T01:00:00Z
          {62995442400,62995453200,180,"EEST"},  % 1996-03-30T22:00:00Z .. 1996-03-31T01:00:00Z
-         {63013582800,63013597200,120,"EET"}]},  % 1996-10-26T21:00:00Z .. 1996-10-27T01:00:00Z
-      {"Europe/Budapest",
+         {63013582800,63013597200,120,"EET"}],  % 1996-10-26T21:00:00Z .. 1996-10-27T01:00:00Z
+      "Europe/Budapest" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -12403,8 +13000,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Busingen",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Busingen" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -12430,8 +13027,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Chisinau",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Chisinau" =>
         [{62167219200,62522139600,180,"MSK"},  % 1970-01-01T00:00:00Z .. 1981-03-31T21:00:00Z
          {62522139600,62537947200,240,"MSD"},  % 1981-03-31T21:00:00Z .. 1981-09-30T20:00:00Z
          {62537947200,62553675600,180,"MSK"},  % 1981-09-30T20:00:00Z .. 1982-03-31T21:00:00Z
@@ -12514,8 +13111,8 @@
          {63752659200,63752662800,180,"EEST"},  % 2020-03-29T00:00:00Z .. 2020-03-29T01:00:00Z
          {63770803200,63770806800,120,"EET"},  % 2020-10-25T00:00:00Z .. 2020-10-25T01:00:00Z
          {63784108800,63784112400,180,"EEST"},  % 2021-03-28T00:00:00Z .. 2021-03-28T01:00:00Z
-         {63802857600,63802861200,120,"EET"}]},  % 2021-10-31T00:00:00Z .. 2021-10-31T01:00:00Z
-      {"Europe/Copenhagen",
+         {63802857600,63802861200,120,"EET"}],  % 2021-10-31T00:00:00Z .. 2021-10-31T01:00:00Z
+      "Europe/Copenhagen" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -12542,8 +13139,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Dublin",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Dublin" =>
         [{62167219200,62174739600,60,"IST"},  % 1970-01-01T00:00:00Z .. 1970-03-29T01:00:00Z
          {62192883600,62206189200,60,"IST"},  % 1970-10-25T01:00:00Z .. 1971-03-28T01:00:00Z
          {62224938000,62224941600,60,"IST"},  % 1971-10-31T01:00:00Z .. 1971-10-31T02:00:00Z
@@ -12570,8 +13167,8 @@
          {62760790800,62761395600,0,"GMT"},  % 1988-10-23T01:00:00Z .. 1988-10-30T01:00:00Z
          {62918643600,62919248400,0,"GMT"},  % 1993-10-24T01:00:00Z .. 1993-10-31T01:00:00Z
          {62950093200,62950698000,0,"GMT"},  % 1994-10-23T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62981542800,62982147600,0,"GMT"}]},  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Gibraltar",
+         {62981542800,62982147600,0,"GMT"}],  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Gibraltar" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -12597,8 +13194,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Guernsey",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Guernsey" =>
         [{62167219200,62174739600,60,"BST"},  % 1970-01-01T00:00:00Z .. 1970-03-29T01:00:00Z
          {62192883600,62206189200,60,"BST"},  % 1970-10-25T01:00:00Z .. 1971-03-28T01:00:00Z
          {62224938000,62224941600,60,"BST"},  % 1971-10-31T01:00:00Z .. 1971-10-31T02:00:00Z
@@ -12625,8 +13222,8 @@
          {62760790800,62761395600,0,"GMT"},  % 1988-10-23T01:00:00Z .. 1988-10-30T01:00:00Z
          {62918643600,62919248400,0,"GMT"},  % 1993-10-24T01:00:00Z .. 1993-10-31T01:00:00Z
          {62950093200,62950698000,0,"GMT"},  % 1994-10-23T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62981542800,62982147600,0,"GMT"}]},  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Helsinki",
+         {62981542800,62982147600,0,"GMT"}],  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Helsinki" =>
         [{62174739600,62192883600,120,"EET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,120,"EET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,120,"EET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -12654,8 +13251,8 @@
          {62884774800,62887194000,120,"EET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,120,"EET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,120,"EET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,120,"EET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Isle_of_Man",
+         {62979123600,62982147600,120,"EET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Isle_of_Man" =>
         [{62167219200,62174739600,60,"BST"},  % 1970-01-01T00:00:00Z .. 1970-03-29T01:00:00Z
          {62192883600,62206189200,60,"BST"},  % 1970-10-25T01:00:00Z .. 1971-03-28T01:00:00Z
          {62224938000,62224941600,60,"BST"},  % 1971-10-31T01:00:00Z .. 1971-10-31T02:00:00Z
@@ -12682,8 +13279,8 @@
          {62760790800,62761395600,0,"GMT"},  % 1988-10-23T01:00:00Z .. 1988-10-30T01:00:00Z
          {62918643600,62919248400,0,"GMT"},  % 1993-10-24T01:00:00Z .. 1993-10-31T01:00:00Z
          {62950093200,62950698000,0,"GMT"},  % 1994-10-23T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62981542800,62982147600,0,"GMT"}]},  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Istanbul",
+         {62981542800,62982147600,0,"GMT"}],  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Istanbul" =>
         [{62167219200,62275129200,120,"EET"},  % 1970-01-01T00:00:00Z .. 1973-06-02T23:00:00Z
          {62275129200,62288434800,180,"EEST"},  % 1973-06-02T23:00:00Z .. 1973-11-03T23:00:00Z
          {62288434800,62301139200,120,"EET"},  % 1973-11-03T23:00:00Z .. 1974-03-31T00:00:00Z
@@ -12760,8 +13357,8 @@
          {63581504400,63594810000,120,"EET"},  % 2014-10-26T01:00:00Z .. 2015-03-29T01:00:00Z
          {63594810000,63614163600,180,"EEST"},  % 2015-03-29T01:00:00Z .. 2015-11-08T01:00:00Z
          {63614163600,63626259600,120,"EET"},  % 2015-11-08T01:00:00Z .. 2016-03-27T01:00:00Z
-         {63626259600,63640414800,180,"EEST"}]},  % 2016-03-27T01:00:00Z .. 2016-09-06T21:00:00Z
-      {"Europe/Jersey",
+         {63626259600,63640414800,180,"EEST"}],  % 2016-03-27T01:00:00Z .. 2016-09-06T21:00:00Z
+      "Europe/Jersey" =>
         [{62167219200,62174739600,60,"BST"},  % 1970-01-01T00:00:00Z .. 1970-03-29T01:00:00Z
          {62192883600,62206189200,60,"BST"},  % 1970-10-25T01:00:00Z .. 1971-03-28T01:00:00Z
          {62224938000,62224941600,60,"BST"},  % 1971-10-31T01:00:00Z .. 1971-10-31T02:00:00Z
@@ -12788,8 +13385,8 @@
          {62760790800,62761395600,0,"GMT"},  % 1988-10-23T01:00:00Z .. 1988-10-30T01:00:00Z
          {62918643600,62919248400,0,"GMT"},  % 1993-10-24T01:00:00Z .. 1993-10-31T01:00:00Z
          {62950093200,62950698000,0,"GMT"},  % 1994-10-23T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62981542800,62982147600,0,"GMT"}]},  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Kaliningrad",
+         {62981542800,62982147600,0,"GMT"}],  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Kaliningrad" =>
         [{62167219200,62522139600,180,"MSK"},  % 1970-01-01T00:00:00Z .. 1981-03-31T21:00:00Z
          {62522139600,62537947200,240,"MSD"},  % 1981-03-31T21:00:00Z .. 1981-09-30T20:00:00Z
          {62537947200,62553675600,180,"MSK"},  % 1981-09-30T20:00:00Z .. 1982-03-31T21:00:00Z
@@ -12829,8 +13426,8 @@
          {63374054400,63392198400,180,"EEST"},  % 2008-03-30T00:00:00Z .. 2008-10-26T00:00:00Z
          {63405504000,63423648000,180,"EEST"},  % 2009-03-29T00:00:00Z .. 2009-10-25T00:00:00Z
          {63436953600,63455702400,180,"EEST"},  % 2010-03-28T00:00:00Z .. 2010-10-31T00:00:00Z
-         {63468403200,63581497200,180,"+03"}]},  % 2011-03-27T00:00:00Z .. 2014-10-25T23:00:00Z
-      {"Europe/Kiev",
+         {63468403200,63581497200,180,"+03"}],  % 2011-03-27T00:00:00Z .. 2014-10-25T23:00:00Z
+      "Europe/Kiev" =>
         [{62167219200,62522139600,180,"MSK"},  % 1970-01-01T00:00:00Z .. 1981-03-31T21:00:00Z
          {62522139600,62537947200,240,"MSD"},  % 1981-03-31T21:00:00Z .. 1981-09-30T20:00:00Z
          {62537947200,62553675600,180,"MSK"},  % 1981-09-30T20:00:00Z .. 1982-03-31T21:00:00Z
@@ -12861,8 +13458,8 @@
          {62947670400,62950698000,120,"EET"},  % 1994-09-25T00:00:00Z .. 1994-10-30T01:00:00Z
          {62963395200,62963398800,180,"EEST"},  % 1995-03-26T00:00:00Z .. 1995-03-26T01:00:00Z
          {62979120000,62982147600,120,"EET"},  % 1995-09-24T00:00:00Z .. 1995-10-29T01:00:00Z
-         {62995449600,62995453200,180,"EEST"}]},  % 1996-03-31T00:00:00Z .. 1996-03-31T01:00:00Z
-      {"Europe/Kirov",
+         {62995449600,62995453200,180,"EEST"}],  % 1996-03-31T00:00:00Z .. 1996-03-31T01:00:00Z
+      "Europe/Kirov" =>
         [{62167219200,62522136000,240,"+04"},  % 1970-01-01T00:00:00Z .. 1981-03-31T20:00:00Z
          {62522136000,62537943600,300,"+05"},  % 1981-03-31T20:00:00Z .. 1981-09-30T19:00:00Z
          {62537943600,62553672000,240,"+04"},  % 1981-09-30T19:00:00Z .. 1982-03-31T20:00:00Z
@@ -12902,8 +13499,8 @@
          {63374050800,63392194800,240,"MSD"},  % 2008-03-29T23:00:00Z .. 2008-10-25T23:00:00Z
          {63405500400,63423644400,240,"MSD"},  % 2009-03-28T23:00:00Z .. 2009-10-24T23:00:00Z
          {63436950000,63455698800,240,"MSD"},  % 2010-03-27T23:00:00Z .. 2010-10-30T23:00:00Z
-         {63468399600,63581493600,240,"MSK"}]},  % 2011-03-26T23:00:00Z .. 2014-10-25T22:00:00Z
-      {"Europe/Kyiv",
+         {63468399600,63581493600,240,"MSK"}],  % 2011-03-26T23:00:00Z .. 2014-10-25T22:00:00Z
+      "Europe/Kyiv" =>
         [{62167219200,62522139600,180,"MSK"},  % 1970-01-01T00:00:00Z .. 1981-03-31T21:00:00Z
          {62522139600,62537947200,240,"MSD"},  % 1981-03-31T21:00:00Z .. 1981-09-30T20:00:00Z
          {62537947200,62553675600,180,"MSK"},  % 1981-09-30T20:00:00Z .. 1982-03-31T21:00:00Z
@@ -12934,8 +13531,8 @@
          {62947670400,62950698000,120,"EET"},  % 1994-09-25T00:00:00Z .. 1994-10-30T01:00:00Z
          {62963395200,62963398800,180,"EEST"},  % 1995-03-26T00:00:00Z .. 1995-03-26T01:00:00Z
          {62979120000,62982147600,120,"EET"},  % 1995-09-24T00:00:00Z .. 1995-10-29T01:00:00Z
-         {62995449600,62995453200,180,"EEST"}]},  % 1996-03-31T00:00:00Z .. 1996-03-31T01:00:00Z
-      {"Europe/Lisbon",
+         {62995449600,62995453200,180,"EEST"}],  % 1996-03-31T00:00:00Z .. 1996-03-31T01:00:00Z
+      "Europe/Lisbon" =>
         [{62167219200,62379763200,60,"CET"},  % 1970-01-01T00:00:00Z .. 1976-09-26T00:00:00Z
          {62379763200,62382790800,0,"WET"},  % 1976-09-26T00:00:00Z .. 1976-10-31T01:00:00Z
          {62395488000,62395491600,60,"WEST"},  % 1977-03-27T00:00:00Z .. 1977-03-27T01:00:00Z
@@ -12968,8 +13565,8 @@
          {62931949200,62947674000,120,"CEST"},  % 1994-03-27T01:00:00Z .. 1994-09-25T01:00:00Z
          {62947674000,62963398800,60,"CET"},  % 1994-09-25T01:00:00Z .. 1995-03-26T01:00:00Z
          {62963398800,62979123600,120,"CEST"},  % 1995-03-26T01:00:00Z .. 1995-09-24T01:00:00Z
-         {62979123600,62995453200,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1996-03-31T01:00:00Z
-      {"Europe/Ljubljana",
+         {62979123600,62995453200,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1996-03-31T01:00:00Z
+      "Europe/Ljubljana" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -12995,8 +13592,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/London",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/London" =>
         [{62167219200,62174739600,60,"BST"},  % 1970-01-01T00:00:00Z .. 1970-03-29T01:00:00Z
          {62192883600,62206189200,60,"BST"},  % 1970-10-25T01:00:00Z .. 1971-03-28T01:00:00Z
          {62224938000,62224941600,60,"BST"},  % 1971-10-31T01:00:00Z .. 1971-10-31T02:00:00Z
@@ -13023,8 +13620,8 @@
          {62760790800,62761395600,0,"GMT"},  % 1988-10-23T01:00:00Z .. 1988-10-30T01:00:00Z
          {62918643600,62919248400,0,"GMT"},  % 1993-10-24T01:00:00Z .. 1993-10-31T01:00:00Z
          {62950093200,62950698000,0,"GMT"},  % 1994-10-23T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62981542800,62982147600,0,"GMT"}]},  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Luxembourg",
+         {62981542800,62982147600,0,"GMT"}],  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Luxembourg" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -13054,8 +13651,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Madrid",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Madrid" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -13088,8 +13685,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Malta",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Malta" =>
         [{62174739600,62180175600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-05-30T23:00:00Z
          {62190457200,62192883600,60,"CET"},  % 1970-09-26T23:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62211020400,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-05-22T23:00:00Z
@@ -13126,8 +13723,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Mariehamn",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Mariehamn" =>
         [{62174739600,62192883600,120,"EET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,120,"EET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,120,"EET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -13155,8 +13752,8 @@
          {62884774800,62887194000,120,"EET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,120,"EET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,120,"EET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,120,"EET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Minsk",
+         {62979123600,62982147600,120,"EET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Minsk" =>
         [{62167219200,62522139600,180,"MSK"},  % 1970-01-01T00:00:00Z .. 1981-03-31T21:00:00Z
          {62522139600,62537947200,240,"MSD"},  % 1981-03-31T21:00:00Z .. 1981-09-30T20:00:00Z
          {62537947200,62553675600,180,"MSK"},  % 1981-09-30T20:00:00Z .. 1982-03-31T21:00:00Z
@@ -13215,8 +13812,8 @@
          {63405504000,63423648000,180,"EEST"},  % 2009-03-29T00:00:00Z .. 2009-10-25T00:00:00Z
          {63423648000,63436953600,120,"EET"},  % 2009-10-25T00:00:00Z .. 2010-03-28T00:00:00Z
          {63436953600,63455702400,180,"EEST"},  % 2010-03-28T00:00:00Z .. 2010-10-31T00:00:00Z
-         {63455702400,63468403200,120,"EET"}]},  % 2010-10-31T00:00:00Z .. 2011-03-27T00:00:00Z
-      {"Europe/Monaco",
+         {63455702400,63468403200,120,"EET"}],  % 2010-10-31T00:00:00Z .. 2011-03-27T00:00:00Z
+      "Europe/Monaco" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -13247,8 +13844,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Moscow",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Moscow" =>
         [{62522139600,62537947200,240,"MSD"},  % 1981-03-31T21:00:00Z .. 1981-09-30T20:00:00Z
          {62553675600,62569483200,240,"MSD"},  % 1982-03-31T21:00:00Z .. 1982-09-30T20:00:00Z
          {62585211600,62601019200,240,"MSD"},  % 1983-03-31T21:00:00Z .. 1983-09-30T20:00:00Z
@@ -13280,8 +13877,8 @@
          {63374050800,63392194800,240,"MSD"},  % 2008-03-29T23:00:00Z .. 2008-10-25T23:00:00Z
          {63405500400,63423644400,240,"MSD"},  % 2009-03-28T23:00:00Z .. 2009-10-24T23:00:00Z
          {63436950000,63455698800,240,"MSD"},  % 2010-03-27T23:00:00Z .. 2010-10-30T23:00:00Z
-         {63468399600,63581493600,240,"MSK"}]},  % 2011-03-26T23:00:00Z .. 2014-10-25T22:00:00Z
-      {"Europe/Nicosia",
+         {63468399600,63581493600,240,"MSK"}],  % 2011-03-26T23:00:00Z .. 2014-10-25T22:00:00Z
+      "Europe/Nicosia" =>
         [{62174739600,62192883600,120,"EET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,120,"EET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,120,"EET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -13333,8 +13930,8 @@
          {63011163600,63013597200,120,"EET"},  % 1996-09-28T21:00:00Z .. 1996-10-27T01:00:00Z
          {63026892000,63026902800,180,"EEST"},  % 1997-03-29T22:00:00Z .. 1997-03-30T01:00:00Z
          {63042613200,63045046800,120,"EET"},  % 1997-09-27T21:00:00Z .. 1997-10-26T01:00:00Z
-         {63058341600,63058352400,180,"EEST"}]},  % 1998-03-28T22:00:00Z .. 1998-03-29T01:00:00Z
-      {"Europe/Oslo",
+         {63058341600,63058352400,180,"EEST"}],  % 1998-03-28T22:00:00Z .. 1998-03-29T01:00:00Z
+      "Europe/Oslo" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -13361,8 +13958,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Paris",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Paris" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -13393,8 +13990,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Podgorica",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Podgorica" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -13420,8 +14017,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Prague",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Prague" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -13449,8 +14046,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Riga",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Riga" =>
         [{62167219200,62522139600,180,"MSK"},  % 1970-01-01T00:00:00Z .. 1981-03-31T21:00:00Z
          {62522139600,62537947200,240,"MSD"},  % 1981-03-31T21:00:00Z .. 1981-09-30T20:00:00Z
          {62537947200,62553675600,180,"MSK"},  % 1981-09-30T20:00:00Z .. 1982-03-31T21:00:00Z
@@ -13484,8 +14081,8 @@
          {62979120000,62982147600,120,"EET"},  % 1995-09-24T00:00:00Z .. 1995-10-29T01:00:00Z
          {62995449600,62995453200,180,"EEST"},  % 1996-03-31T00:00:00Z .. 1996-03-31T01:00:00Z
          {63011174400,63013597200,120,"EET"},  % 1996-09-29T00:00:00Z .. 1996-10-27T01:00:00Z
-         {63121251600,63140000400,120,"EET"}]},  % 2000-03-26T01:00:00Z .. 2000-10-29T01:00:00Z
-      {"Europe/Rome",
+         {63121251600,63140000400,120,"EET"}],  % 2000-03-26T01:00:00Z .. 2000-10-29T01:00:00Z
+      "Europe/Rome" =>
         [{62174739600,62180175600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-05-30T23:00:00Z
          {62190457200,62192883600,60,"CET"},  % 1970-09-26T23:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62211020400,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-05-22T23:00:00Z
@@ -13522,8 +14119,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Samara",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Samara" =>
         [{62522136000,62537943600,300,"+05"},  % 1981-03-31T20:00:00Z .. 1981-09-30T19:00:00Z
          {62553672000,62569479600,300,"+05"},  % 1982-03-31T20:00:00Z .. 1982-09-30T19:00:00Z
          {62585208000,62601015600,300,"+05"},  % 1983-03-31T20:00:00Z .. 1983-09-30T19:00:00Z
@@ -13552,8 +14149,8 @@
          {63341992800,63360741600,300,"+05"},  % 2007-03-24T22:00:00Z .. 2007-10-27T22:00:00Z
          {63374047200,63392191200,300,"+05"},  % 2008-03-29T22:00:00Z .. 2008-10-25T22:00:00Z
          {63405496800,63423640800,300,"+05"},  % 2009-03-28T22:00:00Z .. 2009-10-24T22:00:00Z
-         {63455698800,63468399600,180,"+03"}]},  % 2010-10-30T23:00:00Z .. 2011-03-26T23:00:00Z
-      {"Europe/San_Marino",
+         {63455698800,63468399600,180,"+03"}],  % 2010-10-30T23:00:00Z .. 2011-03-26T23:00:00Z
+      "Europe/San_Marino" =>
         [{62174739600,62180175600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-05-30T23:00:00Z
          {62190457200,62192883600,60,"CET"},  % 1970-09-26T23:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62211020400,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-05-22T23:00:00Z
@@ -13590,8 +14187,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Sarajevo",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Sarajevo" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -13617,8 +14214,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Saratov",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Saratov" =>
         [{62522136000,62537943600,300,"+05"},  % 1981-03-31T20:00:00Z .. 1981-09-30T19:00:00Z
          {62553672000,62569479600,300,"+05"},  % 1982-03-31T20:00:00Z .. 1982-09-30T19:00:00Z
          {62585208000,62601015600,300,"+05"},  % 1983-03-31T20:00:00Z .. 1983-09-30T19:00:00Z
@@ -13648,8 +14245,8 @@
          {63392194800,63405500400,180,"+03"},  % 2008-10-25T23:00:00Z .. 2009-03-28T23:00:00Z
          {63423644400,63436950000,180,"+03"},  % 2009-10-24T23:00:00Z .. 2010-03-27T23:00:00Z
          {63455698800,63468399600,180,"+03"},  % 2010-10-30T23:00:00Z .. 2011-03-26T23:00:00Z
-         {63581493600,63648025200,180,"+03"}]},  % 2014-10-25T22:00:00Z .. 2016-12-03T23:00:00Z
-      {"Europe/Simferopol",
+         {63581493600,63648025200,180,"+03"}],  % 2014-10-25T22:00:00Z .. 2016-12-03T23:00:00Z
+      "Europe/Simferopol" =>
         [{62522139600,62537947200,240,"MSD"},  % 1981-03-31T21:00:00Z .. 1981-09-30T20:00:00Z
          {62553675600,62569483200,240,"MSD"},  % 1982-03-31T21:00:00Z .. 1982-09-30T20:00:00Z
          {62585211600,62601019200,240,"MSD"},  % 1983-03-31T21:00:00Z .. 1983-09-30T20:00:00Z
@@ -13702,8 +14299,8 @@
          {63518605200,63531910800,120,"EET"},  % 2012-10-28T01:00:00Z .. 2013-03-31T01:00:00Z
          {63531910800,63550054800,180,"EEST"},  % 2013-03-31T01:00:00Z .. 2013-10-27T01:00:00Z
          {63550054800,63563356800,120,"EET"},  % 2013-10-27T01:00:00Z .. 2014-03-30T00:00:00Z
-         {63563356800,63581493600,240,"MSK"}]},  % 2014-03-30T00:00:00Z .. 2014-10-25T22:00:00Z
-      {"Europe/Skopje",
+         {63563356800,63581493600,240,"MSK"}],  % 2014-03-30T00:00:00Z .. 2014-10-25T22:00:00Z
+      "Europe/Skopje" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -13729,8 +14326,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Sofia",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Sofia" =>
         [{62174739600,62192883600,120,"EET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,120,"EET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,120,"EET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -13775,8 +14372,8 @@
          {62963388000,62963398800,180,"EEST"},  % 1995-03-25T22:00:00Z .. 1995-03-26T01:00:00Z
          {62979109200,62982147600,120,"EET"},  % 1995-09-23T21:00:00Z .. 1995-10-29T01:00:00Z
          {62995442400,62995453200,180,"EEST"},  % 1996-03-30T22:00:00Z .. 1996-03-31T01:00:00Z
-         {63013582800,63013597200,120,"EET"}]},  % 1996-10-26T21:00:00Z .. 1996-10-27T01:00:00Z
-      {"Europe/Stockholm",
+         {63013582800,63013597200,120,"EET"}],  % 1996-10-26T21:00:00Z .. 1996-10-27T01:00:00Z
+      "Europe/Stockholm" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -13803,8 +14400,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Tallinn",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Tallinn" =>
         [{62167219200,62522139600,180,"MSK"},  % 1970-01-01T00:00:00Z .. 1981-03-31T21:00:00Z
          {62522139600,62537947200,240,"MSD"},  % 1981-03-31T21:00:00Z .. 1981-09-30T20:00:00Z
          {62537947200,62553675600,180,"MSK"},  % 1981-09-30T20:00:00Z .. 1982-03-31T21:00:00Z
@@ -13842,8 +14439,8 @@
          {63045043200,63045046800,120,"EET"},  % 1997-10-26T00:00:00Z .. 1997-10-26T01:00:00Z
          {63058348800,63058352400,180,"EEST"},  % 1998-03-29T00:00:00Z .. 1998-03-29T01:00:00Z
          {63121251600,63140000400,120,"EET"},  % 2000-03-26T01:00:00Z .. 2000-10-29T01:00:00Z
-         {63152701200,63171450000,120,"EET"}]},  % 2001-03-25T01:00:00Z .. 2001-10-28T01:00:00Z
-      {"Europe/Tirane",
+         {63152701200,63171450000,120,"EET"}],  % 2001-03-25T01:00:00Z .. 2001-10-28T01:00:00Z
+      "Europe/Tirane" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -13880,8 +14477,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Tiraspol",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Tiraspol" =>
         [{62167219200,62522139600,180,"MSK"},  % 1970-01-01T00:00:00Z .. 1981-03-31T21:00:00Z
          {62522139600,62537947200,240,"MSD"},  % 1981-03-31T21:00:00Z .. 1981-09-30T20:00:00Z
          {62537947200,62553675600,180,"MSK"},  % 1981-09-30T20:00:00Z .. 1982-03-31T21:00:00Z
@@ -13964,8 +14561,8 @@
          {63752659200,63752662800,180,"EEST"},  % 2020-03-29T00:00:00Z .. 2020-03-29T01:00:00Z
          {63770803200,63770806800,120,"EET"},  % 2020-10-25T00:00:00Z .. 2020-10-25T01:00:00Z
          {63784108800,63784112400,180,"EEST"},  % 2021-03-28T00:00:00Z .. 2021-03-28T01:00:00Z
-         {63802857600,63802861200,120,"EET"}]},  % 2021-10-31T00:00:00Z .. 2021-10-31T01:00:00Z
-      {"Europe/Ulyanovsk",
+         {63802857600,63802861200,120,"EET"}],  % 2021-10-31T00:00:00Z .. 2021-10-31T01:00:00Z
+      "Europe/Ulyanovsk" =>
         [{62522136000,62537943600,300,"+05"},  % 1981-03-31T20:00:00Z .. 1981-09-30T19:00:00Z
          {62553672000,62569479600,300,"+05"},  % 1982-03-31T20:00:00Z .. 1982-09-30T19:00:00Z
          {62585208000,62601015600,300,"+05"},  % 1983-03-31T20:00:00Z .. 1983-09-30T19:00:00Z
@@ -13997,8 +14594,8 @@
          {63392194800,63405500400,180,"+03"},  % 2008-10-25T23:00:00Z .. 2009-03-28T23:00:00Z
          {63423644400,63436950000,180,"+03"},  % 2009-10-24T23:00:00Z .. 2010-03-27T23:00:00Z
          {63455698800,63468399600,180,"+03"},  % 2010-10-30T23:00:00Z .. 2011-03-26T23:00:00Z
-         {63581493600,63626252400,180,"+03"}]},  % 2014-10-25T22:00:00Z .. 2016-03-26T23:00:00Z
-      {"Europe/Uzhgorod",
+         {63581493600,63626252400,180,"+03"}],  % 2014-10-25T22:00:00Z .. 2016-03-26T23:00:00Z
+      "Europe/Uzhgorod" =>
         [{62167219200,62522139600,180,"MSK"},  % 1970-01-01T00:00:00Z .. 1981-03-31T21:00:00Z
          {62522139600,62537947200,240,"MSD"},  % 1981-03-31T21:00:00Z .. 1981-09-30T20:00:00Z
          {62537947200,62553675600,180,"MSK"},  % 1981-09-30T20:00:00Z .. 1982-03-31T21:00:00Z
@@ -14029,8 +14626,8 @@
          {62947670400,62950698000,120,"EET"},  % 1994-09-25T00:00:00Z .. 1994-10-30T01:00:00Z
          {62963395200,62963398800,180,"EEST"},  % 1995-03-26T00:00:00Z .. 1995-03-26T01:00:00Z
          {62979120000,62982147600,120,"EET"},  % 1995-09-24T00:00:00Z .. 1995-10-29T01:00:00Z
-         {62995449600,62995453200,180,"EEST"}]},  % 1996-03-31T00:00:00Z .. 1996-03-31T01:00:00Z
-      {"Europe/Vaduz",
+         {62995449600,62995453200,180,"EEST"}],  % 1996-03-31T00:00:00Z .. 1996-03-31T01:00:00Z
+      "Europe/Vaduz" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -14056,8 +14653,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Vatican",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Vatican" =>
         [{62174739600,62180175600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-05-30T23:00:00Z
          {62190457200,62192883600,60,"CET"},  % 1970-09-26T23:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62211020400,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-05-22T23:00:00Z
@@ -14094,8 +14691,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Vienna",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Vienna" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -14122,8 +14719,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Vilnius",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Vilnius" =>
         [{62167219200,62522139600,180,"MSK"},  % 1970-01-01T00:00:00Z .. 1981-03-31T21:00:00Z
          {62522139600,62537947200,240,"MSD"},  % 1981-03-31T21:00:00Z .. 1981-09-30T20:00:00Z
          {62537947200,62553675600,180,"MSK"},  % 1981-09-30T20:00:00Z .. 1982-03-31T21:00:00Z
@@ -14164,8 +14761,8 @@
          {63089802000,63108550800,120,"CEST"},  % 1999-03-28T01:00:00Z .. 1999-10-31T01:00:00Z
          {63121251600,63140000400,120,"EET"},  % 2000-03-26T01:00:00Z .. 2000-10-29T01:00:00Z
          {63152701200,63171450000,120,"EET"},  % 2001-03-25T01:00:00Z .. 2001-10-28T01:00:00Z
-         {63184755600,63202899600,120,"EET"}]},  % 2002-03-31T01:00:00Z .. 2002-10-27T01:00:00Z
-      {"Europe/Volgograd",
+         {63184755600,63202899600,120,"EET"}],  % 2002-03-31T01:00:00Z .. 2002-10-27T01:00:00Z
+      "Europe/Volgograd" =>
         [{62167219200,62522136000,240,"+04"},  % 1970-01-01T00:00:00Z .. 1981-03-31T20:00:00Z
          {62522136000,62537943600,300,"+05"},  % 1981-03-31T20:00:00Z .. 1981-09-30T19:00:00Z
          {62537943600,62553672000,240,"+04"},  % 1981-09-30T19:00:00Z .. 1982-03-31T20:00:00Z
@@ -14205,8 +14802,8 @@
          {63405500400,63423644400,240,"MSD"},  % 2009-03-28T23:00:00Z .. 2009-10-24T23:00:00Z
          {63436950000,63455698800,240,"MSD"},  % 2010-03-27T23:00:00Z .. 2010-10-30T23:00:00Z
          {63468399600,63581493600,240,"MSK"},  % 2011-03-26T23:00:00Z .. 2014-10-25T22:00:00Z
-         {63707900400,63776239200,240,"+04"}]},  % 2018-10-27T23:00:00Z .. 2020-12-26T22:00:00Z
-      {"Europe/Warsaw",
+         {63707900400,63776239200,240,"+04"}],  % 2018-10-27T23:00:00Z .. 2020-12-26T22:00:00Z
+      "Europe/Warsaw" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -14243,8 +14840,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Zagreb",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Zagreb" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -14270,8 +14867,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Europe/Zaporozhye",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Europe/Zaporozhye" =>
         [{62167219200,62522139600,180,"MSK"},  % 1970-01-01T00:00:00Z .. 1981-03-31T21:00:00Z
          {62522139600,62537947200,240,"MSD"},  % 1981-03-31T21:00:00Z .. 1981-09-30T20:00:00Z
          {62537947200,62553675600,180,"MSK"},  % 1981-09-30T20:00:00Z .. 1982-03-31T21:00:00Z
@@ -14302,8 +14899,8 @@
          {62947670400,62950698000,120,"EET"},  % 1994-09-25T00:00:00Z .. 1994-10-30T01:00:00Z
          {62963395200,62963398800,180,"EEST"},  % 1995-03-26T00:00:00Z .. 1995-03-26T01:00:00Z
          {62979120000,62982147600,120,"EET"},  % 1995-09-24T00:00:00Z .. 1995-10-29T01:00:00Z
-         {62995449600,62995453200,180,"EEST"}]},  % 1996-03-31T00:00:00Z .. 1996-03-31T01:00:00Z
-      {"Europe/Zurich",
+         {62995449600,62995453200,180,"EEST"}],  % 1996-03-31T00:00:00Z .. 1996-03-31T01:00:00Z
+      "Europe/Zurich" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -14329,8 +14926,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"GB",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "GB" =>
         [{62167219200,62174739600,60,"BST"},  % 1970-01-01T00:00:00Z .. 1970-03-29T01:00:00Z
          {62192883600,62206189200,60,"BST"},  % 1970-10-25T01:00:00Z .. 1971-03-28T01:00:00Z
          {62224938000,62224941600,60,"BST"},  % 1971-10-31T01:00:00Z .. 1971-10-31T02:00:00Z
@@ -14357,8 +14954,8 @@
          {62760790800,62761395600,0,"GMT"},  % 1988-10-23T01:00:00Z .. 1988-10-30T01:00:00Z
          {62918643600,62919248400,0,"GMT"},  % 1993-10-24T01:00:00Z .. 1993-10-31T01:00:00Z
          {62950093200,62950698000,0,"GMT"},  % 1994-10-23T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62981542800,62982147600,0,"GMT"}]},  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"GB-Eire",
+         {62981542800,62982147600,0,"GMT"}],  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
+      "GB-Eire" =>
         [{62167219200,62174739600,60,"BST"},  % 1970-01-01T00:00:00Z .. 1970-03-29T01:00:00Z
          {62192883600,62206189200,60,"BST"},  % 1970-10-25T01:00:00Z .. 1971-03-28T01:00:00Z
          {62224938000,62224941600,60,"BST"},  % 1971-10-31T01:00:00Z .. 1971-10-31T02:00:00Z
@@ -14385,8 +14982,8 @@
          {62760790800,62761395600,0,"GMT"},  % 1988-10-23T01:00:00Z .. 1988-10-30T01:00:00Z
          {62918643600,62919248400,0,"GMT"},  % 1993-10-24T01:00:00Z .. 1993-10-31T01:00:00Z
          {62950093200,62950698000,0,"GMT"},  % 1994-10-23T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62981542800,62982147600,0,"GMT"}]},  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Hongkong",
+         {62981542800,62982147600,0,"GMT"}],  % 1995-10-22T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Hongkong" =>
         [{62176534200,62192255400,540,"HKST"},  % 1970-04-18T19:30:00Z .. 1970-10-17T18:30:00Z
          {62207983800,62223705000,540,"HKST"},  % 1971-04-17T19:30:00Z .. 1971-10-16T18:30:00Z
          {62239433400,62255759400,540,"HKST"},  % 1972-04-15T19:30:00Z .. 1972-10-21T18:30:00Z
@@ -14394,13 +14991,13 @@
          {62293260600,62318658600,540,"HKST"},  % 1973-12-29T19:30:00Z .. 1974-10-19T18:30:00Z
          {62334387000,62350108200,540,"HKST"},  % 1975-04-19T19:30:00Z .. 1975-10-18T18:30:00Z
          {62365836600,62381557800,540,"HKST"},  % 1976-04-17T19:30:00Z .. 1976-10-16T18:30:00Z
-         {62462604600,62476511400,540,"HKST"}]},  % 1979-05-12T19:30:00Z .. 1979-10-20T18:30:00Z
-      {"Indian/Chagos",
-        [{62167219200,62987655600,300,"+05"}]},  % 1970-01-01T00:00:00Z .. 1995-12-31T19:00:00Z
-      {"Indian/Mauritius",
+         {62462604600,62476511400,540,"HKST"}],  % 1979-05-12T19:30:00Z .. 1979-10-20T18:30:00Z
+      "Indian/Chagos" =>
+        [{62167219200,62987655600,300,"+05"}],  % 1970-01-01T00:00:00Z .. 1995-12-31T19:00:00Z
+      "Indian/Mauritius" =>
         [{62570260800,62584254000,300,"+05"},  % 1982-10-09T20:00:00Z .. 1983-03-20T19:00:00Z
-         {63392191200,63405493200,300,"+05"}]},  % 2008-10-25T22:00:00Z .. 2009-03-28T21:00:00Z
-      {"Iran",
+         {63392191200,63405493200,300,"+05"}],  % 2008-10-25T22:00:00Z .. 2009-03-28T21:00:00Z
+      "Iran" =>
         [{62395039800,62413443000,270,"+0430"},  % 1977-03-21T19:30:00Z .. 1977-10-20T19:30:00Z
          {62413443000,62426836800,240,"+04"},  % 1977-10-20T19:30:00Z .. 1978-03-24T20:00:00Z
          {62426836800,62438328000,300,"+05"},  % 1978-03-24T20:00:00Z .. 1978-08-04T20:00:00Z
@@ -14436,8 +15033,8 @@
          {63720419400,63736313400,270,"+0430"},  % 2019-03-21T20:30:00Z .. 2019-09-21T19:30:00Z
          {63751955400,63767849400,270,"+0430"},  % 2020-03-20T20:30:00Z .. 2020-09-20T19:30:00Z
          {63783577800,63799471800,270,"+0430"},  % 2021-03-21T20:30:00Z .. 2021-09-21T19:30:00Z
-         {63815113800,63831007800,270,"+0430"}]},  % 2022-03-21T20:30:00Z .. 2022-09-21T19:30:00Z
-      {"Israel",
+         {63815113800,63831007800,270,"+0430"}],  % 2022-03-21T20:30:00Z .. 2022-09-21T19:30:00Z
+      "Israel" =>
         [{62174563200,62192876400,120,"IST"},  % 1970-03-27T00:00:00Z .. 1970-10-24T23:00:00Z
          {62206012800,62224930800,120,"IST"},  % 1971-03-26T00:00:00Z .. 1971-10-30T23:00:00Z
          {62237462400,62256380400,120,"IST"},  % 1972-03-24T00:00:00Z .. 1972-10-28T23:00:00Z
@@ -14509,8 +15106,8 @@
          {63468230400,63468835200,120,"IST"},  % 2011-03-25T00:00:00Z .. 2011-04-01T00:00:00Z
          {63484729200,63487148400,120,"IST"},  % 2011-10-01T23:00:00Z .. 2011-10-29T23:00:00Z
          {63499680000,63500284800,120,"IST"},  % 2012-03-23T00:00:00Z .. 2012-03-30T00:00:00Z
-         {63515574000,63518598000,120,"IST"}]},  % 2012-09-22T23:00:00Z .. 2012-10-27T23:00:00Z
-      {"Jamaica",
+         {63515574000,63518598000,120,"IST"}],  % 2012-09-22T23:00:00Z .. 2012-10-27T23:00:00Z
+      "Jamaica" =>
         [{62293906800,62319304800,-240,"EDT"},  % 1974-01-06T07:00:00Z .. 1974-10-27T06:00:00Z
          {62329590000,62350754400,-240,"EDT"},  % 1975-02-23T07:00:00Z .. 1975-10-26T06:00:00Z
          {62366482800,62382808800,-240,"EDT"},  % 1976-04-25T07:00:00Z .. 1976-10-31T06:00:00Z
@@ -14520,10 +15117,10 @@
          {62492886000,62508607200,-240,"EDT"},  % 1980-04-27T07:00:00Z .. 1980-10-26T06:00:00Z
          {62524335600,62540056800,-240,"EDT"},  % 1981-04-26T07:00:00Z .. 1981-10-25T06:00:00Z
          {62555785200,62572111200,-240,"EDT"},  % 1982-04-25T07:00:00Z .. 1982-10-31T06:00:00Z
-         {62587234800,62603560800,-240,"EDT"}]},  % 1983-04-24T07:00:00Z .. 1983-10-30T06:00:00Z
-      {"Kwajalein",
-        [{62167219200,62913153600,-720,"-12"}]},  % 1970-01-01T00:00:00Z .. 1993-08-21T12:00:00Z
-      {"Libya",
+         {62587234800,62603560800,-240,"EDT"}],  % 1983-04-24T07:00:00Z .. 1983-10-30T06:00:00Z
+      "Kwajalein" =>
+        [{62167219200,62913153600,-720,"-12"}],  % 1970-01-01T00:00:00Z .. 1993-08-21T12:00:00Z
+      "Libya" =>
         [{62545903200,62553682800,60,"CET"},  % 1981-12-31T22:00:00Z .. 1982-03-31T23:00:00Z
          {62553682800,62569490400,120,"CEST"},  % 1982-03-31T23:00:00Z .. 1982-09-30T22:00:00Z
          {62569490400,62585218800,60,"CET"},  % 1982-09-30T22:00:00Z .. 1983-03-31T23:00:00Z
@@ -14544,8 +15141,8 @@
          {63011253600,63027327600,60,"CET"},  % 1996-09-29T22:00:00Z .. 1997-04-03T23:00:00Z
          {63027327600,63043135200,120,"CEST"},  % 1997-04-03T23:00:00Z .. 1997-10-03T22:00:00Z
          {63519724800,63531734400,60,"CET"},  % 2012-11-10T00:00:00Z .. 2013-03-29T00:00:00Z
-         {63531734400,63549878400,120,"CEST"}]},  % 2013-03-29T00:00:00Z .. 2013-10-25T00:00:00Z
-      {"MET",
+         {63531734400,63549878400,120,"CEST"}],  % 2013-03-29T00:00:00Z .. 2013-10-25T00:00:00Z
+      "MET" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -14575,8 +15172,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"MST7MDT",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "MST7MDT" =>
         [{62172954000,62177187600,-420,"MST"},  % 1970-03-08T09:00:00Z .. 1970-04-26T09:00:00Z
          {62192908800,62193513600,-420,"MST"},  % 1970-10-25T08:00:00Z .. 1970-11-01T08:00:00Z
          {62205008400,62208637200,-420,"MST"},  % 1971-03-14T09:00:00Z .. 1971-04-25T09:00:00Z
@@ -14650,8 +15247,8 @@
          {63277923600,63279738000,-420,"MST"},  % 2005-03-13T09:00:00Z .. 2005-04-03T09:00:00Z
          {63297878400,63298483200,-420,"MST"},  % 2005-10-30T08:00:00Z .. 2005-11-06T08:00:00Z
          {63309373200,63311187600,-420,"MST"},  % 2006-03-12T09:00:00Z .. 2006-04-02T09:00:00Z
-         {63329328000,63329932800,-420,"MST"}]},  % 2006-10-29T08:00:00Z .. 2006-11-05T08:00:00Z
-      {"Mexico/BajaNorte",
+         {63329328000,63329932800,-420,"MST"}],  % 2006-10-29T08:00:00Z .. 2006-11-05T08:00:00Z
+      "Mexico/BajaNorte" =>
         [{62172957600,62177191200,-480,"PST"},  % 1970-03-08T10:00:00Z .. 1970-04-26T10:00:00Z
          {62192912400,62193517200,-480,"PST"},  % 1970-10-25T09:00:00Z .. 1970-11-01T09:00:00Z
          {62205012000,62208640800,-480,"PST"},  % 1971-03-14T10:00:00Z .. 1971-04-25T10:00:00Z
@@ -14731,8 +15328,8 @@
          {63372276000,63374695200,-480,"PST"},  % 2008-03-09T10:00:00Z .. 2008-04-06T10:00:00Z
          {63392230800,63392835600,-480,"PST"},  % 2008-10-26T09:00:00Z .. 2008-11-02T09:00:00Z
          {63403725600,63406144800,-480,"PST"},  % 2009-03-08T10:00:00Z .. 2009-04-05T10:00:00Z
-         {63423680400,63424285200,-480,"PST"}]},  % 2009-10-25T09:00:00Z .. 2009-11-01T09:00:00Z
-      {"Mexico/BajaSur",
+         {63423680400,63424285200,-480,"PST"}],  % 2009-10-25T09:00:00Z .. 2009-11-01T09:00:00Z
+      "Mexico/BajaSur" =>
         [{62996086800,63013622400,-360,"MDT"},  % 1996-04-07T09:00:00Z .. 1996-10-27T08:00:00Z
          {63027536400,63045072000,-360,"MDT"},  % 1997-04-06T09:00:00Z .. 1997-10-26T08:00:00Z
          {63058986000,63076521600,-360,"MDT"},  % 1998-04-05T09:00:00Z .. 1998-10-25T08:00:00Z
@@ -14759,8 +15356,8 @@
          {63721846800,63739382400,-360,"MDT"},  % 2019-04-07T09:00:00Z .. 2019-10-27T08:00:00Z
          {63753296400,63770832000,-360,"MDT"},  % 2020-04-05T09:00:00Z .. 2020-10-25T08:00:00Z
          {63784746000,63802886400,-360,"MDT"},  % 2021-04-04T09:00:00Z .. 2021-10-31T08:00:00Z
-         {63816195600,63834336000,-360,"MDT"}]},  % 2022-04-03T09:00:00Z .. 2022-10-30T08:00:00Z
-      {"Mexico/General",
+         {63816195600,63834336000,-360,"MDT"}],  % 2022-04-03T09:00:00Z .. 2022-10-30T08:00:00Z
+      "Mexico/General" =>
         [{62996083200,63013618800,-300,"CDT"},  % 1996-04-07T08:00:00Z .. 1996-10-27T07:00:00Z
          {63027532800,63045068400,-300,"CDT"},  % 1997-04-06T08:00:00Z .. 1997-10-26T07:00:00Z
          {63058982400,63076518000,-300,"CDT"},  % 1998-04-05T08:00:00Z .. 1998-10-25T07:00:00Z
@@ -14787,8 +15384,8 @@
          {63721843200,63739378800,-300,"CDT"},  % 2019-04-07T08:00:00Z .. 2019-10-27T07:00:00Z
          {63753292800,63770828400,-300,"CDT"},  % 2020-04-05T08:00:00Z .. 2020-10-25T07:00:00Z
          {63784742400,63802882800,-300,"CDT"},  % 2021-04-04T08:00:00Z .. 2021-10-31T07:00:00Z
-         {63816192000,63834332400,-300,"CDT"}]},  % 2022-04-03T08:00:00Z .. 2022-10-30T07:00:00Z
-      {"NZ",
+         {63816192000,63834332400,-300,"CDT"}],  % 2022-04-03T08:00:00Z .. 2022-10-30T07:00:00Z
+      "NZ" =>
         [{62167219200,62175304800,720,"NZST"},  % 1970-01-01T00:00:00Z .. 1970-04-04T14:00:00Z
          {62190424800,62206754400,720,"NZST"},  % 1970-09-26T14:00:00Z .. 1971-04-03T14:00:00Z
          {62221874400,62238204000,720,"NZST"},  % 1971-09-25T14:00:00Z .. 1972-04-01T14:00:00Z
@@ -14859,8 +15456,8 @@
          {63294789600,63295394400,720,"NZST"},  % 2005-09-24T14:00:00Z .. 2005-10-01T14:00:00Z
          {63309909600,63311119200,720,"NZST"},  % 2006-03-18T14:00:00Z .. 2006-04-01T14:00:00Z
          {63326239200,63326844000,720,"NZST"},  % 2006-09-23T14:00:00Z .. 2006-09-30T14:00:00Z
-         {63341359200,63342568800,720,"NZST"}]},  % 2007-03-17T14:00:00Z .. 2007-03-31T14:00:00Z
-      {"NZ-CHAT",
+         {63341359200,63342568800,720,"NZST"}],  % 2007-03-17T14:00:00Z .. 2007-03-31T14:00:00Z
+      "NZ-CHAT" =>
         [{62167219200,62175304800,765,"+1245"},  % 1970-01-01T00:00:00Z .. 1970-04-04T14:00:00Z
          {62190424800,62206754400,765,"+1245"},  % 1970-09-26T14:00:00Z .. 1971-04-03T14:00:00Z
          {62221874400,62238204000,765,"+1245"},  % 1971-09-25T14:00:00Z .. 1972-04-01T14:00:00Z
@@ -14931,8 +15528,8 @@
          {63294789600,63295394400,765,"+1245"},  % 2005-09-24T14:00:00Z .. 2005-10-01T14:00:00Z
          {63309909600,63311119200,765,"+1245"},  % 2006-03-18T14:00:00Z .. 2006-04-01T14:00:00Z
          {63326239200,63326844000,765,"+1245"},  % 2006-09-23T14:00:00Z .. 2006-09-30T14:00:00Z
-         {63341359200,63342568800,765,"+1245"}]},  % 2007-03-17T14:00:00Z .. 2007-03-31T14:00:00Z
-      {"Navajo",
+         {63341359200,63342568800,765,"+1245"}],  % 2007-03-17T14:00:00Z .. 2007-03-31T14:00:00Z
+      "Navajo" =>
         [{62172954000,62177187600,-420,"MST"},  % 1970-03-08T09:00:00Z .. 1970-04-26T09:00:00Z
          {62192908800,62193513600,-420,"MST"},  % 1970-10-25T08:00:00Z .. 1970-11-01T08:00:00Z
          {62205008400,62208637200,-420,"MST"},  % 1971-03-14T09:00:00Z .. 1971-04-25T09:00:00Z
@@ -15006,15 +15603,15 @@
          {63277923600,63279738000,-420,"MST"},  % 2005-03-13T09:00:00Z .. 2005-04-03T09:00:00Z
          {63297878400,63298483200,-420,"MST"},  % 2005-10-30T08:00:00Z .. 2005-11-06T08:00:00Z
          {63309373200,63311187600,-420,"MST"},  % 2006-03-12T09:00:00Z .. 2006-04-02T09:00:00Z
-         {63329328000,63329932800,-420,"MST"}]},  % 2006-10-29T08:00:00Z .. 2006-11-05T08:00:00Z
-      {"PRC",
+         {63329328000,63329932800,-420,"MST"}],  % 2006-10-29T08:00:00Z .. 2006-11-05T08:00:00Z
+      "PRC" =>
         [{62682746400,62694234000,540,"CDT"},  % 1986-05-03T18:00:00Z .. 1986-09-13T17:00:00Z
          {62712381600,62725683600,540,"CDT"},  % 1987-04-11T18:00:00Z .. 1987-09-12T17:00:00Z
          {62744436000,62757133200,540,"CDT"},  % 1988-04-16T18:00:00Z .. 1988-09-10T17:00:00Z
          {62775885600,62789187600,540,"CDT"},  % 1989-04-15T18:00:00Z .. 1989-09-16T17:00:00Z
          {62807335200,62820637200,540,"CDT"},  % 1990-04-14T18:00:00Z .. 1990-09-15T17:00:00Z
-         {62838784800,62852086800,540,"CDT"}]},  % 1991-04-13T18:00:00Z .. 1991-09-14T17:00:00Z
-      {"PST8PDT",
+         {62838784800,62852086800,540,"CDT"}],  % 1991-04-13T18:00:00Z .. 1991-09-14T17:00:00Z
+      "PST8PDT" =>
         [{62172957600,62177191200,-480,"PST"},  % 1970-03-08T10:00:00Z .. 1970-04-26T10:00:00Z
          {62192912400,62193517200,-480,"PST"},  % 1970-10-25T09:00:00Z .. 1970-11-01T09:00:00Z
          {62205012000,62208640800,-480,"PST"},  % 1971-03-14T10:00:00Z .. 1971-04-25T10:00:00Z
@@ -15088,8 +15685,8 @@
          {63277927200,63279741600,-480,"PST"},  % 2005-03-13T10:00:00Z .. 2005-04-03T10:00:00Z
          {63297882000,63298486800,-480,"PST"},  % 2005-10-30T09:00:00Z .. 2005-11-06T09:00:00Z
          {63309376800,63311191200,-480,"PST"},  % 2006-03-12T10:00:00Z .. 2006-04-02T10:00:00Z
-         {63329331600,63329936400,-480,"PST"}]},  % 2006-10-29T09:00:00Z .. 2006-11-05T09:00:00Z
-      {"Pacific/Apia",
+         {63329331600,63329936400,-480,"PST"}],  % 2006-10-29T09:00:00Z .. 2006-11-05T09:00:00Z
+      "Pacific/Apia" =>
         [{62167219200,63452718000,-660,"-11"},  % 1970-01-01T00:00:00Z .. 2010-09-26T11:00:00Z
          {63452718000,63468972000,-600,"-10"},  % 2010-09-26T11:00:00Z .. 2011-04-02T14:00:00Z
          {63468972000,63484092000,-660,"-11"},  % 2011-04-02T14:00:00Z .. 2011-09-24T14:00:00Z
@@ -15103,8 +15700,8 @@
          {63673394400,63689724000,840,"+14"},  % 2017-09-23T14:00:00Z .. 2018-03-31T14:00:00Z
          {63705448800,63721778400,840,"+14"},  % 2018-09-29T14:00:00Z .. 2019-04-06T14:00:00Z
          {63736898400,63753228000,840,"+14"},  % 2019-09-28T14:00:00Z .. 2020-04-04T14:00:00Z
-         {63768348000,63784677600,840,"+14"}]},  % 2020-09-26T14:00:00Z .. 2021-04-03T14:00:00Z
-      {"Pacific/Auckland",
+         {63768348000,63784677600,840,"+14"}],  % 2020-09-26T14:00:00Z .. 2021-04-03T14:00:00Z
+      "Pacific/Auckland" =>
         [{62167219200,62175304800,720,"NZST"},  % 1970-01-01T00:00:00Z .. 1970-04-04T14:00:00Z
          {62190424800,62206754400,720,"NZST"},  % 1970-09-26T14:00:00Z .. 1971-04-03T14:00:00Z
          {62221874400,62238204000,720,"NZST"},  % 1971-09-25T14:00:00Z .. 1972-04-01T14:00:00Z
@@ -15175,10 +15772,10 @@
          {63294789600,63295394400,720,"NZST"},  % 2005-09-24T14:00:00Z .. 2005-10-01T14:00:00Z
          {63309909600,63311119200,720,"NZST"},  % 2006-03-18T14:00:00Z .. 2006-04-01T14:00:00Z
          {63326239200,63326844000,720,"NZST"},  % 2006-09-23T14:00:00Z .. 2006-09-30T14:00:00Z
-         {63341359200,63342568800,720,"NZST"}]},  % 2007-03-17T14:00:00Z .. 2007-03-31T14:00:00Z
-      {"Pacific/Bougainville",
-        [{62167219200,63586915200,600,"+10"}]},  % 1970-01-01T00:00:00Z .. 2014-12-27T16:00:00Z
-      {"Pacific/Chatham",
+         {63341359200,63342568800,720,"NZST"}],  % 2007-03-17T14:00:00Z .. 2007-03-31T14:00:00Z
+      "Pacific/Bougainville" =>
+        [{62167219200,63586915200,600,"+10"}],  % 1970-01-01T00:00:00Z .. 2014-12-27T16:00:00Z
+      "Pacific/Chatham" =>
         [{62167219200,62175304800,765,"+1245"},  % 1970-01-01T00:00:00Z .. 1970-04-04T14:00:00Z
          {62190424800,62206754400,765,"+1245"},  % 1970-09-26T14:00:00Z .. 1971-04-03T14:00:00Z
          {62221874400,62238204000,765,"+1245"},  % 1971-09-25T14:00:00Z .. 1972-04-01T14:00:00Z
@@ -15249,8 +15846,8 @@
          {63294789600,63295394400,765,"+1245"},  % 2005-09-24T14:00:00Z .. 2005-10-01T14:00:00Z
          {63309909600,63311119200,765,"+1245"},  % 2006-03-18T14:00:00Z .. 2006-04-01T14:00:00Z
          {63326239200,63326844000,765,"+1245"},  % 2006-09-23T14:00:00Z .. 2006-09-30T14:00:00Z
-         {63341359200,63342568800,765,"+1245"}]},  % 2007-03-17T14:00:00Z .. 2007-03-31T14:00:00Z
-      {"Pacific/Easter",
+         {63341359200,63342568800,765,"+1245"}],  % 2007-03-17T14:00:00Z .. 2007-03-31T14:00:00Z
+      "Pacific/Easter" =>
         [{62167219200,62174746800,-360,"-06"},  % 1970-01-01T00:00:00Z .. 1970-03-29T03:00:00Z
          {62174746800,62191684800,-420,"-07"},  % 1970-03-29T03:00:00Z .. 1970-10-11T04:00:00Z
          {62191684800,62204986800,-360,"-06"},  % 1970-10-11T04:00:00Z .. 1971-03-14T03:00:00Z
@@ -15343,8 +15940,8 @@
          {63669816000,63671630400,-300,"-05"},  % 2017-08-13T04:00:00Z .. 2017-09-03T04:00:00Z
          {63690375600,63693399600,-300,"-05"},  % 2018-04-08T03:00:00Z .. 2018-05-13T03:00:00Z
          {63701265600,63703080000,-300,"-05"},  % 2018-08-12T04:00:00Z .. 2018-09-02T04:00:00Z
-         {63829483200,63830088000,-360,"-06"}]},  % 2022-09-04T04:00:00Z .. 2022-09-11T04:00:00Z
-      {"Pacific/Efate",
+         {63829483200,63830088000,-360,"-06"}],  % 2022-09-04T04:00:00Z .. 2022-09-11T04:00:00Z
+      "Pacific/Efate" =>
         [{62292628800,62301096000,720,"+12"},  % 1973-12-22T12:00:00Z .. 1974-03-30T12:00:00Z
          {62600475600,62616196800,720,"+12"},  % 1983-09-24T13:00:00Z .. 1984-03-24T12:00:00Z
          {62631925200,62647646400,720,"+12"},  % 1984-09-22T13:00:00Z .. 1985-03-23T12:00:00Z
@@ -15355,13 +15952,13 @@
          {62789778000,62805499200,720,"+12"},  % 1989-09-23T13:00:00Z .. 1990-03-24T12:00:00Z
          {62821227600,62836948800,720,"+12"},  % 1990-09-22T13:00:00Z .. 1991-03-23T12:00:00Z
          {62853282000,62863560000,720,"+12"},  % 1991-09-28T13:00:00Z .. 1992-01-25T12:00:00Z
-         {62887150800,62895009600,720,"+12"}]},  % 1992-10-24T13:00:00Z .. 1993-01-23T12:00:00Z
-      {"Pacific/Enderbury",
+         {62887150800,62895009600,720,"+12"}],  % 1992-10-24T13:00:00Z .. 1993-01-23T12:00:00Z
+      "Pacific/Enderbury" =>
         [{62167219200,62474846400,-720,"-12"},  % 1970-01-01T00:00:00Z .. 1979-10-01T12:00:00Z
-         {62474846400,62956090800,-660,"-11"}]},  % 1979-10-01T12:00:00Z .. 1994-12-31T11:00:00Z
-      {"Pacific/Fakaofo",
-        [{62167219200,63492462000,-660,"-11"}]},  % 1970-01-01T00:00:00Z .. 2011-12-30T11:00:00Z
-      {"Pacific/Fiji",
+         {62474846400,62956090800,-660,"-11"}],  % 1979-10-01T12:00:00Z .. 1994-12-31T11:00:00Z
+      "Pacific/Fakaofo" =>
+        [{62167219200,63492462000,-660,"-11"}],  % 1970-01-01T00:00:00Z .. 2011-12-30T11:00:00Z
+      "Pacific/Fiji" =>
         [{63077061600,63087343200,780,"+13"},  % 1998-10-31T14:00:00Z .. 1999-02-27T14:00:00Z
          {63109116000,63118792800,780,"+13"},  % 1999-11-06T14:00:00Z .. 2000-02-26T14:00:00Z
          {63426636000,63436917600,780,"+13"},  % 2009-11-28T14:00:00Z .. 2010-03-27T14:00:00Z
@@ -15375,11 +15972,11 @@
          {63677023200,63683071200,780,"+13"},  % 2017-11-04T14:00:00Z .. 2018-01-13T14:00:00Z
          {63708472800,63714520800,780,"+13"},  % 2018-11-03T14:00:00Z .. 2019-01-12T14:00:00Z
          {63740527200,63745970400,780,"+13"},  % 2019-11-09T14:00:00Z .. 2020-01-11T14:00:00Z
-         {63775605600,63778024800,780,"+13"}]},  % 2020-12-19T14:00:00Z .. 2021-01-16T14:00:00Z
-      {"Pacific/Galapagos",
+         {63775605600,63778024800,780,"+13"}],  % 2020-12-19T14:00:00Z .. 2021-01-16T14:00:00Z
+      "Pacific/Galapagos" =>
         [{62167219200,62672158800,-300,"-05"},  % 1970-01-01T00:00:00Z .. 1986-01-01T05:00:00Z
-         {62890149600,62896107600,-300,"-05"}]},  % 1992-11-28T06:00:00Z .. 1993-02-05T05:00:00Z
-      {"Pacific/Guam",
+         {62890149600,62896107600,-300,"-05"}],  % 1992-11-28T06:00:00Z .. 1993-02-05T05:00:00Z
+      "Pacific/Guam" =>
         [{62167219200,62177126400,600,"GST"},  % 1970-01-01T00:00:00Z .. 1970-04-25T16:00:00Z
          {62177126400,62188614000,660,"GDT"},  % 1970-04-25T16:00:00Z .. 1970-09-05T15:00:00Z
          {62188614000,62208576000,600,"GST"},  % 1970-09-05T15:00:00Z .. 1971-04-24T16:00:00Z
@@ -15390,34 +15987,34 @@
          {62369107200,62376706860,660,"GDT"},  % 1976-05-25T16:00:00Z .. 1976-08-21T15:01:00Z
          {62376706860,62397878400,600,"GST"},  % 1976-08-21T15:01:00Z .. 1977-04-23T16:00:00Z
          {62397878400,62408761200,660,"GDT"},  % 1977-04-23T16:00:00Z .. 1977-08-27T15:00:00Z
-         {62408761200,63144712800,600,"GST"}]},  % 1977-08-27T15:00:00Z .. 2000-12-22T14:00:00Z
-      {"Pacific/Kanton",
+         {62408761200,63144712800,600,"GST"}],  % 1977-08-27T15:00:00Z .. 2000-12-22T14:00:00Z
+      "Pacific/Kanton" =>
         [{62167219200,62474846400,-720,"-12"},  % 1970-01-01T00:00:00Z .. 1979-10-01T12:00:00Z
-         {62474846400,62956090800,-660,"-11"}]},  % 1979-10-01T12:00:00Z .. 1994-12-31T11:00:00Z
-      {"Pacific/Kiritimati",
+         {62474846400,62956090800,-660,"-11"}],  % 1979-10-01T12:00:00Z .. 1994-12-31T11:00:00Z
+      "Pacific/Kiritimati" =>
         [{62167219200,62474841600,-640,"-1040"},  % 1970-01-01T00:00:00Z .. 1979-10-01T10:40:00Z
-         {62474841600,62956087200,-600,"-10"}]},  % 1979-10-01T10:40:00Z .. 1994-12-31T10:00:00Z
-      {"Pacific/Kosrae",
-        [{62167219200,63082324800,720,"+12"}]},  % 1970-01-01T00:00:00Z .. 1998-12-31T12:00:00Z
-      {"Pacific/Kwajalein",
-        [{62167219200,62913153600,-720,"-12"}]},  % 1970-01-01T00:00:00Z .. 1993-08-21T12:00:00Z
-      {"Pacific/Nauru",
-        [{62167219200,62454637800,690,"+1130"}]},  % 1970-01-01T00:00:00Z .. 1979-02-09T14:30:00Z
-      {"Pacific/Norfolk",
+         {62474841600,62956087200,-600,"-10"}],  % 1979-10-01T10:40:00Z .. 1994-12-31T10:00:00Z
+      "Pacific/Kosrae" =>
+        [{62167219200,63082324800,720,"+12"}],  % 1970-01-01T00:00:00Z .. 1998-12-31T12:00:00Z
+      "Pacific/Kwajalein" =>
+        [{62167219200,62913153600,-720,"-12"}],  % 1970-01-01T00:00:00Z .. 1993-08-21T12:00:00Z
+      "Pacific/Nauru" =>
+        [{62167219200,62454637800,690,"+1130"}],  % 1970-01-01T00:00:00Z .. 1979-02-09T14:30:00Z
+      "Pacific/Norfolk" =>
         [{62167219200,62319249000,690,"+1130"},  % 1970-01-01T00:00:00Z .. 1974-10-26T14:30:00Z
          {62319249000,62330135400,750,"+1230"},  % 1974-10-26T14:30:00Z .. 1975-03-01T14:30:00Z
          {62330135400,63611101800,690,"+1130"},  % 1975-03-01T14:30:00Z .. 2015-10-03T14:30:00Z
          {63611103600,63626828400,660,"+11"},  % 2015-10-03T15:00:00Z .. 2016-04-02T15:00:00Z
          {63642553200,63658278000,660,"+11"},  % 2016-10-01T15:00:00Z .. 2017-04-01T15:00:00Z
          {63674002800,63689727600,660,"+11"},  % 2017-09-30T15:00:00Z .. 2018-03-31T15:00:00Z
-         {63706057200,63721782000,660,"+11"}]},  % 2018-10-06T15:00:00Z .. 2019-04-06T15:00:00Z
-      {"Pacific/Noumea",
+         {63706057200,63721782000,660,"+11"}],  % 2018-10-06T15:00:00Z .. 2019-04-06T15:00:00Z
+      "Pacific/Noumea" =>
         [{62417221200,62424561600,720,"+12"},  % 1977-12-03T13:00:00Z .. 1978-02-26T12:00:00Z
          {62448670800,62456097600,720,"+12"},  % 1978-12-02T13:00:00Z .. 1979-02-26T12:00:00Z
-         {63016585200,63024447600,720,"+12"}]},  % 1996-11-30T15:00:00Z .. 1997-03-01T15:00:00Z
-      {"Pacific/Pitcairn",
-        [{62167219200,63060885000,-510,"-0830"}]},  % 1970-01-01T00:00:00Z .. 1998-04-27T08:30:00Z
-      {"Pacific/Rarotonga",
+         {63016585200,63024447600,720,"+12"}],  % 1996-11-30T15:00:00Z .. 1997-03-01T15:00:00Z
+      "Pacific/Pitcairn" =>
+        [{62167219200,63060885000,-510,"-0830"}],  % 1970-01-01T00:00:00Z .. 1998-04-27T08:30:00Z
+      "Pacific/Rarotonga" =>
         [{62167219200,62446933800,-630,"-1030"},  % 1970-01-01T00:00:00Z .. 1978-11-12T10:30:00Z
          {62446933800,62456607000,-570,"-0930"},  % 1978-11-12T10:30:00Z .. 1979-03-04T09:30:00Z
          {62477172000,62488056600,-570,"-0930"},  % 1979-10-28T10:00:00Z .. 1980-03-02T09:30:00Z
@@ -15431,8 +16028,8 @@
          {62729373600,62740863000,-570,"-0930"},  % 1987-10-25T10:00:00Z .. 1988-03-06T09:30:00Z
          {62761428000,62772312600,-570,"-0930"},  % 1988-10-30T10:00:00Z .. 1989-03-05T09:30:00Z
          {62792877600,62803762200,-570,"-0930"},  % 1989-10-29T10:00:00Z .. 1990-03-04T09:30:00Z
-         {62824327200,62835211800,-570,"-0930"}]},  % 1990-10-28T10:00:00Z .. 1991-03-03T09:30:00Z
-      {"Pacific/Saipan",
+         {62824327200,62835211800,-570,"-0930"}],  % 1990-10-28T10:00:00Z .. 1991-03-03T09:30:00Z
+      "Pacific/Saipan" =>
         [{62167219200,62177126400,600,"GST"},  % 1970-01-01T00:00:00Z .. 1970-04-25T16:00:00Z
          {62177126400,62188614000,660,"GDT"},  % 1970-04-25T16:00:00Z .. 1970-09-05T15:00:00Z
          {62188614000,62208576000,600,"GST"},  % 1970-09-05T15:00:00Z .. 1971-04-24T16:00:00Z
@@ -15443,13 +16040,13 @@
          {62369107200,62376706860,660,"GDT"},  % 1976-05-25T16:00:00Z .. 1976-08-21T15:01:00Z
          {62376706860,62397878400,600,"GST"},  % 1976-08-21T15:01:00Z .. 1977-04-23T16:00:00Z
          {62397878400,62408761200,660,"GDT"},  % 1977-04-23T16:00:00Z .. 1977-08-27T15:00:00Z
-         {62408761200,63144712800,600,"GST"}]},  % 1977-08-27T15:00:00Z .. 2000-12-22T14:00:00Z
-      {"Pacific/Tongatapu",
+         {62408761200,63144712800,600,"GST"}],  % 1977-08-27T15:00:00Z .. 2000-12-22T14:00:00Z
+      "Pacific/Tongatapu" =>
         [{63106434000,63120603600,840,"+14"},  % 1999-10-06T13:00:00Z .. 2000-03-18T13:00:00Z
          {63140562000,63147816000,840,"+14"},  % 2000-11-04T13:00:00Z .. 2001-01-27T12:00:00Z
          {63172011600,63179265600,840,"+14"},  % 2001-11-03T13:00:00Z .. 2002-01-26T12:00:00Z
-         {63645570000,63651618000,840,"+14"}]},  % 2016-11-05T13:00:00Z .. 2017-01-14T13:00:00Z
-      {"Poland",
+         {63645570000,63651618000,840,"+14"}],  % 2016-11-05T13:00:00Z .. 2017-01-14T13:00:00Z
+      "Poland" =>
         [{62174739600,62192883600,60,"CET"},  % 1970-03-29T01:00:00Z .. 1970-10-25T01:00:00Z
          {62206189200,62224938000,60,"CET"},  % 1971-03-28T01:00:00Z .. 1971-10-31T01:00:00Z
          {62237638800,62256387600,60,"CET"},  % 1972-03-26T01:00:00Z .. 1972-10-29T01:00:00Z
@@ -15486,8 +16083,8 @@
          {62884774800,62887194000,60,"CET"},  % 1992-09-27T01:00:00Z .. 1992-10-25T01:00:00Z
          {62916224400,62919248400,60,"CET"},  % 1993-09-26T01:00:00Z .. 1993-10-31T01:00:00Z
          {62947674000,62950698000,60,"CET"},  % 1994-09-25T01:00:00Z .. 1994-10-30T01:00:00Z
-         {62979123600,62982147600,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
-      {"Portugal",
+         {62979123600,62982147600,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1995-10-29T01:00:00Z
+      "Portugal" =>
         [{62167219200,62379763200,60,"CET"},  % 1970-01-01T00:00:00Z .. 1976-09-26T00:00:00Z
          {62379763200,62382790800,0,"WET"},  % 1976-09-26T00:00:00Z .. 1976-10-31T01:00:00Z
          {62395488000,62395491600,60,"WEST"},  % 1977-03-27T00:00:00Z .. 1977-03-27T01:00:00Z
@@ -15520,17 +16117,17 @@
          {62931949200,62947674000,120,"CEST"},  % 1994-03-27T01:00:00Z .. 1994-09-25T01:00:00Z
          {62947674000,62963398800,60,"CET"},  % 1994-09-25T01:00:00Z .. 1995-03-26T01:00:00Z
          {62963398800,62979123600,120,"CEST"},  % 1995-03-26T01:00:00Z .. 1995-09-24T01:00:00Z
-         {62979123600,62995453200,60,"CET"}]},  % 1995-09-24T01:00:00Z .. 1996-03-31T01:00:00Z
-      {"ROC",
+         {62979123600,62995453200,60,"CET"}],  % 1995-09-24T01:00:00Z .. 1996-03-31T01:00:00Z
+      "ROC" =>
         [{62301196800,62317004400,540,"CDT"},  % 1974-03-31T16:00:00Z .. 1974-09-30T15:00:00Z
          {62332732800,62348540400,540,"CDT"},  % 1975-03-31T16:00:00Z .. 1975-09-30T15:00:00Z
-         {62466825600,62474770800,540,"CDT"}]},  % 1979-06-30T16:00:00Z .. 1979-09-30T15:00:00Z
-      {"ROK",
+         {62466825600,62474770800,540,"CDT"}],  % 1979-06-30T16:00:00Z .. 1979-09-30T15:00:00Z
+      "ROK" =>
         [{62714797200,62728102800,600,"KDT"},  % 1987-05-09T17:00:00Z .. 1987-10-10T17:00:00Z
-         {62746246800,62759552400,600,"KDT"}]},  % 1988-05-07T17:00:00Z .. 1988-10-08T17:00:00Z
-      {"Singapore",
-        [{62167219200,62545881600,450,"+0730"}]},  % 1970-01-01T00:00:00Z .. 1981-12-31T16:00:00Z
-      {"Turkey",
+         {62746246800,62759552400,600,"KDT"}],  % 1988-05-07T17:00:00Z .. 1988-10-08T17:00:00Z
+      "Singapore" =>
+        [{62167219200,62545881600,450,"+0730"}],  % 1970-01-01T00:00:00Z .. 1981-12-31T16:00:00Z
+      "Turkey" =>
         [{62167219200,62275129200,120,"EET"},  % 1970-01-01T00:00:00Z .. 1973-06-02T23:00:00Z
          {62275129200,62288434800,180,"EEST"},  % 1973-06-02T23:00:00Z .. 1973-11-03T23:00:00Z
          {62288434800,62301139200,120,"EET"},  % 1973-11-03T23:00:00Z .. 1974-03-31T00:00:00Z
@@ -15607,8 +16204,8 @@
          {63581504400,63594810000,120,"EET"},  % 2014-10-26T01:00:00Z .. 2015-03-29T01:00:00Z
          {63594810000,63614163600,180,"EEST"},  % 2015-03-29T01:00:00Z .. 2015-11-08T01:00:00Z
          {63614163600,63626259600,120,"EET"},  % 2015-11-08T01:00:00Z .. 2016-03-27T01:00:00Z
-         {63626259600,63640414800,180,"EEST"}]},  % 2016-03-27T01:00:00Z .. 2016-09-06T21:00:00Z
-      {"US/Alaska",
+         {63626259600,63640414800,180,"EEST"}],  % 2016-03-27T01:00:00Z .. 2016-09-06T21:00:00Z
+      "US/Alaska" =>
         [{62167219200,62177198400,-600,"AHST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T12:00:00Z
          {62177198400,62192919600,-540,"AHDT"},  % 1970-04-26T12:00:00Z .. 1970-10-25T11:00:00Z
          {62192919600,62208648000,-600,"AHST"},  % 1970-10-25T11:00:00Z .. 1971-04-25T12:00:00Z
@@ -15683,8 +16280,8 @@
          {63277930800,63279745200,-540,"AKST"},  % 2005-03-13T11:00:00Z .. 2005-04-03T11:00:00Z
          {63297885600,63298490400,-540,"AKST"},  % 2005-10-30T10:00:00Z .. 2005-11-06T10:00:00Z
          {63309380400,63311194800,-540,"AKST"},  % 2006-03-12T11:00:00Z .. 2006-04-02T11:00:00Z
-         {63329335200,63329940000,-540,"AKST"}]},  % 2006-10-29T10:00:00Z .. 2006-11-05T10:00:00Z
-      {"US/Aleutian",
+         {63329335200,63329940000,-540,"AKST"}],  % 2006-10-29T10:00:00Z .. 2006-11-05T10:00:00Z
+      "US/Aleutian" =>
         [{62167219200,62177202000,-660,"BST"},  % 1970-01-01T00:00:00Z .. 1970-04-26T13:00:00Z
          {62177202000,62192923200,-600,"BDT"},  % 1970-04-26T13:00:00Z .. 1970-10-25T12:00:00Z
          {62192923200,62208651600,-660,"BST"},  % 1970-10-25T12:00:00Z .. 1971-04-25T13:00:00Z
@@ -15759,8 +16356,8 @@
          {63277934400,63279748800,-600,"HST"},  % 2005-03-13T12:00:00Z .. 2005-04-03T12:00:00Z
          {63297889200,63298494000,-600,"HST"},  % 2005-10-30T11:00:00Z .. 2005-11-06T11:00:00Z
          {63309384000,63311198400,-600,"HST"},  % 2006-03-12T12:00:00Z .. 2006-04-02T12:00:00Z
-         {63329338800,63329943600,-600,"HST"}]},  % 2006-10-29T11:00:00Z .. 2006-11-05T11:00:00Z
-      {"US/Central",
+         {63329338800,63329943600,-600,"HST"}],  % 2006-10-29T11:00:00Z .. 2006-11-05T11:00:00Z
+      "US/Central" =>
         [{62172950400,62177184000,-360,"CST"},  % 1970-03-08T08:00:00Z .. 1970-04-26T08:00:00Z
          {62192905200,62193510000,-360,"CST"},  % 1970-10-25T07:00:00Z .. 1970-11-01T07:00:00Z
          {62205004800,62208633600,-360,"CST"},  % 1971-03-14T08:00:00Z .. 1971-04-25T08:00:00Z
@@ -15834,8 +16431,8 @@
          {63277920000,63279734400,-360,"CST"},  % 2005-03-13T08:00:00Z .. 2005-04-03T08:00:00Z
          {63297874800,63298479600,-360,"CST"},  % 2005-10-30T07:00:00Z .. 2005-11-06T07:00:00Z
          {63309369600,63311184000,-360,"CST"},  % 2006-03-12T08:00:00Z .. 2006-04-02T08:00:00Z
-         {63329324400,63329929200,-360,"CST"}]},  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
-      {"US/East-Indiana",
+         {63329324400,63329929200,-360,"CST"}],  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
+      "US/East-Indiana" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62225560800,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-11-07T06:00:00Z
@@ -15874,8 +16471,8 @@
          {63246466800,63267026400,-300,"EST"},  % 2004-03-14T07:00:00Z .. 2004-11-07T06:00:00Z
          {63277916400,63298476000,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"US/Eastern",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "US/Eastern" =>
         [{62172946800,62177180400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-04-26T07:00:00Z
          {62192901600,62193506400,-300,"EST"},  % 1970-10-25T06:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62208630000,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-04-25T07:00:00Z
@@ -15949,8 +16546,8 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"US/Indiana-Starke",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "US/Indiana-Starke" =>
         [{62172950400,62177184000,-360,"CST"},  % 1970-03-08T08:00:00Z .. 1970-04-26T08:00:00Z
          {62192905200,62193510000,-360,"CST"},  % 1970-10-25T07:00:00Z .. 1970-11-01T07:00:00Z
          {62205004800,62208633600,-360,"CST"},  % 1971-03-14T08:00:00Z .. 1971-04-25T08:00:00Z
@@ -15995,8 +16592,8 @@
          {62824316400,62824921200,-360,"CST"},  % 1990-10-28T07:00:00Z .. 1990-11-04T07:00:00Z
          {62835811200,62838230400,-360,"CST"},  % 1991-03-10T08:00:00Z .. 1991-04-07T08:00:00Z
          {62855766000,63311180400,-300,"EST"},  % 1991-10-27T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329324400,63329929200,-360,"CST"}]},  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
-      {"US/Michigan",
+         {63329324400,63329929200,-360,"CST"}],  % 2006-10-29T07:00:00Z .. 2006-11-05T07:00:00Z
+      "US/Michigan" =>
         [{62172946800,62193506400,-300,"EST"},  % 1970-03-08T07:00:00Z .. 1970-11-01T06:00:00Z
          {62205001200,62225560800,-300,"EST"},  % 1971-03-14T07:00:00Z .. 1971-11-07T06:00:00Z
          {62236450800,62257010400,-300,"EST"},  % 1972-03-12T07:00:00Z .. 1972-11-05T06:00:00Z
@@ -16067,8 +16664,8 @@
          {63277916400,63279730800,-300,"EST"},  % 2005-03-13T07:00:00Z .. 2005-04-03T07:00:00Z
          {63297871200,63298476000,-300,"EST"},  % 2005-10-30T06:00:00Z .. 2005-11-06T06:00:00Z
          {63309366000,63311180400,-300,"EST"},  % 2006-03-12T07:00:00Z .. 2006-04-02T07:00:00Z
-         {63329320800,63329925600,-300,"EST"}]},  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
-      {"US/Mountain",
+         {63329320800,63329925600,-300,"EST"}],  % 2006-10-29T06:00:00Z .. 2006-11-05T06:00:00Z
+      "US/Mountain" =>
         [{62172954000,62177187600,-420,"MST"},  % 1970-03-08T09:00:00Z .. 1970-04-26T09:00:00Z
          {62192908800,62193513600,-420,"MST"},  % 1970-10-25T08:00:00Z .. 1970-11-01T08:00:00Z
          {62205008400,62208637200,-420,"MST"},  % 1971-03-14T09:00:00Z .. 1971-04-25T09:00:00Z
@@ -16142,8 +16739,8 @@
          {63277923600,63279738000,-420,"MST"},  % 2005-03-13T09:00:00Z .. 2005-04-03T09:00:00Z
          {63297878400,63298483200,-420,"MST"},  % 2005-10-30T08:00:00Z .. 2005-11-06T08:00:00Z
          {63309373200,63311187600,-420,"MST"},  % 2006-03-12T09:00:00Z .. 2006-04-02T09:00:00Z
-         {63329328000,63329932800,-420,"MST"}]},  % 2006-10-29T08:00:00Z .. 2006-11-05T08:00:00Z
-      {"US/Pacific",
+         {63329328000,63329932800,-420,"MST"}],  % 2006-10-29T08:00:00Z .. 2006-11-05T08:00:00Z
+      "US/Pacific" =>
         [{62172957600,62177191200,-480,"PST"},  % 1970-03-08T10:00:00Z .. 1970-04-26T10:00:00Z
          {62192912400,62193517200,-480,"PST"},  % 1970-10-25T09:00:00Z .. 1970-11-01T09:00:00Z
          {62205012000,62208640800,-480,"PST"},  % 1971-03-14T10:00:00Z .. 1971-04-25T10:00:00Z
@@ -16217,8 +16814,8 @@
          {63277927200,63279741600,-480,"PST"},  % 2005-03-13T10:00:00Z .. 2005-04-03T10:00:00Z
          {63297882000,63298486800,-480,"PST"},  % 2005-10-30T09:00:00Z .. 2005-11-06T09:00:00Z
          {63309376800,63311191200,-480,"PST"},  % 2006-03-12T10:00:00Z .. 2006-04-02T10:00:00Z
-         {63329331600,63329936400,-480,"PST"}]},  % 2006-10-29T09:00:00Z .. 2006-11-05T09:00:00Z
-      {"W-SU",
+         {63329331600,63329936400,-480,"PST"}],  % 2006-10-29T09:00:00Z .. 2006-11-05T09:00:00Z
+      "W-SU" =>
         [{62522139600,62537947200,240,"MSD"},  % 1981-03-31T21:00:00Z .. 1981-09-30T20:00:00Z
          {62553675600,62569483200,240,"MSD"},  % 1982-03-31T21:00:00Z .. 1982-09-30T20:00:00Z
          {62585211600,62601019200,240,"MSD"},  % 1983-03-31T21:00:00Z .. 1983-09-30T20:00:00Z
@@ -16250,8 +16847,8 @@
          {63374050800,63392194800,240,"MSD"},  % 2008-03-29T23:00:00Z .. 2008-10-25T23:00:00Z
          {63405500400,63423644400,240,"MSD"},  % 2009-03-28T23:00:00Z .. 2009-10-24T23:00:00Z
          {63436950000,63455698800,240,"MSD"},  % 2010-03-27T23:00:00Z .. 2010-10-30T23:00:00Z
-         {63468399600,63581493600,240,"MSK"}]},  % 2011-03-26T23:00:00Z .. 2014-10-25T22:00:00Z
-      {"WET",
+         {63468399600,63581493600,240,"MSK"}],  % 2011-03-26T23:00:00Z .. 2014-10-25T22:00:00Z
+      "WET" =>
         [{62167219200,62379763200,60,"CET"},  % 1970-01-01T00:00:00Z .. 1976-09-26T00:00:00Z
          {62379763200,62382790800,0,"WET"},  % 1976-09-26T00:00:00Z .. 1976-10-31T01:00:00Z
          {62395488000,62395491600,60,"WEST"},  % 1977-03-27T00:00:00Z .. 1977-03-27T01:00:00Z
@@ -16284,5 +16881,5 @@
          {62931949200,62947674000,120,"CEST"},  % 1994-03-27T01:00:00Z .. 1994-09-25T01:00:00Z
          {62947674000,62963398800,60,"CET"},  % 1994-09-25T01:00:00Z .. 1995-03-26T01:00:00Z
          {62963398800,62979123600,120,"CEST"},  % 1995-03-26T01:00:00Z .. 1995-09-24T01:00:00Z
-         {62979123600,62995453200,60,"CET"}]}  % 1995-09-24T01:00:00Z .. 1996-03-31T01:00:00Z
-   ]).
+         {62979123600,62995453200,60,"CET"}]  % 1995-09-24T01:00:00Z .. 1996-03-31T01:00:00Z
+   }).

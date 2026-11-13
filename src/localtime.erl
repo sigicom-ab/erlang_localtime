@@ -30,7 +30,7 @@
 %  DstLocalDateTime = DateTime()
 %  ErrDescr = atom(), unknown_tz
 utc_to_local(UtcDateTime, Timezone) ->
-   case lists:keyfind(get_timezone(Timezone), 1, ?tz_database) of
+   case maps:get(get_timezone(Timezone), ?tz_database, false) of
       false ->
          {error, unknown_tz};
       TzRule ->
@@ -45,7 +45,7 @@ utc_to_local(UtcDateTime, Timezone) ->
 %  DstUtcDateTime = DateTime()
 %  ErrDescr = atom(), unknown_tz
 local_to_utc(LocalDateTime, Timezone) ->
-   case lists:keyfind(get_timezone(Timezone), 1, ?tz_database) of
+   case maps:get(get_timezone(Timezone), ?tz_database, false) of
       false ->
          {error, unknown_tz};
       TzRule ->
@@ -112,7 +112,7 @@ local_to_local_dst(LocalDateTime, TimezoneFrom, TimezoneTo) ->
 %  DstName = String()
 %  ErrDesc = atom(), unknown_tz
 tz_name(LocalDateTime, Timezone) ->
-   case lists:keyfind(get_timezone(Timezone), 1, ?tz_database) of
+   case maps:get(get_timezone(Timezone), ?tz_database, false) of
       false ->
          {error, unknown_tz};
       TzRule ->
@@ -133,7 +133,7 @@ tz_name(LocalDateTime, Timezone) ->
 %  {Shift, DstShift} - returns, when shift is ambiguous
 %  ErrDesc = atom(), unknown_tz
 tz_shift(LocalDateTime, Timezone) ->
-   case lists:keyfind(get_timezone(Timezone), 1, ?tz_database) of
+   case maps:get(get_timezone(Timezone), ?tz_database, false) of
       false ->
          {error, unknown_tz};
       TzRule ->

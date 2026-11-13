@@ -83,7 +83,7 @@ monrovia_rounded_test() ->
 
 %% Removed upstream; America/Regina replaces it.
 east_saskatchewan_removed_test() ->
-   ?assertEqual(false, lists:keyfind("Canada/East-Saskatchewan", 1, ?tz_database)).
+   ?assertEqual(false, maps:is_key("Canada/East-Saskatchewan", ?tz_database)).
 
 %% America/Santiago around the 2026 transitions (#1).
 santiago_dst_test_() ->
@@ -138,7 +138,7 @@ at(Zone, UtcDT, {Off, Abbr}) ->
      ?_assertEqual(dt(secs(UtcDT) + Off * 60), localtime:utc_to_local(UtcDT, Zone))]}.
 
 tz(Zone) ->
-   {Zone, _, _, _, _, _, _, _, _} = lists:keyfind(Zone, 1, ?tz_database).
+   {Zone, _, _, _, _, _, _, _, _} = maps:get(Zone, ?tz_database).
 
 secs(DT) -> calendar:datetime_to_gregorian_seconds(DT).
 dt(S) -> calendar:gregorian_seconds_to_datetime(S).
@@ -232,18 +232,19 @@ lookup_benchmark_test() ->
 %% ===================================================================
 
 committed_database_sanity_test() ->
-   Names = [element(1, T) || T <- ?tz_database],
-   ?assertEqual(lists:usort(Names), Names),
-   ?assertEqual([], [T || T = {_, {S, _}, D, _, _, _, _, _, _} <- ?tz_database,
+   %% Every zone is keyed by its own name.
+   ?assertEqual([], [K || K := T <- ?tz_database, element(1, T) =/= K]),
+   Names = maps:keys(?tz_database),
+   ?assertEqual([], [T || _ := T = {_, {S, _}, D, _, _, _, _, _, _} <- ?tz_database,
                           lists:member($%, S) orelse
                           (D =/= undef andalso lists:member($%, element(1, D)))]),
    %% Every abbreviation is indexed (tz_index.hrl rebuilt after the database).
    Abbrs = lists:usort(lists:append([[S | [element(1, D) || D =/= undef]]
-                                     || {_, {S, _}, D, _, _, _, _, _, _} <- ?tz_database])),
+                                     || _ := {_, {S, _}, D, _, _, _, _, _, _} <- ?tz_database])),
    ?assertEqual([], [A || A <- Abbrs, dict:find(A, ?tz_index) =:= error]),
    %% A zone name always resolves to itself, even when it is also an
    %% abbreviation ("CET", "UTC", ...).
    ?assertEqual([], [N || N <- Names, localtime:get_timezone(N) =/= N]),
    %% Every exception belongs to a known zone.
-   ?assertEqual([], [N || {N, _} <- ?tz_exceptions, not lists:member(N, Names)]).
+   ?assertEqual([], [N || N := _ <- ?tz_exceptions, not maps:is_key(N, ?tz_database)]).
 

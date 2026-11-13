@@ -22,7 +22,10 @@ build_index() ->
       ({TzName,{Name,_},undef,_,_,_,_,_,_}, Acc) ->
          build_tzlist(TzName, Name, Acc)
    end,
-   I0 = lists:foldl(F, dict:new(), ?tz_database),
+   % Database order (sorted by zone name) decides which zone an abbreviation
+   % resolves to, so fold over the zones sorted rather than in map order.
+   Zones = [Tz || {_, Tz} <- lists:sort(maps:to_list(?tz_database))],
+   I0 = lists:foldl(F, dict:new(), Zones),
    % An abbreviation that is also a zone name (e.g. "CET", "UTC") must resolve
    % to that zone, not to the first zone using the abbreviation.
    I = dict:map(fun(Abbr, TzNames) ->
