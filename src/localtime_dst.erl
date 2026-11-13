@@ -10,63 +10,99 @@
 
 -export(
    [
-      check/2
+      check/2,
+      utc_offset/2,
+      local_offsets/2
    ]).
 
 -compile([export_all]).
 
+% A ?tz_database row (see include/tz_database.hrl).
+-type tz() :: tuple().
+-export_type([tz/0]).
 
 % check(DateTime, TimeZone) -> is_in_dst | is_not_in_dst | ambiguous_time | time_not_exists
-%  DateTime = DateTime()
-%  TimeZone = tuple()
+%  DateTime = DateTime(), local wall-clock time
+%  TimeZone = String() | tuple()
+-spec check(Datetime :: calendar:datetime(), Timezone :: tz() | string()) -> {error, unknown_tz} | time_not_exists | is_not_in_dst | is_in_dst | ambiguous_time.
 check(DateTime, Timezone) when is_list(Timezone) ->
     case lists:keyfind(localtime:get_timezone(Timezone), 1, ?tz_database) of
         false ->
             {error, unknown_tz};
-        TZ -> 
+        TZ ->
             check(DateTime, TZ)
     end;
-check({Date = {Year, _, _},Time}, {_, _, _, _Shift, DstShift, DstStartRule, DstStartTime, DstEndRule, DstEndTime}) ->
-   DstStartDay = get_dst_day_of_year(DstStartRule, Year),
-   DstEndDay = get_dst_day_of_year(DstEndRule, Year),
-   CurrDay = get_day_of_year(Date),
-   case is_dst_date(DstStartDay, DstEndDay, CurrDay) of
-      equal_to_start ->
-         is_dst_start_time(time_to_minutes(Time), time_to_minutes(DstStartTime), DstShift);
-      equal_to_end ->
-         is_dst_end_time(time_to_minutes(Time), time_to_minutes(DstEndTime), DstShift);
-      Res ->
-         Res
+check(DateTime, TZ = {_, _, _, Shift, _, _, _, _, _}) ->
+   case local_offsets(DateTime, TZ) of
+      [] -> time_not_exists;
+      [{Shift, _}] -> is_not_in_dst;
+      [_] -> is_in_dst;
+      [_, _ | _] -> ambiguous_time
    end.
 
-is_dst_start_time(CurrTime, DstStartTime, _DstShift) when CurrTime < DstStartTime ->
-   is_not_in_dst;
-is_dst_start_time(CurrTime, DstStartTime, DstShift) when CurrTime >= (DstStartTime + DstShift) ->
-   is_in_dst;
-is_dst_start_time(_CurrTime, _DstStartTime, _DstShift) ->
-   time_not_exists.
+% utc_offset(UtcDateTime, TZ) -> {OffsetMin, {Abbr, Name}}
+%  The UTC offset (in minutes) and name in effect at UtcDateTime.
+utc_offset(UtcDateTime, TZ = {Name, StdName, DstName, Shift, DstShift, _, _, _, _}) ->
+   Utc = calendar:datetime_to_gregorian_seconds(UtcDateTime),
+   case exception(Name, Utc) of
+      {Offset, Abbr} ->
+         {Offset, {Abbr, Abbr}};
+      none when DstName =:= undef ->
+         {Shift, StdName};
+      none ->
+         {Year, _, _} = element(1, UtcDateTime),
+         Events = lists:append([transitions(TZ, Y) || Y <- [Year - 1, Year, Year + 1]]),
+         case [Ev || {T, _} = Ev <- lists:sort(Events), T =< Utc] of
+            [] -> {Shift, StdName};
+            Past ->
+               case lists:last(Past) of
+                  {_, dst} -> {Shift + DstShift, DstName};
+                  {_, std} -> {Shift, StdName}
+               end
+         end
+   end.
 
-is_dst_end_time(CurrTime, DstEndTime, DstShift) when CurrTime < (DstEndTime - DstShift) ->
-   is_in_dst;
-is_dst_end_time(CurrTime, DstEndTime, _DstShift) when CurrTime >= DstEndTime ->
-   is_not_in_dst;
-is_dst_end_time(_CurrTime, _DstStartTime, _DstShift) ->
-   ambiguous_time.
+% local_offsets(LocalDateTime, TZ) -> [{OffsetMin, {Abbr, Name}}]
+%  All offsets under which LocalDateTime is a valid wall-clock time, in
+%  ascending order: [] in a gap (spring forward), two entries in an overlap.
+local_offsets(LocalDateTime, TZ = {Name, _, _, Shift, DstShift, _, _, _, _}) ->
+   Local = calendar:datetime_to_gregorian_seconds(LocalDateTime),
+   Candidates = lists:usort([Shift, Shift + DstShift | exception_offsets(Name)]),
+   lists:usort(
+     [Res || Offset <- Candidates,
+             Res = {O, _} <- [utc_offset(calendar:gregorian_seconds_to_datetime(Local - Offset * 60), TZ)],
+             O =:= Offset]).
 
-is_dst_date(DstStartDay, _DstEndDay, CurrDay) when (CurrDay == DstStartDay) -> equal_to_start;
-is_dst_date(_DstStartDay, DstEndDay, CurrDay) when (CurrDay == DstEndDay) -> equal_to_end;
-is_dst_date(DstStartDay, DstEndDay, CurrDay)
-   when (DstStartDay < DstEndDay) andalso ((CurrDay > DstStartDay) and (CurrDay < DstEndDay)) ->
-      is_in_dst;
-is_dst_date(DstStartDay, DstEndDay, CurrDay)
-   when (DstStartDay < DstEndDay) andalso ((CurrDay < DstStartDay) or (CurrDay > DstEndDay)) ->
-      is_not_in_dst;
-is_dst_date(DstStartDay, DstEndDay, CurrDay)
-   when (DstStartDay > DstEndDay) andalso ((CurrDay < DstStartDay) and (CurrDay > DstEndDay)) ->
-      is_not_in_dst;
-is_dst_date(DstStartDay, DstEndDay, CurrDay)
-   when (DstStartDay > DstEndDay) andalso ((CurrDay > DstStartDay) or (CurrDay < DstEndDay)) ->
-      is_in_dst.
+% The UTC instants (gregorian seconds) of the DST start and end in Year.
+% Start time is local standard time, end time local daylight time; hours may
+% be negative or >= 24 (counted from midnight of the rule day).
+transitions({_, _, _, Shift, DstShift, StartRule, StartTime, EndRule, EndTime}, Year) ->
+   [{rule_seconds(StartRule, StartTime, Year) - Shift * 60, dst},
+    {rule_seconds(EndRule, EndTime, Year) - (Shift + DstShift) * 60, std}].
+
+rule_seconds(Rule, Time, Year) ->
+   Days = calendar:date_to_gregorian_days({Year - 1, 12, 31}) + get_dst_day_of_year(Rule, Year),
+   Days * 86400 + time_to_minutes(Time) * 60.
+
+% Periods are {UtcStartSecs, UtcEndSecs, OffsetMin, Abbr} (gregorian seconds),
+% sorted and non-overlapping, so the scan can stop at the first period that
+% starts after Utc.
+exception(Name, Utc) ->
+   case lists:keyfind(Name, 1, ?tz_exceptions) of
+      false -> none;
+      {_, Periods} -> find_period(Periods, Utc)
+   end.
+
+find_period([{S, _, _, _} | _], Utc) when Utc < S -> none;
+find_period([{_, E, Off, Abbr} | _], Utc) when Utc < E -> {Off, Abbr};
+find_period([_ | Rest], Utc) -> find_period(Rest, Utc);
+find_period([], _) -> none.
+
+exception_offsets(Name) ->
+   case lists:keyfind(Name, 1, ?tz_exceptions) of
+      false -> [];
+      {_, Periods} -> [Off || {_, _, Off, _} <- Periods]
+   end.
 
 get_dst_day_of_year({WeekDay,DayOfWeek,Month}, Year) when (WeekDay == last) or (WeekDay == 5) ->
    IntMonth = month_to_int(Month),
@@ -160,16 +196,12 @@ check_test() ->
    %% DST starts at hour 24; DST ends at hour 0:
    TzGaza = {"Asia/Gaza",{"EET","EET"},{"EEST","EEST"},120,60,{last,thu,mar},{24,0},{4,fri,sep},{0,0}},
    ?assertEqual(is_not_in_dst,   check({{2014, 3, 27}, {23, 59, 59}}, TzGaza)),
-   %% Currently ST->DT transitions in the last hour of the day are not handled correctly.
-   %?assertEqual(time_not_exists, check({{2014, 3, 28}, { 0, 00, 00}}, TzGaza)),
-   %?assertEqual(time_not_exists, check({{2014, 3, 28}, { 0, 59, 59}}, TzGaza)),
-   ?assertEqual(is_in_dst,       check({{2014, 3, 28}, { 0, 59, 59}}, TzGaza)), % WRONG
+   ?assertEqual(time_not_exists, check({{2014, 3, 28}, { 0, 00, 00}}, TzGaza)),
+   ?assertEqual(time_not_exists, check({{2014, 3, 28}, { 0, 59, 59}}, TzGaza)),
    ?assertEqual(is_in_dst,       check({{2014, 3, 28}, { 1, 00, 00}}, TzGaza)),
    ?assertEqual(is_in_dst,       check({{2014, 9, 25}, {22, 59, 59}}, TzGaza)),
-   %% Currently DT->ST transitions in the first hour of the day are not handled correctly.
-   %?assertEqual(ambiguous_time,  check({{2014, 9, 25}, {23, 00, 00}}, TzGaza)),
-   %?assertEqual(ambiguous_time,  check({{2014, 9, 25}, {23, 59, 59}}, TzGaza)),
-   ?assertEqual(is_in_dst,       check({{2014, 9, 25}, {23, 59, 59}}, TzGaza)), % WRONG
+   ?assertEqual(ambiguous_time,  check({{2014, 9, 25}, {23, 00, 00}}, TzGaza)),
+   ?assertEqual(ambiguous_time,  check({{2014, 9, 25}, {23, 59, 59}}, TzGaza)),
    ?assertEqual(is_not_in_dst,   check({{2014, 9, 26}, { 0, 00, 00}}, TzGaza)),
 
    %% DST starts at hour 0; DST ends at hour 0.
@@ -179,9 +211,8 @@ check_test() ->
    ?assertEqual(time_not_exists, check({{2014,  3, 28}, { 0, 59, 59}}, TzDamascus)),
    ?assertEqual(is_in_dst,       check({{2014,  3, 28}, { 1, 00, 00}}, TzDamascus)),
    ?assertEqual(is_in_dst,       check({{2014, 10, 30}, {22, 59, 59}}, TzDamascus)),
-   %% Currently DT->ST transitions in the first hour of the day are not handled correctly.
-   %?assertEqual(ambiguous_time,  check({{2014, 10, 30}, {23, 00, 00}}, TzDamascus)),
-   %?assertEqual(ambiguous_time,  check({{2014, 10, 30}, {23, 59, 59}}, TzDamascus)),
+   ?assertEqual(ambiguous_time,  check({{2014, 10, 30}, {23, 00, 00}}, TzDamascus)),
+   ?assertEqual(ambiguous_time,  check({{2014, 10, 30}, {23, 59, 59}}, TzDamascus)),
    ?assertEqual(is_not_in_dst,   check({{2014, 10, 31}, { 0, 00, 00}}, TzDamascus)),
 
    %% DST ends before starts (southern hemisphere):

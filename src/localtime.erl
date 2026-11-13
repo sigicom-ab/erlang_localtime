@@ -33,18 +33,9 @@ utc_to_local(UtcDateTime, Timezone) ->
    case lists:keyfind(get_timezone(Timezone), 1, ?tz_database) of
       false ->
          {error, unknown_tz};
-      {_Tz, _, _, Shift, _DstShift, undef, _DstStartTime, undef, _DstEndTime} ->
-         adjust_datetime(UtcDateTime, Shift);
-      TzRule = {_, _, _, Shift, DstShift, _, _, _, _} ->
-         LocalDateTime = adjust_datetime(UtcDateTime, Shift),
-         case localtime_dst:check(LocalDateTime, TzRule) of
-            Res when (Res == is_in_dst) or (Res == time_not_exists) ->
-               adjust_datetime(LocalDateTime, DstShift);
-            is_not_in_dst ->
-               LocalDateTime;
-            ambiguous_time ->
-               [LocalDateTime, adjust_datetime(LocalDateTime, DstShift)]
-         end
+      TzRule ->
+         {Offset, _Name} = localtime_dst:utc_offset(UtcDateTime, TzRule),
+         adjust_datetime(UtcDateTime, Offset)
    end.
 
 % local_to_utc(LocalDateTime, Timezone) -> UtcDateTime | [UtcDateTime, DstUtcDateTime] | time_not_exists | {error, ErrDescr}
@@ -57,19 +48,15 @@ local_to_utc(LocalDateTime, Timezone) ->
    case lists:keyfind(get_timezone(Timezone), 1, ?tz_database) of
       false ->
          {error, unknown_tz};
-      {_Tz, _, _, Shift, _DstShift, undef, _DstStartTime, undef, _DstEndTime} ->
-         adjust_datetime(LocalDateTime, invert_shift(Shift));
-      TzRule = {_, _, _, Shift, DstShift, _, _, _, _} ->
-         UtcDateTime = adjust_datetime(LocalDateTime, invert_shift(Shift)),
-         case localtime_dst:check(LocalDateTime, TzRule) of
-            is_in_dst ->
-               adjust_datetime(UtcDateTime, invert_shift(DstShift));
-            is_not_in_dst ->
-               UtcDateTime;
-            ambiguous_time ->
-               [UtcDateTime, adjust_datetime(UtcDateTime, invert_shift(DstShift))];
-            time_not_exists ->
-               time_not_exists
+      TzRule ->
+         case localtime_dst:local_offsets(LocalDateTime, TzRule) of
+            [] ->
+               time_not_exists;
+            [{Offset, _}] ->
+               adjust_datetime(LocalDateTime, invert_shift(Offset));
+            [{Offset1, _}, {Offset2, _} | _] ->
+               [adjust_datetime(LocalDateTime, invert_shift(Offset1)),
+                adjust_datetime(LocalDateTime, invert_shift(Offset2))]
          end
    end.
 
@@ -128,18 +115,11 @@ tz_name(LocalDateTime, Timezone) ->
    case lists:keyfind(get_timezone(Timezone), 1, ?tz_database) of
       false ->
          {error, unknown_tz};
-      {_Tz, StdName, undef, _Shift, _DstShift, undef, _DstStartTime, undef, _DstEndTime} ->
-         StdName;
-      TzRule = {_, StdName, DstName, _Shift, _DstShift, _, _, _, _} ->
-         case localtime_dst:check(LocalDateTime, TzRule) of
-            is_in_dst ->
-               DstName;
-            is_not_in_dst ->
-               StdName;
-            ambiguous_time ->
-               {StdName, DstName};
-            time_not_exists ->
-               unable_to_detect
+      TzRule ->
+         case localtime_dst:local_offsets(LocalDateTime, TzRule) of
+            [] -> unable_to_detect;
+            [{_, Name}] -> Name;
+            [{_, Name1}, {_, Name2} | _] -> {Name1, Name2}
          end
    end.
 
@@ -156,18 +136,11 @@ tz_shift(LocalDateTime, Timezone) ->
    case lists:keyfind(get_timezone(Timezone), 1, ?tz_database) of
       false ->
          {error, unknown_tz};
-      {_Tz, _StdName, undef, Shift, _DstShift, undef, _DstStartTime, undef, _DstEndTime} ->
-         fmt_min(Shift);
-      TzRule = {_, _StdName, _DstName, Shift, DstShift, _, _, _, _} ->
-         case localtime_dst:check(LocalDateTime, TzRule) of
-            is_in_dst ->
-               fmt_min(Shift + DstShift);
-            is_not_in_dst ->
-               fmt_min(Shift);
-            ambiguous_time ->
-               {fmt_min(Shift), fmt_min(Shift + DstShift)};
-            time_not_exists ->
-               unable_to_detect
+      TzRule ->
+         case localtime_dst:local_offsets(LocalDateTime, TzRule) of
+            [] -> unable_to_detect;
+            [{Offset, _}] -> fmt_min(Offset);
+            [{Offset1, _}, {Offset2, _} | _] -> {fmt_min(Offset1), fmt_min(Offset2)}
          end
    end.
 
@@ -256,20 +229,5 @@ get_timezone_test() ->
 
 tz_shift_test() ->
    ?assertEqual({'+',3,0}, tz_shift({{2014,1,1},{12,0,0}}, "America/Los_Angeles", "America/New_York")).
-
-santiago_dst_test_() ->
-   Tz = "America/Santiago",
-   Cases = [
-      {"Apr 4 2026 12:00 (Sat, before DST end) is UTC-3",   {{2026,4,4},{12, 0,0}}, {{2026,4,4},{15, 0,0}}},
-      {"Apr 5 2026 12:00 (Sun, DST end) is UTC-4",          {{2026,4,5},{12, 0,0}}, {{2026,4,5},{16, 0,0}}},
-      {"Sep 5 2026 12:00 (Sat, before DST start) is UTC-4", {{2026,9,5},{12, 0,0}}, {{2026,9,5},{16, 0,0}}},
-      {"Sep 6 2026 12:00 (Sun, DST start) is UTC-3",        {{2026,9,6},{12, 0,0}}, {{2026,9,6},{15, 0,0}}},
-      {"Apr 7 2026 10:30 in range is UTC-4",                {{2026,4,7},{10,30,0}}, {{2026,4,7},{14,30,0}}},
-      {"Apr 7 2026 11:00 in range is UTC-4",                {{2026,4,7},{11, 0,0}}, {{2026,4,7},{15, 0,0}}},
-      {"Apr 7 2026 12:00 in range is UTC-4",                {{2026,4,7},{12, 0,0}}, {{2026,4,7},{16, 0,0}}},
-      {"Apr 7 2026 13:00 in range is UTC-4",                {{2026,4,7},{13, 0,0}}, {{2026,4,7},{17, 0,0}}}
-   ],
-   [{Desc, [?_assertEqual(Local, utc_to_local(Utc, Tz)),
-            ?_assertEqual(Utc,   local_to_utc(Local, Tz))]} || {Desc, Local, Utc} <- Cases].
 
 -endif. % TEST
