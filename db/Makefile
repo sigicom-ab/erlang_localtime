@@ -75,15 +75,35 @@ $(ZIC) $(ZDUMP): | $(TZCODE)/Makefile
 	$(MAKE) -C $(TZCODE) zic zdump
 
 # tzcode's Makefile needs the data files present to compute its version.
+# Each tarball is downloaded to a temporary file first, so a failed download
+# is never hidden by a pipe.  On any failure the whole tree is removed, so
+# the target file never exists in an incomplete tree.
 $(TZCODE)/Makefile:
 	$(need_version)
+	rm -rf $(TZCODE)
 	mkdir -p $(TZCODE)
-	curl -fsSL $(IANA_URL)/releases/tzcode$(TZCODE_VERSION).tar.gz | tar xzf - -C $(TZCODE)
-	curl -fsSL $(IANA_URL)/releases/tzdata$(TZCODE_VERSION).tar.gz | tar xzf - -C $(TZCODE)
+	{ curl -fsSL -o $(TZCODE).code.tgz $(IANA_URL)/releases/tzcode$(TZCODE_VERSION).tar.gz \
+	  && curl -fsSL -o $(TZCODE).data.tgz $(IANA_URL)/releases/tzdata$(TZCODE_VERSION).tar.gz \
+	  && tar xzf $(TZCODE).code.tgz -C $(TZCODE) \
+	  && tar xzf $(TZCODE).data.tgz -C $(TZCODE) \
+	  && test -f $(TZCODE)/Makefile && test -f $(TZCODE)/africa; } \
+	  || { echo "failed to download or unpack tzcode/tzdata $(TZCODE_VERSION) from $(IANA_URL)/releases" >&2; \
+	       rm -rf $(TZCODE) $(TZCODE).code.tgz $(TZCODE).data.tgz; exit 1; }
+	rm -f $(TZCODE).code.tgz $(TZCODE).data.tgz
 
+# The tarball is unpacked into $@.tmp, which is renamed to $@ as the last
+# step.  The target is a directory, and make does not delete a directory on
+# an interrupt.  So $@ must exist only when it is complete.
 tzdata%:
-	mkdir -p $@
-	curl -fsSL $(IANA_URL)/releases/$@.tar.gz | tar xzf - -C $@ || { rm -rf $@; exit 1; }
+	rm -rf $@ $@.tmp
+	mkdir -p $@.tmp $(BUILD)
+	{ curl -fsSL -o $(BUILD)/$@.tgz $(IANA_URL)/releases/$@.tar.gz \
+	  && tar xzf $(BUILD)/$@.tgz -C $@.tmp \
+	  && test -f $@.tmp/africa; } \
+	  || { echo "failed to download or unpack $@ from $(IANA_URL)/releases" >&2; \
+	       rm -rf $@.tmp $(BUILD)/$@.tgz; exit 1; }
+	mv $@.tmp $@
+	rm -f $(BUILD)/$@.tgz
 
 # Everything test/tz_gen_tests.erl needs (the release the committed database
 # was generated from), then the whole eunit suite.
