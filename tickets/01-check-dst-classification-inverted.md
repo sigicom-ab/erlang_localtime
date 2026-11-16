@@ -2,6 +2,7 @@
 
 **File:** `src/localtime_dst.erl:38`
 **Severity:** high (correctness, verified)
+**Status:** done in `ac3b7ab`.
 
 ## Problem
 `check/2` returns `is_not_in_dst` only when the offset equals the zone's *current* `Shift`.
