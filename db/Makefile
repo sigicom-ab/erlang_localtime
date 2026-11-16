@@ -34,7 +34,7 @@ TZ_FILES := $(addprefix $(TZDATA)/,$(SOURCES))
 # Targets that work on one release need TZ_VERSION.
 need_version = $(if $(TZ_VERSION),,$(error TZ_VERSION is not set))
 
-.PHONY: all generate zoneinfo tools test clean
+.PHONY: all generate zoneinfo tools test clean $(OUT)
 
 ifdef TZ_VERSION
 all: generate
@@ -54,6 +54,8 @@ endif
 
 generate: $(OUT)
 
+# $(OUT) is phony: "generate" always rewrites it.  "all" decides whether to
+# call "generate".
 $(OUT): tz_gen.erl $(ZONEINFO)/.stamp $(ZDUMP)
 	$(need_version)
 	escript tz_gen.erl --version $(TZ_VERSION) --tzdata $(TZDATA) \
