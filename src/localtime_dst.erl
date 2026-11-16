@@ -32,32 +32,40 @@ check(DateTime, Timezone) when is_list(Timezone) ->
         TZ ->
             check(DateTime, TZ)
     end;
-check(DateTime, TZ = {_, _, _, Shift, _, _, _, _, _}) ->
-   case local_offsets(DateTime, TZ) of
+check(DateTime, TZ) ->
+   case local_states(DateTime, TZ) of
       [] -> time_not_exists;
-      [{Shift, _}] -> is_not_in_dst;
-      [_] -> is_in_dst;
+      [{_, _, false}] -> is_not_in_dst;
+      [{_, _, true}] -> is_in_dst;
       [_, _ | _] -> ambiguous_time
    end.
 
 % utc_offset(UtcDateTime, TZ) -> {OffsetMin, {Abbr, Name}}
 %  The UTC offset (in minutes) and name in effect at UtcDateTime.
-utc_offset(UtcDateTime, TZ = {Name, StdName, DstName, Shift, DstShift, _, _, _, _}) ->
+utc_offset(UtcDateTime, TZ) ->
+   {Offset, Name, _IsDst} = utc_state(UtcDateTime, TZ),
+   {Offset, Name}.
+
+% utc_state(UtcDateTime, TZ) -> {OffsetMin, {Abbr, Name}, IsDst}
+%  As utc_offset/2, plus whether daylight saving time is in effect.  Inside
+%  an exception period the flag recorded for that period is used, so it stays
+%  right when the zone's standard offset has since changed.
+utc_state(UtcDateTime, TZ = {Name, StdName, DstName, Shift, DstShift, _, _, _, _}) ->
    Utc = calendar:datetime_to_gregorian_seconds(UtcDateTime),
    case exception(Name, Utc) of
-      {Offset, Abbr} ->
-         {Offset, {Abbr, Abbr}};
+      {Offset, Abbr, IsDst} ->
+         {Offset, {Abbr, Abbr}, IsDst};
       none when DstName =:= undef ->
-         {Shift, StdName};
+         {Shift, StdName, false};
       none ->
          {Year, _, _} = element(1, UtcDateTime),
          Events = lists:append([transitions(TZ, Y) || Y <- [Year - 1, Year, Year + 1]]),
          case [Ev || {T, _} = Ev <- lists:sort(Events), T =< Utc] of
-            [] -> {Shift, StdName};
+            [] -> {Shift, StdName, false};
             Past ->
                case lists:last(Past) of
-                  {_, dst} -> {Shift + DstShift, DstName};
-                  {_, std} -> {Shift, StdName}
+                  {_, dst} -> {Shift + DstShift, DstName, true};
+                  {_, std} -> {Shift, StdName, false}
                end
          end
    end.
@@ -65,12 +73,16 @@ utc_offset(UtcDateTime, TZ = {Name, StdName, DstName, Shift, DstShift, _, _, _, 
 % local_offsets(LocalDateTime, TZ) -> [{OffsetMin, {Abbr, Name}}]
 %  All offsets under which LocalDateTime is a valid wall-clock time, in
 %  ascending order: [] in a gap (spring forward), two entries in an overlap.
-local_offsets(LocalDateTime, TZ = {Name, _, _, Shift, DstShift, _, _, _, _}) ->
+local_offsets(LocalDateTime, TZ) ->
+   [{Offset, Name} || {Offset, Name, _IsDst} <- local_states(LocalDateTime, TZ)].
+
+% As local_offsets/2, with each entry's DST flag: [{OffsetMin, {Abbr, Name}, IsDst}].
+local_states(LocalDateTime, TZ = {Name, _, _, Shift, DstShift, _, _, _, _}) ->
    Local = calendar:datetime_to_gregorian_seconds(LocalDateTime),
    Candidates = lists:usort([Shift, Shift + DstShift | exception_offsets(Name)]),
    lists:usort(
      [Res || Offset <- Candidates,
-             Res = {O, _} <- [utc_offset(calendar:gregorian_seconds_to_datetime(Local - Offset * 60), TZ)],
+             Res = {O, _, _} <- [utc_state(calendar:gregorian_seconds_to_datetime(Local - Offset * 60), TZ)],
              O =:= Offset]).
 
 % The UTC instants (gregorian seconds) of the DST start and end in Year.
@@ -84,7 +96,7 @@ rule_seconds(Rule, Time, Year) ->
    Days = calendar:date_to_gregorian_days({Year - 1, 12, 31}) + get_dst_day_of_year(Rule, Year),
    Days * 86400 + time_to_minutes(Time) * 60.
 
-% Periods are {UtcStartSecs, UtcEndSecs, OffsetMin, Abbr} (gregorian seconds),
+% Periods are {UtcStartSecs, UtcEndSecs, OffsetMin, Abbr, IsDst} (gregorian seconds),
 % sorted and non-overlapping, so the scan can stop at the first period that
 % starts after Utc.
 exception(Name, Utc) ->
@@ -93,14 +105,14 @@ exception(Name, Utc) ->
       #{} -> none
    end.
 
-find_period([{S, _, _, _} | _], Utc) when Utc < S -> none;
-find_period([{_, E, Off, Abbr} | _], Utc) when Utc < E -> {Off, Abbr};
+find_period([{S, _, _, _, _} | _], Utc) when Utc < S -> none;
+find_period([{_, E, Off, Abbr, IsDst} | _], Utc) when Utc < E -> {Off, Abbr, IsDst};
 find_period([_ | Rest], Utc) -> find_period(Rest, Utc);
 find_period([], _) -> none.
 
 exception_offsets(Name) ->
    case ?tz_exceptions of
-      #{Name := Periods} -> [Off || {_, _, Off, _} <- Periods];
+      #{Name := Periods} -> [Off || {_, _, Off, _, _} <- Periods];
       #{} -> []
    end.
 

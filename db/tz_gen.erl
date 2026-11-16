@@ -109,14 +109,20 @@ generate(Opts) ->
 %% footer becomes an exception.  Returns {Tuple, Exceptions, Problems}.
 convert_zone(Name, ZoneInfo, ActualTimeline, From, To) ->
     Footer = read_footer(filename:join(ZoneInfo, Name)),
-    Tuple = setelement(1, posix_to_tuple(parse_posix_tz(Footer)), Name),
+    Posix = parse_posix_tz(Footer),
+    Tuple = setelement(1, posix_to_tuple(Posix), Name),
     Diff = timeline_diff(ActualTimeline, predicted_timeline(Tuple, From, To), window(From, To)),
     Problems =
         [lists:flatten(io_lib:format(
            "~ts: offset ~ts (~ts) from ~ts rounded to ~b min",
            [Name, fmt_offset(Off), Abbr, fmt_secs(A), round_minutes(Off)]))
-         || {A, _, Off, Abbr} <- Diff, Off rem 60 =/= 0],
-    {Tuple, [exception_term(D) || D <- Diff], Problems}.
+         || {A, _, Off, Abbr, _} <- Diff, Off rem 60 =/= 0],
+    {Tuple, [exception_term(D, negative_dst(Posix)) || D <- Diff], Problems}.
+
+%% Zones whose footer has negative DST (Europe/Dublin) are described the other
+%% way round by posix_to_tuple/1, so zdump's isdst flag is inverted for them.
+negative_dst({dst, _, StdOff, _, DstOff, _, _}) -> DstOff < StdOff;
+negative_dst(_) -> false.
 
 fmt_secs(S) ->
     {{Y, Mo, D}, {H, Mi, Se}} = calendar:gregorian_seconds_to_datetime(S),
@@ -346,27 +352,31 @@ collect(Port, Acc) ->
     end.
 
 %% "Sun Mar 29 00:59:59 2026 UT = Sun Mar 29 00:59:59 2026 GMT isdst=0 gmtoff=0"
-zdump_line([_, Mon, Day, Time, Year, <<"UT">>, <<"=">>, _, _, _, _, _, Abbr, _, <<"gmtoff=", Off/binary>>]) ->
+zdump_line([_, Mon, Day, Time, Year, <<"UT">>, <<"=">>, _, _, _, _, _, Abbr,
+            <<"isdst=", IsDst/binary>>, <<"gmtoff=", Off/binary>>]) ->
     try
         [H, Mi, S] = [binary_to_integer(X) || X <- string:split(Time, ":", all)],
         Date = {binary_to_integer(Year),
                 index(binary_to_atom(string:lowercase(Mon)),
                       [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec]),
                 binary_to_integer(Day)},
-        {gsecs(Date, H * 3600 + Mi * 60 + S), {binary_to_integer(Off), binary_to_list(Abbr)}}
+        {gsecs(Date, H * 3600 + Mi * 60 + S),
+         {binary_to_integer(Off), binary_to_list(Abbr), binary_to_integer(IsDst) =/= 0}}
     catch _:_ -> skip
     end;
 zdump_line(_) -> skip.
 
 %% zdump -v prints each transition as a pair (t-1, t), plus far-past and
 %% far-future sentinel lines (-v only; -V omits them, and is ~30x faster).
+%% Unlike predicted timelines, entries carry zdump's isdst flag:
+%% {UtcSecs, OffsetSec, Abbr, IsDst}.
 zdump_to_timeline(Entries0, WStart, WEnd) ->
     Entries = [E || {U, _} = E <- Entries0, is_integer(U), U >= WStart - 1, U < WEnd],
     case transitions(Entries) of
         [] -> [];
-        [{_, Before, _} | _] = Ts ->
-            [{WStart, element(1, Before), element(2, Before)} |
-             [{T, Off, Abbr} || {T, _, {Off, Abbr}} <- Ts]]
+        [{_, {Off0, Abbr0, Dst0}, _} | _] = Ts ->
+            [{WStart, Off0, Abbr0, Dst0} |
+             [{T, Off, Abbr, Dst} || {T, _, {Off, Abbr, Dst}} <- Ts]]
     end.
 
 transitions([{T1, S1}, {T2, S2} | Rest]) when T2 =:= T1 + 1 ->
@@ -374,29 +384,36 @@ transitions([{T1, S1}, {T2, S2} | Rest]) when T2 =:= T1 + 1 ->
 transitions([_ | Rest]) -> transitions(Rest);
 transitions([]) -> [].
 
-%% Periods inside the window where Actual differs from Predicted, as
-%% [{StartSecs, EndSecs, OffsetSec, Abbr}] with Actual's state.  An empty
-%% Actual timeline means zdump saw no transitions; then the footer is exact.
+%% Periods inside the window where Actual differs from Predicted in offset or
+%% abbreviation, as [{StartSecs, EndSecs, OffsetSec, Abbr, IsDst}] with
+%% Actual's state.  An empty Actual timeline means zdump saw no transitions;
+%% then the footer is exact.
 timeline_diff([], _, _) -> [];
 timeline_diff(Actual, Predicted, {_, WEnd}) ->
-    Points = lists:usort([T || {T, _, _} <- Actual ++ Predicted, T < WEnd] ++ [WEnd]),
+    Points = lists:usort([element(1, E) || E <- Actual ++ Predicted, element(1, E) < WEnd]
+                         ++ [WEnd]),
     Pieces = [{A, B, state_at(Actual, A), state_at(Predicted, A)}
               || {A, B} <- lists:zip(lists:droplast(Points), tl(Points))],
-    coalesce([{A, B, Off, Abbr} || {A, B, {Off, Abbr} = S1, S2} <- Pieces, S1 =/= S2]).
+    coalesce([{A, B, Off, Abbr, Dst}
+              || {A, B, {Off, Abbr, Dst}, {POff, PAbbr, _}} <- Pieces,
+                 {Off, Abbr} =/= {POff, PAbbr}]).
 
+%% {OffsetSec, Abbr, IsDst} at T; IsDst is undefined for predicted timelines.
 state_at(Timeline, T) ->
-    {_, Off, Abbr} = lists:last([E || {T0, _, _} = E <- Timeline, T0 =< T]),
-    {Off, Abbr}.
+    case lists:last([E || E <- Timeline, element(1, E) =< T]) of
+        {_, Off, Abbr} -> {Off, Abbr, undefined};
+        {_, Off, Abbr, Dst} -> {Off, Abbr, Dst}
+    end.
 
-coalesce([{A, B, O, Ab}, {B, C, O, Ab} | Rest]) -> coalesce([{A, C, O, Ab} | Rest]);
+coalesce([{A, B, O, Ab, D}, {B, C, O, Ab, D} | Rest]) -> coalesce([{A, C, O, Ab, D} | Rest]);
 coalesce([X | Rest]) -> [X | coalesce(Rest)];
 coalesce([]) -> [].
 
 %% Gregorian seconds are emitted directly so the library need not convert
 %% datetimes on every lookup.  Sub-minute offsets (Monrovia until 1972) are
 %% rounded; convert_zone/5 reports them.
-exception_term({A, B, Off, Abbr}) ->
-    {A, B, round_minutes(Off), Abbr}.
+exception_term({A, B, Off, Abbr, IsDst}, NegativeDst) ->
+    {A, B, round_minutes(Off), Abbr, IsDst =/= NegativeDst}.
 
 round_minutes(Sec) -> round(Sec / 60).
 
@@ -411,7 +428,7 @@ format_tuple(T) ->
 %% stays readable even though the terms hold gregorian seconds.
 exceptions_text(Exceptions) ->
     ["% Periods (UTC, [Start, End)) where a zone deviates from its yearly rule.\n"
-     "% #{TimeZoneName => [{UtcStartGregorianSecs, UtcEndGregorianSecs, UtcOffsetMin, Abbr}]}\n"
+     "% #{TimeZoneName => [{UtcStartGregorianSecs, UtcEndGregorianSecs, UtcOffsetMin, Abbr, IsDst}]}\n"
      "-define(tz_exceptions,\n   #{\n",
      lists:join(
        "\n",
@@ -432,7 +449,7 @@ with_separators(Items, Sep, NewLine, Last) ->
                [[Text, case I of N -> Last; _ -> Sep end, Comment]
                 || {I, {Text, Comment}} <- lists:zip(lists:seq(1, N), Items)]).
 
-period_comment({A, B, _, _}) ->
+period_comment({A, B, _, _, _}) ->
     ["  % ", fmt_secs(A), " .. ", fmt_secs(B)].
 
 header(Version, {Y, M, D}, {From, To}, Summary, Problems) ->

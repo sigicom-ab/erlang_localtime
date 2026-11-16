@@ -216,6 +216,23 @@ winnipeg_test_() ->
     ?_assertEqual({'-',5,0}, localtime:tz_shift({{2050,1,1},{12,0,0}}, W)),
     ?_assertEqual({"EST","EST"}, localtime:tz_name({{2050,1,1},{12,0,0}}, W))].
 
+%% localtime_dst:check/2 in exception periods uses the period's own DST flag,
+%% not a comparison with the zone's current standard offset (now -05 in
+%% Winnipeg, which was CDT, i.e. daylight time, before 2026-11-01).
+dst_flag_in_exception_periods_test_() ->
+   W = "America/Winnipeg",
+   [?_assertEqual(is_not_in_dst,  localtime_dst:check({{2020,1,15},{12,0,0}}, W)),
+    ?_assertEqual(is_in_dst,      localtime_dst:check({{2020,7,15},{12,0,0}}, W)),
+    ?_assertEqual(time_not_exists, localtime_dst:check({{2026,3,8},{2,30,0}}, W)),
+    ?_assertEqual(ambiguous_time, localtime_dst:check({{2025,11,2},{1,30,0}}, W)),
+    ?_assertEqual(is_in_dst,      localtime_dst:check({{2026,11,1},{1,30,0}}, W)),
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2027,7,1},{12,0,0}}, W)),
+    %% Europe/Dublin's footer has negative DST; the tuple calls IST daylight time.
+    ?_assertEqual(is_in_dst,      localtime_dst:check({{1990,7,1},{12,0,0}}, "Europe/Dublin")),
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1990,1,1},{12,0,0}}, "Europe/Dublin")),
+    ?_assertEqual(is_in_dst,      localtime_dst:check({{2020,7,1},{12,0,0}}, "Europe/Dublin")),
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2020,1,1},{12,0,0}}, "Europe/Dublin"))].
+
 %% Lookup cost on the zones with the most exception periods.  The threshold
 %% is the point at which a binary-searched transition table would be needed.
 lookup_benchmark_test() ->
