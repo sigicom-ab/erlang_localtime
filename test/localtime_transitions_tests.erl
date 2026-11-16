@@ -233,6 +233,63 @@ dst_flag_in_exception_periods_test_() ->
     ?_assertEqual(is_in_dst,      localtime_dst:check({{2020,7,1},{12,0,0}}, "Europe/Dublin")),
     ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2020,1,1},{12,0,0}}, "Europe/Dublin"))].
 
+%% local_offsets/2 only looks at the exception periods near the local time.
+%% Pinned values at period edges: Lord_Howe has a 30-minute DST and a period
+%% [2007-10-06 15:30Z, 2007-10-27 15:30Z) at +10:30; Vilnius stayed on EET
+%% (no DST) in 1999-2002 and changed from CET/CEST to EET on 1999-10-31.
+exception_period_edges_test_() ->
+   LH = "Australia/Lord_Howe",
+   V = "Europe/Vilnius",
+   Offs = fun(Z, L) -> [O || {O, _} <- localtime_dst:local_offsets(L, tz(Z))] end,
+   [%% Start of the Lord_Howe period: the footer's DST (+11) is not used yet.
+    ?_assertEqual([630], Offs(LH, {{2007,10,7},{2,15,0}})),
+    ?_assertEqual([630], Offs(LH, {{2007,10,7},{2,45,0}})),
+    %% End of the period: DST starts 02:00 -> 02:30 local, so 02:15 is a gap.
+    ?_assertEqual([], Offs(LH, {{2007,10,28},{2,15,0}})),
+    ?_assertEqual([660], Offs(LH, {{2007,10,28},{2,45,0}})),
+    %% 30-minute overlap when DST ends (2007-03-25 02:00 local DST).
+    ?_assertEqual([630, 660], Offs(LH, {{2007,3,25},{1,45,0}})),
+    ?_assertEqual([630], Offs(LH, {{2007,3,25},{2,15,0}})),
+    %% Vilnius: no DST in the summer of 2002; the footer would add +3.
+    ?_assertEqual([120], Offs(V, {{2002,3,31},{2,59,59}})),
+    ?_assertEqual([120], Offs(V, {{2002,3,31},{3,30,0}})),
+    ?_assertEqual([120], Offs(V, {{2002,10,27},{3,30,0}})),
+    ?_assertEqual([120], Offs(V, {{2002,10,27},{4,30,0}})),
+    ?_assertEqual([120], Offs(V, {{1999,10,31},{3,30,0}})),
+    %% CET -> CEST on 1999-03-28 01:00Z: 02:30 local does not exist.
+    ?_assertEqual([], Offs(V, {{1999,3,28},{2,30,0}}))].
+
+%% The window must not change the result: compare with a reference that
+%% tries every offset of every period, around the edges of every period, in
+%% every zone that has exception periods.
+exception_window_matches_full_scan_test_() ->
+   {timeout, 60,
+    fun() ->
+       Bad = [{Zone, Locals} || Zone <- lists:sort(maps:keys(?tz_exceptions)),
+                                Locals <- [window_vs_full_scan(Zone)],
+                                Locals =/= []],
+       ?assertEqual([], lists:sublist(Bad, 5))
+    end}.
+
+% The first local times (at most 5) where the window and the full scan differ.
+window_vs_full_scan(Zone) ->
+   TZ = tz(Zone),
+   Periods = maps:get(Zone, ?tz_exceptions),
+   Edges = lists:usort([E || {S, End, _, _, _} <- Periods, E <- [S, End]]),
+   Offsets = lists:usort([Off || {_, _, Off, _, _} <- Periods]),
+   Shifts = [D * (H * 3600 + M) || D <- [-1, 1], H <- [0, 1, 2, 3, 12, 14], M <- [0, 1800, 1]],
+   Locals = [Edge + Off * 60 + Sh || Edge <- Edges, Off <- Offsets, Sh <- Shifts],
+   Bad = [dt(L) || L <- lists:usort(Locals),
+                   local_offsets_full_scan(dt(L), TZ) =/= localtime_dst:local_offsets(dt(L), TZ)],
+   lists:sublist(Bad, 5).
+
+local_offsets_full_scan(Local, TZ = {Name, _, _, Shift, DstShift, _, _, _, _}) ->
+   L = secs(Local),
+   Offsets = [Shift, Shift + DstShift | [O || {_, _, O, _, _} <- maps:get(Name, ?tz_exceptions, [])]],
+   lists:usort([{O, N} || Off <- lists:usort(Offsets),
+                          {O, N, _} <- [localtime_dst:utc_state(dt(L - Off * 60), TZ)],
+                          O =:= Off]).
+
 %% Lookup cost on the zones with the most exception periods.  The threshold
 %% is the point at which a binary-searched transition table would be needed.
 lookup_benchmark_test() ->
