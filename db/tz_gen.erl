@@ -111,6 +111,8 @@ convert_zone(Name, ZoneInfo, ActualTimeline, From, To) ->
     Footer = read_footer(filename:join(ZoneInfo, Name)),
     Posix = parse_posix_tz(Footer),
     Tuple = setelement(1, posix_to_tuple(Posix), Name),
+    (ActualTimeline =/= [] orelse element(1, Posix) =/= dst)
+        orelse error({empty_zdump_timeline, Name}),
     Diff = timeline_diff(ActualTimeline, predicted_timeline(Tuple, From, To), window(From, To)),
     Problems =
         [lists:flatten(io_lib:format(
@@ -335,14 +337,33 @@ zdump_timelines(Zdump, ZoneInfo, Names, From, To) ->
     Port = open_port({spawn_executable, Zdump},
                      [{args, Args}, exit_status, binary, stream, use_stdio]),
     Out = collect(Port, []),
-    Lines = [string:lexemes(L, " ") || L <- string:split(Out, "\n", all)],
     {WStart, WEnd} = window(From, To),
-    Parsed = [{string:prefix(binary_to_list(P), Dir), U, L}
-              || [P | Rest] <- Lines, {U, L} <- [zdump_line(Rest)]],
+    %% zdump prints the path as UTF-8 bytes; Dir is a list of codepoints.
+    DirBin = unicode:characters_to_binary(Dir),
+    %% One {Zone, UtcSecs, {OffsetSec, Abbr, IsDst}} per zdump transition.
+    %% Lines that do not match are skipped silently.
+    Parsed = [{N, U, L}
+              || Line <- string:split(Out, "\n", all),
+                 {N, Rest} <- [zdump_zone(Line, DirBin)],
+                 {U, L} <- [zdump_line(string:lexemes(Rest, " "))]],
+    Parsed =/= [] orelse error({zdump_unparsable, length(Names), byte_size(Out)}),
     ByZone = lists:foldl(fun({N, U, L}, Acc) ->
                                  maps:update_with(N, fun(V) -> [{U, L} | V] end, [{U, L}], Acc)
                          end, maps:from_list([{N, []} || N <- Names]), Parsed),
     maps:map(fun(_, Rev) -> zdump_to_timeline(lists:reverse(Rev), WStart, WEnd) end, ByZone).
+
+%% Splits a zdump line into {ZoneName, RestOfLine}.  The directory prefix is
+%% removed by an exact match, so spaces in the path do not matter.  Zone names
+%% contain no spaces.
+zdump_zone(Line, Dir) ->
+    case string:prefix(Line, Dir) of
+        nomatch -> skip;
+        Tail ->
+            case string:split(Tail, " ") of
+                [Name, Rest] -> {binary_to_list(Name), Rest};
+                _ -> skip
+            end
+    end.
 
 collect(Port, Acc) ->
     receive
