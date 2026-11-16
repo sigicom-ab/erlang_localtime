@@ -67,17 +67,11 @@ local_to_utc(LocalDateTime, Timezone) ->
 local_to_local(LocalDateTime, TimezoneFrom, TimezoneTo) ->
    case local_to_utc(LocalDateTime, TimezoneFrom) of
       UtcDateTime = {{_,_,_},{_,_,_}} ->
-         LocalDateTime2 = utc_to_local(UtcDateTime, TimezoneTo);
+         utc_to_local(UtcDateTime, TimezoneTo);
       [UtcDateTime, {{_,_,_},{_,_,_}}] ->
-         LocalDateTime2 = utc_to_local(UtcDateTime, TimezoneTo);
+         utc_to_local(UtcDateTime, TimezoneTo);
       Res ->
-         LocalDateTime2 = Res
-   end,
-   case LocalDateTime2 of
-      [DateTimeToReturn, {{_,_,_},{_,_,_}}] ->
-         DateTimeToReturn;
-      Other ->
-         Other
+         Res
    end.
 
 % local_to_local_dst(LocalDateTime, TimezoneFrom, TimezoneTo) -> LocalDateTime | ambiguous | time_not_exists | {error, ErrDescr}
@@ -88,17 +82,11 @@ local_to_local(LocalDateTime, TimezoneFrom, TimezoneTo) ->
 local_to_local_dst(LocalDateTime, TimezoneFrom, TimezoneTo) ->
    case local_to_utc(LocalDateTime, TimezoneFrom) of
       UtcDateTime = {{_,_,_},{_,_,_}} ->
-         LocalDateTime2 = utc_to_local(UtcDateTime, TimezoneTo);
+         utc_to_local(UtcDateTime, TimezoneTo);
       [{{_,_,_},{_,_,_}}, UtcDateTime] ->
-         LocalDateTime2 = utc_to_local(UtcDateTime, TimezoneTo);
+         utc_to_local(UtcDateTime, TimezoneTo);
       Res ->
-         LocalDateTime2 = Res
-   end,
-   case LocalDateTime2 of
-      [{{_,_,_},{_,_,_}}, DateTimeToReturn] ->
-         DateTimeToReturn;
-      Other ->
-         Other
+         Res
    end.
 
 % tz_name(DateTime(), Timezone) -> {Abbr, Name} | {{StdAbbr, StdName}, {DstAbbr, DstName}} | unable_to_detect | {error, ErrDesc}
