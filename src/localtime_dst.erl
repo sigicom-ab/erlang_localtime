@@ -79,7 +79,7 @@ local_offsets(LocalDateTime, TZ) ->
 % As local_offsets/2, with each entry's DST flag: [{OffsetMin, {Abbr, Name}, IsDst}].
 local_states(LocalDateTime, TZ = {Name, _, _, Shift, DstShift, _, _, _, _}) ->
    Local = calendar:datetime_to_gregorian_seconds(LocalDateTime),
-   Candidates = lists:usort([Shift, Shift + DstShift | exception_offsets(Name)]),
+   Candidates = lists:usort([Shift, Shift + DstShift | exception_offsets(Name, Local)]),
    lists:usort(
      [Res || Offset <- Candidates,
              Res = {O, _, _} <- [utc_state(calendar:gregorian_seconds_to_datetime(Local - Offset * 60), TZ)],
@@ -110,11 +110,21 @@ find_period([{_, E, Off, Abbr, IsDst} | _], Utc) when Utc < E -> {Off, Abbr, IsD
 find_period([_ | Rest], Utc) -> find_period(Rest, Utc);
 find_period([], _) -> none.
 
-exception_offsets(Name) ->
+% The offsets of the exception periods that can matter for a local time.
+% A candidate offset O is valid only if the UTC instant Local - O is in a
+% period with offset O.  UTC offsets lie in [-12 h, +14 h], so that instant
+% is in [Local - 14 h, Local + 12 h].  The window has 1 h of margin.
+exception_offsets(Name, Local) ->
    case ?tz_exceptions of
-      #{Name := Periods} -> [Off || {_, _, Off, _, _} <- Periods];
+      #{Name := Periods} -> window_offsets(Periods, Local - 15 * 3600, Local + 13 * 3600);
       #{} -> []
    end.
+
+% Periods are sorted, so stop at the first period that starts after the window.
+window_offsets([{S, _, _, _, _} | _], _Lo, Hi) when S >= Hi -> [];
+window_offsets([{_, E, _, _, _} | Rest], Lo, Hi) when E =< Lo -> window_offsets(Rest, Lo, Hi);
+window_offsets([{_, _, Off, _, _} | Rest], Lo, Hi) -> [Off | window_offsets(Rest, Lo, Hi)];
+window_offsets([], _, _) -> [].
 
 get_dst_day_of_year({WeekDay,DayOfWeek,Month}, Year) when (WeekDay == last) or (WeekDay == 5) ->
    IntMonth = month_to_int(Month),
