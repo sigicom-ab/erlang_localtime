@@ -23,11 +23,10 @@
      ,fmt_shift/1
   ]).
 
-% utc_to_local(UtcDateTime, Timezone) -> LocalDateTime | [LocalDateTime, DstLocalDateTime] | {error, ErrDescr}
+% utc_to_local(UtcDateTime, Timezone) -> LocalDateTime | {error, ErrDescr}
 %  UtcDateTime = DateTime()
 %  Timezone = String()
 %  LocalDateTime = DateTime()
-%  DstLocalDateTime = DateTime()
 %  ErrDescr = atom(), unknown_tz
 utc_to_local(UtcDateTime, Timezone) ->
    case maps:get(get_timezone(Timezone), ?tz_database, false) of
