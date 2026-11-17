@@ -120,3 +120,5 @@ offset in the window (Africa/Monrovia, −00:44:30 until 1972) is rounded to −
   now resolves to that zone.
 * `utc_to_local/2` always returns a single datetime (it used to return a list in the hour after
   a fall-back transition).
+* `list_timezones/0` returns the sorted zone names (Zones and Links, e.g. `"Europe/Stockholm"`);
+  it used to return the abbreviations accepted by `get_timezone/1`.

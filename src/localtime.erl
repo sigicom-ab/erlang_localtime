@@ -152,8 +152,12 @@ adjust_datetime(DateTime, Minutes) ->
 get_timezone(TimeZone) ->
     get_timezone_inner(TimeZone).
 
+% list_timezones() -> [Timezone]
+%  returns every time zone name (IANA Zones and Links), sorted; each one is
+%  valid input to the functions above
+%  Timezone = String()
 list_timezones() ->
-    lists:sort(maps:keys(?tz_index)).
+    lists:sort(maps:keys(?tz_database)).
 
 % =======================================================================
 % privates

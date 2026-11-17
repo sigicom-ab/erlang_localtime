@@ -85,6 +85,18 @@ monrovia_rounded_test() ->
 east_saskatchewan_removed_test() ->
    ?assertEqual(false, maps:is_key("Canada/East-Saskatchewan", ?tz_database)).
 
+%% list_timezones/0 lists zone names (Zones and Links), sorted, not
+%% abbreviations.
+list_timezones_test() ->
+   L = localtime:list_timezones(),
+   ?assertEqual(lists:sort(maps:keys(?tz_database)), L),
+   [?assert(lists:member(Z, L))
+    || Z <- ["Europe/Stockholm", "America/New_York", "Asia/Kolkata", "Etc/UTC", "Eire"]],
+   [?assertNot(lists:member(A, L)) || A <- ["-03", "+0530", "CEST", "IST"]],
+   %% Every listed name resolves to itself, not to another zone through an
+   %% abbreviation of the same name.
+   ?assertEqual([], [Z || Z <- L, localtime:get_timezone(Z) =/= Z]).
+
 %% America/Santiago around the 2026 transitions (#1).
 santiago_dst_test_() ->
    Tz = "America/Santiago",
