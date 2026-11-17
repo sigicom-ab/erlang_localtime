@@ -231,7 +231,35 @@ dst_flag_in_exception_periods_test_() ->
     ?_assertEqual(is_in_dst,      localtime_dst:check({{1990,7,1},{12,0,0}}, "Europe/Dublin")),
     ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1990,1,1},{12,0,0}}, "Europe/Dublin")),
     ?_assertEqual(is_in_dst,      localtime_dst:check({{2020,7,1},{12,0,0}}, "Europe/Dublin")),
-    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2020,1,1},{12,0,0}}, "Europe/Dublin"))].
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2020,1,1},{12,0,0}}, "Europe/Dublin")),
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1980,1,15},{12,0,0}}, "Europe/Dublin")),
+    ?_assertEqual(is_in_dst,      localtime_dst:check({{1980,7,15},{12,0,0}}, "Europe/Dublin")),
+    %% From 1968-10-27 to 1971-10-31 Ireland kept IST all year as standard
+    %% time (zdump isdst=0, no negative DST yet), so IST is not daylight
+    %% time in winter or summer, although the yearly rule calls summer IST
+    %% daylight time.
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1970,1,15},{12,0,0}}, "Europe/Dublin")),
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1970,7,15},{12,0,0}}, "Europe/Dublin")),
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1971,7,15},{12,0,0}}, "Europe/Dublin")),
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1971,1,15},{12,0,0}}, "Eire")),
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1971,7,15},{12,0,0}}, "Eire")),
+    %% 00:30Z, before the switch to GMT at 02:00Z (the rule switches at 01:00Z).
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1971,10,31},{1,30,0}}, "Europe/Dublin")),
+    %% Morocco's Ramadan +00 (2019-2026) is isdst=1 in tzdata, but it is
+    %% negative DST: clocks go back from the +01 standard time, so it is not
+    %% daylight time.
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2024,3,20},{12,0,0}}, "Africa/Casablanca")),
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2024,3,20},{12,0,0}}, "Africa/El_Aaiun")),
+    ?_assertEqual({0, {"+00", "+00"}},
+                  localtime_dst:utc_offset({{2024,3,20},{12,0,0}}, tz("Africa/Casablanca"))),
+    %% Namibia's winter time WAT (1994-2017) was isdst=1 one hour behind
+    %% the CAT standard time on both sides: negative DST, not daylight time.
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2000,7,1},{12,0,0}}, "Africa/Windhoek")),
+    %% Nome's BDT in summer 1983 was ordinary DST (BST -11 -> BDT -10), even
+    %% though it ended with a move to the higher YST -09.
+    ?_assertEqual(is_in_dst,      localtime_dst:check({{1983,7,1},{12,0,0}}, "America/Nome")),
+    ?_assertEqual({60, {"IST", "IST"}},
+                  localtime_dst:utc_offset({{1970,1,15},{12,0,0}}, tz("Europe/Dublin")))].
 
 %% local_offsets/2 only looks at the exception periods near the local time.
 %% Pinned values at period edges: Lord_Howe has a 30-minute DST and a period
