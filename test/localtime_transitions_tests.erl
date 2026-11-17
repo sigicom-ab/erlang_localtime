@@ -239,7 +239,7 @@ dst_flag_in_exception_periods_test_() ->
     ?_assertEqual(ambiguous_time, localtime_dst:check({{2025,11,2},{1,30,0}}, W)),
     ?_assertEqual(is_in_dst,      localtime_dst:check({{2026,11,1},{1,30,0}}, W)),
     ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2027,7,1},{12,0,0}}, W)),
-    %% Europe/Dublin's footer has negative DST; the tuple calls IST daylight time.
+    %% Europe/Dublin: in tzdata's rearguard form IST is daylight time.
     ?_assertEqual(is_in_dst,      localtime_dst:check({{1990,7,1},{12,0,0}}, "Europe/Dublin")),
     ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1990,1,1},{12,0,0}}, "Europe/Dublin")),
     ?_assertEqual(is_in_dst,      localtime_dst:check({{2020,7,1},{12,0,0}}, "Europe/Dublin")),
@@ -247,8 +247,8 @@ dst_flag_in_exception_periods_test_() ->
     ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1980,1,15},{12,0,0}}, "Europe/Dublin")),
     ?_assertEqual(is_in_dst,      localtime_dst:check({{1980,7,15},{12,0,0}}, "Europe/Dublin")),
     %% From 1968-10-27 to 1971-10-31 Ireland kept IST all year as standard
-    %% time (zdump isdst=0, no negative DST yet), so IST is not daylight
-    %% time in winter or summer, although the yearly rule calls summer IST
+    %% time (isdst=0 in both forms of tzdata), so IST is not daylight time
+    %% in winter or summer, although the yearly rule calls summer IST
     %% daylight time.
     ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1970,1,15},{12,0,0}}, "Europe/Dublin")),
     ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1970,7,15},{12,0,0}}, "Europe/Dublin")),
@@ -257,16 +257,28 @@ dst_flag_in_exception_periods_test_() ->
     ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1971,7,15},{12,0,0}}, "Eire")),
     %% 00:30Z, before the switch to GMT at 02:00Z (the rule switches at 01:00Z).
     ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1971,10,31},{1,30,0}}, "Europe/Dublin")),
-    %% Morocco's Ramadan +00 (2019-2026) is isdst=1 in tzdata, but it is
-    %% negative DST: clocks go back from the +01 standard time, so it is not
-    %% daylight time.
+    %% Zones with negative DST follow tzdata's rearguard form (see db/Makefile).
+    %% Morocco 2018-2026: +00 is standard time and +01 is daylight time,
+    %% except in Ramadan, until the switch to +00 all year on 2026-09-20.
     ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2024,3,20},{12,0,0}}, "Africa/Casablanca")),
     ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2024,3,20},{12,0,0}}, "Africa/El_Aaiun")),
     ?_assertEqual({0, {"+00", "+00"}},
                   localtime_dst:utc_offset({{2024,3,20},{12,0,0}}, tz("Africa/Casablanca"))),
-    %% Namibia's winter time WAT (1994-2017) was isdst=1 one hour behind
-    %% the CAT standard time on both sides: negative DST, not daylight time.
+    ?_assertEqual(is_in_dst,      localtime_dst:check({{2024,6,1},{12,0,0}}, "Africa/Casablanca")),
+    ?_assertEqual(is_in_dst,      localtime_dst:check({{2024,6,1},{12,0,0}}, "Africa/El_Aaiun")),
+    ?_assertEqual(is_in_dst,      localtime_dst:check({{2019,1,15},{12,0,0}}, "Africa/Casablanca")),
+    ?_assertEqual(is_in_dst,      localtime_dst:check({{2019,1,15},{12,0,0}}, "Africa/El_Aaiun")),
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2026,10,1},{12,0,0}}, "Africa/Casablanca")),
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2026,10,1},{12,0,0}}, "Africa/El_Aaiun")),
+    %% Namibia 1994-2017: winter WAT (+01) is standard time and summer CAT
+    %% (+02) is daylight time, until CAT became standard time on 2017-10-24.
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{1993,1,15},{12,0,0}}, "Africa/Windhoek")),
     ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2000,7,1},{12,0,0}}, "Africa/Windhoek")),
+    ?_assertEqual(is_in_dst,      localtime_dst:check({{2017,1,15},{12,0,0}}, "Africa/Windhoek")),
+    ?_assertEqual(is_in_dst,      localtime_dst:check({{2017,10,1},{12,0,0}}, "Africa/Windhoek")),
+    ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2017,11,1},{12,0,0}}, "Africa/Windhoek")),
+    ?_assertEqual({120, {"CAT", "CAT"}},
+                  localtime_dst:utc_offset({{2017,1,15},{12,0,0}}, tz("Africa/Windhoek"))),
     %% Nome's BDT in summer 1983 was ordinary DST (BST -11 -> BDT -10), even
     %% though it ended with a move to the higher YST -09.
     ?_assertEqual(is_in_dst,      localtime_dst:check({{1983,7,1},{12,0,0}}, "America/Nome")),

@@ -11,6 +11,15 @@
 # the output does not depend on the zic shipped by the OS).  The generator
 # reads the POSIX TZ footer of each compiled TZif file and cross-checks it
 # against zdump.
+#
+# zic compiles the rearguard form of the data (made by the release's
+# ziguard.awk), which has no negative DST: Europe/Dublin's winter GMT,
+# Namibia's winter WAT (1994-2017) and Morocco's Ramadan +00 (2018-2026) are
+# standard time, and the summer time next to them is daylight time.  The
+# offsets and abbreviations are the same as in the main form; only isdst
+# differs.  tz_gen.erl takes the DST flag from zdump as is, and refuses a
+# footer with negative DST.  If a future release drops the rearguard form,
+# the generator has to classify negative DST itself again.
 
 IANA_URL := https://data.iana.org/time-zones
 OUT      ?= ../include/tz_database.hrl
@@ -27,6 +36,7 @@ TZCODE         := $(BUILD)/tzcode$(TZCODE_VERSION)
 ZIC            := $(TZCODE)/zic
 ZDUMP          := $(TZCODE)/zdump
 ZONEINFO       := $(BUILD)/zoneinfo-$(TZ_VERSION)
+REARGUARD_ZI   := $(BUILD)/rearguard-$(TZ_VERSION).zi
 
 SOURCES  := africa antarctica asia australasia etcetera europe northamerica southamerica backward
 TZ_FILES := $(addprefix $(TZDATA)/,$(SOURCES))
@@ -62,11 +72,17 @@ $(OUT): tz_gen.erl $(ZONEINFO)/.stamp $(ZDUMP)
 	  --zoneinfo $(ZONEINFO) --zdump $(ZDUMP) -o $@
 
 zoneinfo: $(ZONEINFO)/.stamp
-$(ZONEINFO)/.stamp: $(ZIC) $(TZ_FILES)
+$(ZONEINFO)/.stamp: $(ZIC) $(REARGUARD_ZI)
 	$(need_version)
 	rm -rf $(ZONEINFO)
-	$(ZIC) -d $(ZONEINFO) $(TZ_FILES)
+	$(ZIC) -d $(ZONEINFO) $(REARGUARD_ZI)
 	touch $@
+
+$(REARGUARD_ZI): $(TZ_FILES) | $(TZDATA)
+	$(need_version)
+	mkdir -p $(BUILD)
+	awk -v DATAFORM=rearguard -f $(TZDATA)/ziguard.awk $(TZ_FILES) >$@.tmp
+	mv $@.tmp $@
 
 $(TZ_FILES): | $(TZDATA)
 

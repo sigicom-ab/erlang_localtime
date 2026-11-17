@@ -33,9 +33,6 @@
                   "europe", "northamerica", "southamerica", "backward"]).
 -define(DEFAULT_FROM, 1970).   % results before this year are unsupported
 -define(DEFAULT_SPAN, 20).     % exceptions run to generation year + span
--define(CONTEXT_YEARS, 5).     % zdump history read before and after the
-                               % window, used only to classify negative DST
-                               % (dst_flags/2)
 
 %% ===================================================================
 %% Command line
@@ -109,13 +106,15 @@ generate(Opts) ->
 %% A zone is always represented by its TZif footer rule, which by definition
 %% describes the zone after the window (and before it, where nothing better
 %% is known).  Every period in the window where zdump disagrees with the
-%% footer becomes an exception.  Returns {Tuple, Exceptions, Problems}.
+%% footer becomes an exception, including periods that differ only in the
+%% DST flag.  The flag is zdump's isdst, read from the rearguard form of the
+%% data (see db/Makefile).  Returns {Tuple, Exceptions, Problems}.
 convert_zone(Name, ZoneInfo, Transitions, From, To) ->
     Footer = read_footer(filename:join(ZoneInfo, Name)),
     Posix = parse_posix_tz(Footer),
     Tuple = setelement(1, posix_to_tuple(Posix), Name),
     W = window(From, To),
-    ActualTimeline = clip_timeline(dst_flags(Transitions, negative_dst(Posix)), W),
+    ActualTimeline = clip_timeline(Transitions, W),
     (ActualTimeline =/= [] orelse element(1, Posix) =/= dst)
         orelse error({empty_zdump_timeline, Name}),
     Diff = timeline_diff(ActualTimeline, predicted_timeline(Tuple, From, To), W),
@@ -125,58 +124,6 @@ convert_zone(Name, ZoneInfo, Transitions, From, To) ->
            [Name, fmt_offset(Off), Abbr, fmt_secs(A), round_minutes(Off)]))
          || {A, _, Off, Abbr, _} <- Diff, Off rem 60 =/= 0],
     {Tuple, [exception_term(D) || D <- Diff], Problems}.
-
-%% Zones whose footer has negative DST (Europe/Dublin) are described the other
-%% way round by posix_to_tuple/1: the higher offset is called daylight time.
-negative_dst({dst, _, StdOff, _, DstOff, _, _}) -> DstOff < StdOff;
-negative_dst(_) -> false.
-
-%% Converts zdump's isdst flags to the tuple's convention, where daylight
-%% time is never behind the standard time next to it.  States that belong
-%% to a negative-DST regime are inverted:
-%%   - an isdst=1 state with a lower offset than each of its neighbours, all
-%%     of them isdst=0 (Dublin's winter GMT, Morocco's Ramadan +00), is not
-%%     daylight time;
-%%   - only for a zone whose footer has negative DST (Europe/Dublin): an
-%%     isdst=0 state with such a state on both sides (Dublin's summer IST)
-%%     is daylight time, as the tuple describes it.  Elsewhere it stays
-%%     standard time (Morocco's +01 in 2019-2026).
-%% Every other state keeps zdump's flag.  So an all-year standard time next
-%% to a negative-DST regime (Dublin's IST 1968-10-27 .. 1971-10-31) stays
-%% standard time.  A state is only inverted when both its neighbours are
-%% known; zdump_timelines/5 reads ?CONTEXT_YEARS of history before and after
-%% the window so that every state in the window has them.
-%%
-%% Takes and returns [{UtcSecs, Before, After}] with states
-%% {OffsetSec, Abbr, IsDst}, as built by transitions/1.
-dst_flags([], _) ->
-    [];
-dst_flags(Ts, NegativeFooter) ->
-    {_, S0, _} = hd(Ts),
-    States = [S0 | [S || {_, _, S} <- Ts]],
-    Fixed = fix_states(none, States, NegativeFooter),
-    [{T, B, A} || {{T, _, _}, B, A} <- lists:zip3(Ts, lists:droplast(Fixed), tl(Fixed))].
-
-fix_states(_, [], _) ->
-    [];
-fix_states(Prev, [S | Rest], NegativeFooter) ->
-    Next = case Rest of [N | _] -> N; [] -> none end,
-    [fix_state(Prev, S, Next, NegativeFooter) | fix_states(S, Rest, NegativeFooter)].
-
-fix_state(Prev, {Off, Abbr, true} = S, Next, _) ->
-    %% Both neighbours must make a negative pair with S: Nome's BDT in 1983
-    %% (BST -11 -> BDT -10 -> YST -09) is ordinary DST.
-    {Off, Abbr, not (negative_pair(Prev, S) andalso negative_pair(S, Next))};
-fix_state(Prev, {Off, Abbr, false}, Next, true) ->
-    {Off, Abbr, negative_pair(Prev, {Off, Abbr, false}) andalso
-                negative_pair({Off, Abbr, false}, Next)};
-fix_state(_, State, _, false) ->
-    State.
-
-%% Two adjacent states where the isdst=1 one has the lower offset.
-negative_pair({Off1, _, true}, {Off2, _, false}) -> Off1 < Off2;
-negative_pair({Off1, _, false}, {Off2, _, true}) -> Off2 < Off1;
-negative_pair(_, _) -> false.
 
 %% Turns [{UtcSecs, Before, After}] into a timeline for the window [WStart,
 %% WEnd) (see below).  Only transitions in the window count: with none, the
@@ -314,12 +261,12 @@ posix_rule(S) ->
 
 posix_to_tuple({std, Abbr, Off}) ->
     fixed_tuple({Off, Abbr});
-posix_to_tuple({dst, Std, StdOff, Dst, DstOff, Start, End}) when DstOff < StdOff ->
-    %% Negative DST (Europe/Dublin: IST is "standard", GMT is "winter time").
-    %% erlang_localtime needs a positive shift, so describe it the other way
-    %% round.  Rule times are wall clock before the transition, so they stay
-    %% attached to their rule.
-    posix_to_tuple({dst, Dst, DstOff, Std, StdOff, End, Start});
+posix_to_tuple({dst, Std, StdOff, Dst, DstOff, _, _}) when DstOff < StdOff ->
+    %% Negative DST (Europe/Dublin in the main form of tzdata).  The zoneinfo
+    %% must be compiled from the rearguard form (see db/Makefile), where the
+    %% DST flags of zdump and the footer agree with erlang_localtime's
+    %% positive shift.
+    error({negative_dst_footer, Std, StdOff, Dst, DstOff});
 posix_to_tuple({dst, Std, StdOff, Dst, DstOff, {StartDay, StartT}, {EndDay, EndT}}) ->
     {undefined, {Std, Std}, {Dst, Dst}, minutes(StdOff), minutes(DstOff - StdOff),
      day_term(StartDay), hm(StartT), day_term(EndDay), hm(EndT)}.
@@ -393,20 +340,18 @@ index(X, L) -> length(lists:takewhile(fun(Y) -> Y =/= X end, L)) + 1.
 
 %% Runs zdump once for all names and returns #{Name => Transitions}, each
 %% transition being {UtcSecs, Before, After} with states {OffsetSec, Abbr,
-%% IsDst} as zdump reports them.  The transitions run from ?CONTEXT_YEARS
-%% before to ?CONTEXT_YEARS after the window, for dst_flags/2;
-%% clip_timeline/2 cuts them to the window.
+%% IsDst} as zdump reports them, in the window From .. To; clip_timeline/2
+%% turns them into a timeline.
 %% Zones are passed as absolute TZif paths: zdump does not reliably honour
 %% TZDIR (it silently falls back to the system database for plain names).
 zdump_timelines(Zdump, ZoneInfo, Names, From, To) ->
     Dir = filename:absname(ZoneInfo) ++ "/",
-    Args = ["-V", "-c", integer_to_list(From - ?CONTEXT_YEARS) ++ ","
-                        ++ integer_to_list(To + 1 + ?CONTEXT_YEARS)
+    Args = ["-V", "-c", integer_to_list(From) ++ "," ++ integer_to_list(To + 1)
             | [Dir ++ N || N <- Names]],
     Port = open_port({spawn_executable, Zdump},
                      [{args, Args}, exit_status, binary, stream, use_stdio]),
     Out = collect(Port, []),
-    {CStart, CEnd} = window(From - ?CONTEXT_YEARS, To + ?CONTEXT_YEARS),
+    {CStart, CEnd} = window(From, To),
     %% zdump prints the path as UTF-8 bytes; Dir is a list of codepoints.
     DirBin = unicode:characters_to_binary(Dir),
     %% One {Zone, UtcSecs, {OffsetSec, Abbr, IsDst}} per zdump transition.
@@ -469,9 +414,8 @@ transitions([]) -> [].
 
 %% Periods inside the window where Actual differs from Predicted in offset,
 %% abbreviation or DST flag, as [{StartSecs, EndSecs, OffsetSec, Abbr, IsDst}]
-%% with Actual's state.  Both timelines use the tuple's DST convention (see
-%% dst_flags/2).  An empty Actual timeline means zdump saw no transitions;
-%% then the footer is exact.
+%% with Actual's state.  An empty Actual timeline means zdump saw no
+%% transitions; then the footer is exact.
 timeline_diff([], _, _) -> [];
 timeline_diff(Actual, Predicted, {_, WEnd}) ->
     Points = lists:usort([element(1, E) || E <- Actual ++ Predicted, element(1, E) < WEnd]

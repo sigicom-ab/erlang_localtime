@@ -110,6 +110,23 @@ covering 1970 to the generation year plus 20. Beyond that window the yearly rule
 **results for dates before 1970 are unsupported**. Offsets are whole minutes; the only sub-minute
 offset in the window (Africa/Monrovia, −00:44:30 until 1972) is rounded to −00:45.
 
+#### Daylight saving time in zones with negative DST
+
+A few zones move their clocks *back* from standard time for part of the year. The main form of
+tzdata calls that period daylight time with a negative offset. `localtime_dst:check/2` instead
+follows tzdata's rearguard form, which has no negative DST: the lower offset is standard time and
+the higher one is daylight time. The database is generated from the rearguard form, so the
+offsets and abbreviations are the same either way; only `is_in_dst`/`is_not_in_dst` is affected.
+
+| Zone | Standard time | Daylight time | Example |
+|------|---------------|---------------|---------|
+| `Europe/Dublin`, `Eire` | GMT (winter) | IST (summer) | 2020-07-01 is `is_in_dst` |
+| `Africa/Windhoek` 1994 – 2017-10-24 | WAT, +01 (winter) | CAT, +02 (summer) | 2017-01-15 is `is_in_dst` |
+| `Africa/Casablanca`, `Africa/El_Aaiun` 2018 – 2026-09-20 | +00 (Ramadan) | +01 (rest of the year) | 2024-06-01 is `is_in_dst` |
+
+Ireland's all-year IST of 1968-10-27 .. 1971-10-31 is standard time. Windhoek's CAT after
+2017-10-24 and Morocco's +00 after 2026-09-20 are standard time.
+
 #### Changes since the 2015g database
 
 * `Etc/GMT±N` follows the IANA/POSIX sign convention: `Etc/GMT+1` is UTC−1.
