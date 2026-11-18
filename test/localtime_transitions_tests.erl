@@ -78,8 +78,8 @@ fixed_offsets_test_() ->
 
 %% Sub-minute offsets are rounded (Monrovia -00:44:30 until 1972).
 monrovia_rounded_test() ->
-   ?assertMatch({-45, {"MMT", _}}, localtime_dst:utc_offset({{1971,1,1},{12,0,0}}, tz("Africa/Monrovia"))),
-   ?assertEqual({0, {"GMT", "GMT"}}, localtime_dst:utc_offset({{1973,1,1},{12,0,0}}, tz("Africa/Monrovia"))).
+   ?assertMatch({-45, {"MMT", _}}, localtime_dst:utc_offset({{1971,1,1},{12,0,0}}, "Africa/Monrovia")),
+   ?assertEqual({0, {"GMT", "GMT"}}, localtime_dst:utc_offset({{1973,1,1},{12,0,0}}, "Africa/Monrovia")).
 
 %% Removed upstream; America/Regina replaces it.
 east_saskatchewan_removed_test() ->
@@ -135,8 +135,8 @@ transition(Zone, UtcDT, {OffB, AbbrB}, {OffA, AbbrA}) ->
             [?_assertEqual(dt(U), localtime:local_to_utc(Local(U, OffA), Zone))]
       end,
    {lists:flatten(io_lib:format("~s ~p", [Zone, UtcDT])),
-    [?_assertMatch({OffB, {AbbrB, _}}, localtime_dst:utc_offset(dt(U - 1), tz(Zone))),
-     ?_assertMatch({OffA, {AbbrA, _}}, localtime_dst:utc_offset(dt(U), tz(Zone))),
+    [?_assertMatch({OffB, {AbbrB, _}}, localtime_dst:utc_offset(dt(U - 1), Zone)),
+     ?_assertMatch({OffA, {AbbrA, _}}, localtime_dst:utc_offset(dt(U), Zone)),
      ?_assertEqual(Local(U - 1, OffB), localtime:utc_to_local(dt(U - 1), Zone)),
      ?_assertEqual(Local(U, OffA), localtime:utc_to_local(dt(U), Zone)),
      %% Well clear of the transition, local_to_utc inverts utc_to_local.
@@ -146,7 +146,7 @@ transition(Zone, UtcDT, {OffB, AbbrB}, {OffA, AbbrA}) ->
 
 at(Zone, UtcDT, {Off, Abbr}) ->
    {lists:flatten(io_lib:format("~s ~p", [Zone, UtcDT])),
-    [?_assertMatch({Off, {Abbr, _}}, localtime_dst:utc_offset(UtcDT, tz(Zone))),
+    [?_assertMatch({Off, {Abbr, _}}, localtime_dst:utc_offset(UtcDT, Zone)),
      ?_assertEqual(dt(secs(UtcDT) + Off * 60), localtime:utc_to_local(UtcDT, Zone))]}.
 
 tz(Zone) ->
@@ -161,7 +161,7 @@ dt(S) -> calendar:gregorian_seconds_to_datetime(S).
 
 %% Asia/Jerusalem: Friday before last Sunday = day after 4th Thursday, 02:00.
 jerusalem_hour_26_test() ->
-   Tz = {"T/Jerusalem",{"IST","IST"},{"IDT","IDT"},120,60,{4,thu,mar},{26,0},{last,sun,oct},{2,0}},
+   Tz = "Asia/Jerusalem",
    ?assertEqual(is_not_in_dst,   localtime_dst:check({{2026,3,27},{1,59,59}}, Tz)),
    ?assertEqual(time_not_exists, localtime_dst:check({{2026,3,27},{2,0,0}}, Tz)),
    ?assertEqual(is_in_dst,       localtime_dst:check({{2026,3,27},{3,0,0}}, Tz)),
@@ -170,7 +170,7 @@ jerusalem_hour_26_test() ->
 
 %% Asia/Gaza: Saturday 02:00 after the 4th Thursday (50 hours).
 gaza_hour_50_test() ->
-   Tz = {"T/Gaza",{"EET","EET"},{"EEST","EEST"},120,60,{4,thu,mar},{50,0},{4,thu,oct},{50,0}},
+   Tz = "Asia/Gaza",
    ?assertEqual(is_not_in_dst,   localtime_dst:check({{2026,3,28},{1,59,59}}, Tz)),
    ?assertEqual(time_not_exists, localtime_dst:check({{2026,3,28},{2,30,0}}, Tz)),
    ?assertEqual(is_in_dst,       localtime_dst:check({{2026,3,28},{3,0,0}}, Tz)),
@@ -181,7 +181,7 @@ gaza_hour_50_test() ->
 
 %% America/Nuuk: -1:00 on the last Sunday = Saturday 23:00.
 nuuk_negative_hour_test() ->
-   Tz = {"T/Nuuk",{"-02","-02"},{"-01","-01"},-120,60,{last,sun,mar},{-1,0},{last,sun,oct},{0,0}},
+   Tz = "America/Nuuk",
    ?assertEqual(is_not_in_dst,   localtime_dst:check({{2026,3,28},{22,59,59}}, Tz)),
    ?assertEqual(time_not_exists, localtime_dst:check({{2026,3,28},{23,30,0}}, Tz)),
    ?assertEqual(is_in_dst,       localtime_dst:check({{2026,3,29},{0,0,0}}, Tz)),
@@ -191,7 +191,7 @@ nuuk_negative_hour_test() ->
 %% America/Santiago: Sun>=2 expressed as first Saturday + 24h.  In 2030
 %% September 1st is a Sunday, which a {1,sun,sep} rule gets wrong.
 santiago_hour_24_test() ->
-   Tz = {"T/Santiago",{"-04","-04"},{"-03","-03"},-240,60,{1,sat,sep},{24,0},{1,sat,apr},{24,0}},
+   Tz = "America/Santiago",
    ?assertEqual(is_not_in_dst,   localtime_dst:check({{2030,9,1},{12,0,0}}, Tz)),
    ?assertEqual(is_not_in_dst,   localtime_dst:check({{2030,9,7},{23,59,0}}, Tz)),
    ?assertEqual(time_not_exists, localtime_dst:check({{2030,9,8},{0,30,0}}, Tz)),
@@ -263,7 +263,7 @@ dst_flag_in_exception_periods_test_() ->
     ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2024,3,20},{12,0,0}}, "Africa/Casablanca")),
     ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2024,3,20},{12,0,0}}, "Africa/El_Aaiun")),
     ?_assertEqual({0, {"+00", "+00"}},
-                  localtime_dst:utc_offset({{2024,3,20},{12,0,0}}, tz("Africa/Casablanca"))),
+                  localtime_dst:utc_offset({{2024,3,20},{12,0,0}}, "Africa/Casablanca")),
     ?_assertEqual(is_in_dst,      localtime_dst:check({{2024,6,1},{12,0,0}}, "Africa/Casablanca")),
     ?_assertEqual(is_in_dst,      localtime_dst:check({{2024,6,1},{12,0,0}}, "Africa/El_Aaiun")),
     ?_assertEqual(is_in_dst,      localtime_dst:check({{2019,1,15},{12,0,0}}, "Africa/Casablanca")),
@@ -278,12 +278,12 @@ dst_flag_in_exception_periods_test_() ->
     ?_assertEqual(is_in_dst,      localtime_dst:check({{2017,10,1},{12,0,0}}, "Africa/Windhoek")),
     ?_assertEqual(is_not_in_dst,  localtime_dst:check({{2017,11,1},{12,0,0}}, "Africa/Windhoek")),
     ?_assertEqual({120, {"CAT", "CAT"}},
-                  localtime_dst:utc_offset({{2017,1,15},{12,0,0}}, tz("Africa/Windhoek"))),
+                  localtime_dst:utc_offset({{2017,1,15},{12,0,0}}, "Africa/Windhoek")),
     %% Nome's BDT in summer 1983 was ordinary DST (BST -11 -> BDT -10), even
     %% though it ended with a move to the higher YST -09.
     ?_assertEqual(is_in_dst,      localtime_dst:check({{1983,7,1},{12,0,0}}, "America/Nome")),
     ?_assertEqual({60, {"IST", "IST"}},
-                  localtime_dst:utc_offset({{1970,1,15},{12,0,0}}, tz("Europe/Dublin")))].
+                  localtime_dst:utc_offset({{1970,1,15},{12,0,0}}, "Europe/Dublin"))].
 
 %% local_offsets/2 only looks at the exception periods near the local time.
 %% Pinned values at period edges: Lord_Howe has a 30-minute DST and a period
@@ -292,7 +292,7 @@ dst_flag_in_exception_periods_test_() ->
 exception_period_edges_test_() ->
    LH = "Australia/Lord_Howe",
    V = "Europe/Vilnius",
-   Offs = fun(Z, L) -> [O || {O, _} <- localtime_dst:local_offsets(L, tz(Z))] end,
+   Offs = fun(Z, L) -> [O || {O, _} <- localtime_dst:local_offsets(L, Z)] end,
    [%% Start of the Lord_Howe period: the footer's DST (+11) is not used yet.
     ?_assertEqual([630], Offs(LH, {{2007,10,7},{2,15,0}})),
     ?_assertEqual([630], Offs(LH, {{2007,10,7},{2,45,0}})),
@@ -332,7 +332,7 @@ window_vs_full_scan(Zone) ->
    Shifts = [D * (H * 3600 + M) || D <- [-1, 1], H <- [0, 1, 2, 3, 12, 14], M <- [0, 1800, 1]],
    Locals = [Edge + Off * 60 + Sh || Edge <- Edges, Off <- Offsets, Sh <- Shifts],
    Bad = [dt(L) || L <- lists:usort(Locals),
-                   local_offsets_full_scan(dt(L), TZ) =/= localtime_dst:local_offsets(dt(L), TZ)],
+                   local_offsets_full_scan(dt(L), TZ) =/= localtime_dst:local_offsets(dt(L), Zone)],
    lists:sublist(Bad, 5).
 
 local_offsets_full_scan(Local, TZ = {Name, _, _, Shift, DstShift, _, _, _, _}) ->

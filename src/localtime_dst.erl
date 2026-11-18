@@ -17,34 +17,51 @@
 
 -compile([export_all]).
 
-% A ?tz_database row (see include/tz_database.hrl).
+% A ?tz_database row (see include/tz_database.hrl).  Internal: the public
+% functions take a zone name and look the row up themselves, so the rule and
+% the zone's ?tz_exceptions history always come from the same database entry.
 -type tz() :: tuple().
--export_type([tz/0]).
 
-% check(DateTime, TimeZone) -> is_in_dst | is_not_in_dst | ambiguous_time | time_not_exists
+% check(DateTime, Timezone) -> is_in_dst | is_not_in_dst | ambiguous_time | time_not_exists | {error, unknown_tz}
 %  DateTime = DateTime(), local wall-clock time
-%  TimeZone = String() | tuple()
--spec check(Datetime :: calendar:datetime(), Timezone :: tz() | string()) -> {error, unknown_tz} | time_not_exists | is_not_in_dst | is_in_dst | ambiguous_time.
-check(DateTime, Timezone) when is_list(Timezone) ->
-    case maps:get(localtime:get_timezone(Timezone), ?tz_database, false) of
-        false ->
-            {error, unknown_tz};
-        TZ ->
-            check(DateTime, TZ)
-    end;
-check(DateTime, TZ) ->
-   case local_states(DateTime, TZ) of
-      [] -> time_not_exists;
-      [{_, _, false}] -> is_not_in_dst;
-      [{_, _, true}] -> is_in_dst;
-      [_, _ | _] -> ambiguous_time
-   end.
+%  Timezone = String(), a zone name or abbreviation (see localtime:get_timezone/1)
+-spec check(Datetime :: calendar:datetime(), Timezone :: string()) -> {error, unknown_tz} | time_not_exists | is_not_in_dst | is_in_dst | ambiguous_time.
+check(DateTime, Timezone) ->
+   with_tz(Timezone, fun(TZ) ->
+      case local_states(DateTime, TZ) of
+         [] -> time_not_exists;
+         [{_, _, false}] -> is_not_in_dst;
+         [{_, _, true}] -> is_in_dst;
+         [_, _ | _] -> ambiguous_time
+      end
+   end).
 
-% utc_offset(UtcDateTime, TZ) -> {OffsetMin, {Abbr, Name}}
+% utc_offset(UtcDateTime, Timezone) -> {OffsetMin, {Abbr, Name}} | {error, unknown_tz}
 %  The UTC offset (in minutes) and name in effect at UtcDateTime.
-utc_offset(UtcDateTime, TZ) ->
-   {Offset, Name, _IsDst} = utc_state(UtcDateTime, TZ),
-   {Offset, Name}.
+-spec utc_offset(calendar:datetime(), string()) -> {integer(), {string(), string()}} | {error, unknown_tz}.
+utc_offset(UtcDateTime, Timezone) ->
+   with_tz(Timezone, fun(TZ) ->
+      {Offset, Name, _IsDst} = utc_state(UtcDateTime, TZ),
+      {Offset, Name}
+   end).
+
+% local_offsets(LocalDateTime, Timezone) -> [{OffsetMin, {Abbr, Name}}] | {error, unknown_tz}
+%  All offsets under which LocalDateTime is a valid wall-clock time, in
+%  ascending order: [] in a gap (spring forward), two entries in an overlap.
+-spec local_offsets(calendar:datetime(), string()) -> [{integer(), {string(), string()}}] | {error, unknown_tz}.
+local_offsets(LocalDateTime, Timezone) ->
+   with_tz(Timezone, fun(TZ) ->
+      [{Offset, Name} || {Offset, Name, _IsDst} <- local_states(LocalDateTime, TZ)]
+   end).
+
+-spec with_tz(string(), fun((tz()) -> Res)) -> Res | {error, unknown_tz}.
+with_tz(Timezone, Fun) when is_list(Timezone) ->
+   case maps:get(localtime:get_timezone(Timezone), ?tz_database, false) of
+      false -> {error, unknown_tz};
+      TZ -> Fun(TZ)
+   end;
+with_tz(_Timezone, _Fun) ->
+   {error, unknown_tz}.
 
 % utc_state(UtcDateTime, TZ) -> {OffsetMin, {Abbr, Name}, IsDst}
 %  As utc_offset/2, plus whether daylight saving time is in effect.  Inside
@@ -69,12 +86,6 @@ utc_state(UtcDateTime, TZ = {Name, StdName, DstName, Shift, DstShift, _, _, _, _
                end
          end
    end.
-
-% local_offsets(LocalDateTime, TZ) -> [{OffsetMin, {Abbr, Name}}]
-%  All offsets under which LocalDateTime is a valid wall-clock time, in
-%  ascending order: [] in a gap (spring forward), two entries in an overlap.
-local_offsets(LocalDateTime, TZ) ->
-   [{Offset, Name} || {Offset, Name, _IsDst} <- local_states(LocalDateTime, TZ)].
 
 % As local_offsets/2, with each entry's DST flag: [{OffsetMin, {Abbr, Name}, IsDst}].
 local_states(LocalDateTime, TZ = {Name, _, _, Shift, DstShift, _, _, _, _}) ->
@@ -198,7 +209,7 @@ get_day_of_year_test() ->
    ?assertEqual(62, get_dst_day_of_year({1,wed,mar}, 2010)).
 
 check_test() ->
-   Tz = {"Europe/Moscow",{"MSK","MSK"},{"MSD","MSD"},180,60,{last,sun,mar},{2,0},{last,sun,oct},{3,0}},
+   Tz = "Europe/Moscow",
    ?assertEqual(is_not_in_dst, localtime_dst:check({{2010, 1, 1}, {10, 10, 0}}, Tz)),
    ?assertEqual(is_in_dst, check({{2010, 7, 8}, {10, 10, 0}}, Tz)),
    ?assertEqual(is_not_in_dst, check({{2010, 3, 28}, {1, 59, 0}}, Tz)),
@@ -215,19 +226,23 @@ check_test() ->
    ?assertEqual(ambiguous_time, check({{2010, 10, 31}, {2, 59, 0}}, Tz)),
    ?assertEqual(is_not_in_dst, check({{2010, 10, 31}, {3, 00, 0}}, Tz)),
 
-   %% DST starts at hour 24; DST ends at hour 0:
-   TzGaza = {"Asia/Gaza",{"EET","EET"},{"EEST","EEST"},120,60,{last,thu,mar},{24,0},{4,fri,sep},{0,0}},
+   %% Zone names, so the checks use the real database row and history.
+   %% Gaza: DST starts at hour 24; DST ends at hour 0:
+   TzGaza = "Asia/Gaza",
    ?assertEqual(is_not_in_dst,   check({{2014, 3, 27}, {23, 59, 59}}, TzGaza)),
    ?assertEqual(time_not_exists, check({{2014, 3, 28}, { 0, 00, 00}}, TzGaza)),
    ?assertEqual(time_not_exists, check({{2014, 3, 28}, { 0, 59, 59}}, TzGaza)),
    ?assertEqual(is_in_dst,       check({{2014, 3, 28}, { 1, 00, 00}}, TzGaza)),
-   ?assertEqual(is_in_dst,       check({{2014, 9, 25}, {22, 59, 59}}, TzGaza)),
-   ?assertEqual(ambiguous_time,  check({{2014, 9, 25}, {23, 00, 00}}, TzGaza)),
-   ?assertEqual(ambiguous_time,  check({{2014, 9, 25}, {23, 59, 59}}, TzGaza)),
-   ?assertEqual(is_not_in_dst,   check({{2014, 9, 26}, { 0, 00, 00}}, TzGaza)),
+   %% tzdata 2026f: DST ended 2014-10-24 00:00 local (older releases said
+   %% 2014-09-26).
+   ?assertEqual(is_in_dst,       check({{2014, 9, 25}, {23, 30, 00}}, TzGaza)),
+   ?assertEqual(is_in_dst,       check({{2014, 10, 23}, {22, 59, 59}}, TzGaza)),
+   ?assertEqual(ambiguous_time,  check({{2014, 10, 23}, {23, 00, 00}}, TzGaza)),
+   ?assertEqual(ambiguous_time,  check({{2014, 10, 23}, {23, 59, 59}}, TzGaza)),
+   ?assertEqual(is_not_in_dst,   check({{2014, 10, 24}, { 0, 00, 00}}, TzGaza)),
 
    %% DST starts at hour 0; DST ends at hour 0.
-   TzDamascus = {"Asia/Damascus",{"EET","EET"},{"EEST","EEST"},120,60,{last,fri,mar},{0,0},{last,fri,oct},{0,0}},
+   TzDamascus = "Asia/Damascus",
    ?assertEqual(is_not_in_dst,   check({{2014,  3, 27}, {23, 59, 59}}, TzDamascus)),
    ?assertEqual(time_not_exists, check({{2014,  3, 28}, { 0, 00, 00}}, TzDamascus)),
    ?assertEqual(time_not_exists, check({{2014,  3, 28}, { 0, 59, 59}}, TzDamascus)),
@@ -238,7 +253,7 @@ check_test() ->
    ?assertEqual(is_not_in_dst,   check({{2014, 10, 31}, { 0, 00, 00}}, TzDamascus)),
 
    %% DST ends before starts (southern hemisphere):
-   TzMontevideo = {"America/Montevideo",{"UYT","UYT"},{"UYST","UYST"},-180,60,{1,sun,oct},{2,0},{2,sun,mar},{2,0}},
+   TzMontevideo = "America/Montevideo",
    ?assertEqual(is_in_dst,       check({{2014,  3, 09}, { 0, 59, 59}}, TzMontevideo)),
    ?assertEqual(ambiguous_time,  check({{2014,  3, 09}, { 1, 00, 00}}, TzMontevideo)),
    ?assertEqual(ambiguous_time,  check({{2014,  3, 09}, { 1, 59, 59}}, TzMontevideo)),

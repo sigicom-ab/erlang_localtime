@@ -29,12 +29,9 @@
 %  LocalDateTime = DateTime()
 %  ErrDescr = atom(), unknown_tz
 utc_to_local(UtcDateTime, Timezone) ->
-   case maps:get(get_timezone(Timezone), ?tz_database, false) of
-      false ->
-         {error, unknown_tz};
-      TzRule ->
-         {Offset, _Name} = localtime_dst:utc_offset(UtcDateTime, TzRule),
-         adjust_datetime(UtcDateTime, Offset)
+   case localtime_dst:utc_offset(UtcDateTime, Timezone) of
+      {error, _} = Err -> Err;
+      {Offset, _Name} -> adjust_datetime(UtcDateTime, Offset)
    end.
 
 % local_to_utc(LocalDateTime, Timezone) -> UtcDateTime | [UtcDateTime, DstUtcDateTime] | time_not_exists | {error, ErrDescr}
@@ -44,19 +41,16 @@ utc_to_local(UtcDateTime, Timezone) ->
 %  DstUtcDateTime = DateTime()
 %  ErrDescr = atom(), unknown_tz
 local_to_utc(LocalDateTime, Timezone) ->
-   case maps:get(get_timezone(Timezone), ?tz_database, false) of
-      false ->
-         {error, unknown_tz};
-      TzRule ->
-         case localtime_dst:local_offsets(LocalDateTime, TzRule) of
-            [] ->
-               time_not_exists;
-            [{Offset, _}] ->
-               adjust_datetime(LocalDateTime, invert_shift(Offset));
-            [{Offset1, _}, {Offset2, _} | _] ->
-               [adjust_datetime(LocalDateTime, invert_shift(Offset1)),
-                adjust_datetime(LocalDateTime, invert_shift(Offset2))]
-         end
+   case localtime_dst:local_offsets(LocalDateTime, Timezone) of
+      {error, _} = Err ->
+         Err;
+      [] ->
+         time_not_exists;
+      [{Offset, _}] ->
+         adjust_datetime(LocalDateTime, invert_shift(Offset));
+      [{Offset1, _}, {Offset2, _} | _] ->
+         [adjust_datetime(LocalDateTime, invert_shift(Offset1)),
+          adjust_datetime(LocalDateTime, invert_shift(Offset2))]
    end.
 
 % local_to_local(LocalDateTime, TimezoneFrom, TimezoneTo) -> LocalDateTime | ambiguous | time_not_exists | {error, ErrDescr}
@@ -99,15 +93,12 @@ local_to_local_dst(LocalDateTime, TimezoneFrom, TimezoneTo) ->
 %  DstName = String()
 %  ErrDesc = atom(), unknown_tz
 tz_name(LocalDateTime, Timezone) ->
-   case maps:get(get_timezone(Timezone), ?tz_database, false) of
-      false ->
-         {error, unknown_tz};
-      TzRule ->
-         case localtime_dst:local_offsets(LocalDateTime, TzRule) of
-            [] -> unable_to_detect;
-            [{_, Name}] -> Name;
-            [{_, Name1}, {_, Name2} | _] -> {Name1, Name2}
-         end
+   case localtime_dst:local_offsets(LocalDateTime, Timezone) of
+      {error, _} = Err ->
+         Err;
+      [] -> unable_to_detect;
+      [{_, Name}] -> Name;
+      [{_, Name1}, {_, Name2} | _] -> {Name1, Name2}
    end.
 
 % tz_shift(LocalDateTime, Timezone) ->  Shift | {Shift, DstSift} | unable_to_detect | {error, ErrDesc}
@@ -120,15 +111,12 @@ tz_name(LocalDateTime, Timezone) ->
 %  {Shift, DstShift} - returns, when shift is ambiguous
 %  ErrDesc = atom(), unknown_tz
 tz_shift(LocalDateTime, Timezone) ->
-   case maps:get(get_timezone(Timezone), ?tz_database, false) of
-      false ->
-         {error, unknown_tz};
-      TzRule ->
-         case localtime_dst:local_offsets(LocalDateTime, TzRule) of
-            [] -> unable_to_detect;
-            [{Offset, _}] -> fmt_min(Offset);
-            [{Offset1, _}, {Offset2, _} | _] -> {fmt_min(Offset1), fmt_min(Offset2)}
-         end
+   case localtime_dst:local_offsets(LocalDateTime, Timezone) of
+      {error, _} = Err ->
+         Err;
+      [] -> unable_to_detect;
+      [{Offset, _}] -> fmt_min(Offset);
+      [{Offset1, _}, {Offset2, _} | _] -> {fmt_min(Offset1), fmt_min(Offset2)}
    end.
 
 % the same as tz_shift/2, but calculates time difference between two local timezones

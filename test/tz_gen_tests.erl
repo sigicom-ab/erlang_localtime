@@ -97,7 +97,7 @@ check_sample(Tz = {Name, _, _, _, _, _, _, _, _}, U, {OffSec, Abbr}) ->
    Off = round(OffSec / 60) * 60,
    Utc = calendar:gregorian_seconds_to_datetime(U),
    Local = calendar:gregorian_seconds_to_datetime(U + Off),
-   {GotOff, {GotAbbr, _}} = localtime_dst:utc_offset(Utc, Tz),
+   {GotOff, {GotAbbr, _}} = localtime_dst:utc_offset(Utc, Name),
    Back = localtime:local_to_utc(Local, Name),
    [{offset, {expected, Off div 60, Abbr}, {got, GotOff, GotAbbr}}
     || {GotOff * 60, GotAbbr} =/= {Off, Abbr}] ++
