@@ -1,17 +1,132 @@
-TZDIR=tzdata
-TZ_FILES=$(addprefix $(TZDIR)/, africa antarctica asia australasia backward etcetera europe northamerica southamerica)
+# Regenerates ../include/tz_database.hrl from the IANA tz database.
+#
+#   make                       # latest release -> ../include/tz_database.hrl
+#                              # (does nothing if already at the latest release)
+#   make FORCE=1               # regenerate even if already at the latest release
+#   make TZ_VERSION=2026e      # a specific release
+#   make test                  # fetch the committed release's data, run the eunit suite
+#
+# The latest release is the one named in $(IANA_URL)/tzdb/version.  The data
+# is compiled with zic from the tzcode of the same release (built locally, so
+# the output does not depend on the zic shipped by the OS).  The generator
+# reads the POSIX TZ footer of each compiled TZif file and cross-checks it
+# against zdump.
+#
+# zic compiles the rearguard form of the data (made by the release's
+# ziguard.awk), which has no negative DST: Europe/Dublin's winter GMT,
+# Namibia's winter WAT (1994-2017) and Morocco's Ramadan +00 (2018-2026) are
+# standard time, and the summer time next to them is daylight time.  The
+# offsets and abbreviations are the same as in the main form; only isdst
+# differs.  tz_gen.erl takes the DST flag from zdump as is, and refuses a
+# footer with negative DST.  If a future release drops the rearguard form,
+# the generator has to classify negative DST itself again.
 
-tzout: DATE := $(shell date +%F)
-tzout: $(TZ_FILES)
-	TZ_VERSION=`perl -n -e 'm/^VERSION\s*=\s*(\S+)/ and print $$1;' $(TZDIR)/Makefile`; \
-	./tz-erl --version $$TZ_VERSION --date $(DATE) -o $@ $^
+IANA_URL := https://data.iana.org/time-zones
+OUT      ?= ../include/tz_database.hrl
+HRL      := ../include/tz_database.hrl
 
-$(TZ_FILES): $(TZDIR)
+# The release the committed database was generated from (its header line
+# "%% version 2026f on ...").
+COMMITTED_VERSION := $(shell sed -n 's/^%% version \([^ ]*\) on .*/\1/p' $(HRL))
 
-$(TZDIR): tzdata-latest.tar.gz
-	mkdir $(TZDIR) && cd $(TZDIR) && tar xzf ../$<
+TZCODE_VERSION ?= $(TZ_VERSION)
+TZDATA         := tzdata$(TZ_VERSION)
+BUILD          := build
+TZCODE         := $(BUILD)/tzcode$(TZCODE_VERSION)
+ZIC            := $(TZCODE)/zic
+ZDUMP          := $(TZCODE)/zdump
+ZONEINFO       := $(BUILD)/zoneinfo-$(TZ_VERSION)
+REARGUARD_ZI   := $(BUILD)/rearguard-$(TZ_VERSION).zi
 
-tzdata-latest.tar.gz:
-	curl -O "ftp://ftp.iana.org/tz/tzdata-latest.tar.gz"
+SOURCES  := africa antarctica asia australasia etcetera europe northamerica southamerica backward
+TZ_FILES := $(addprefix $(TZDATA)/,$(SOURCES))
 
+# Targets that work on one release need TZ_VERSION.
+need_version = $(if $(TZ_VERSION),,$(error TZ_VERSION is not set))
 
+.PHONY: all generate zoneinfo tools test clean $(OUT)
+
+ifdef TZ_VERSION
+all: generate
+else
+all:
+	@v=$$(curl -fsS $(IANA_URL)/tzdb/version) || v=; \
+	case "$$v" in \
+	  [0-9][0-9][0-9][0-9][a-z]*) ;; \
+	  *) echo "could not fetch latest tz version from $(IANA_URL)/tzdb/version; pass TZ_VERSION=..." >&2; exit 1;; \
+	esac; \
+	if [ "$$v" = "$(COMMITTED_VERSION)" ] && [ -z "$(FORCE)" ]; then \
+	  echo "already at $$v (FORCE=1 to regenerate)"; \
+	else \
+	  $(MAKE) generate TZ_VERSION=$$v; \
+	fi
+endif
+
+generate: $(OUT)
+
+# $(OUT) is phony: "generate" always rewrites it.  "all" decides whether to
+# call "generate".
+$(OUT): tz_gen.erl $(ZONEINFO)/.stamp $(ZDUMP)
+	$(need_version)
+	escript tz_gen.erl --version $(TZ_VERSION) --tzdata $(TZDATA) \
+	  --zoneinfo $(ZONEINFO) --zdump $(ZDUMP) -o $@
+
+zoneinfo: $(ZONEINFO)/.stamp
+$(ZONEINFO)/.stamp: $(ZIC) $(REARGUARD_ZI)
+	$(need_version)
+	rm -rf $(ZONEINFO)
+	$(ZIC) -d $(ZONEINFO) $(REARGUARD_ZI)
+	touch $@
+
+$(REARGUARD_ZI): $(TZ_FILES) | $(TZDATA)
+	$(need_version)
+	mkdir -p $(BUILD)
+	awk -v DATAFORM=rearguard -f $(TZDATA)/ziguard.awk $(TZ_FILES) >$@.tmp
+	mv $@.tmp $@
+
+$(TZ_FILES): | $(TZDATA)
+
+tools: $(ZIC) $(ZDUMP)
+$(ZIC) $(ZDUMP): | $(TZCODE)/Makefile
+	$(MAKE) -C $(TZCODE) zic zdump
+
+# tzcode's Makefile needs the data files present to compute its version.
+# Each tarball is downloaded to a temporary file first, so a failed download
+# is never hidden by a pipe.  On any failure the whole tree is removed, so
+# the target file never exists in an incomplete tree.
+$(TZCODE)/Makefile:
+	$(need_version)
+	rm -rf $(TZCODE)
+	mkdir -p $(TZCODE)
+	{ curl -fsSL -o $(TZCODE).code.tgz $(IANA_URL)/releases/tzcode$(TZCODE_VERSION).tar.gz \
+	  && curl -fsSL -o $(TZCODE).data.tgz $(IANA_URL)/releases/tzdata$(TZCODE_VERSION).tar.gz \
+	  && tar xzf $(TZCODE).code.tgz -C $(TZCODE) \
+	  && tar xzf $(TZCODE).data.tgz -C $(TZCODE) \
+	  && test -f $(TZCODE)/Makefile && test -f $(TZCODE)/africa; } \
+	  || { echo "failed to download or unpack tzcode/tzdata $(TZCODE_VERSION) from $(IANA_URL)/releases" >&2; \
+	       rm -rf $(TZCODE) $(TZCODE).code.tgz $(TZCODE).data.tgz; exit 1; }
+	rm -f $(TZCODE).code.tgz $(TZCODE).data.tgz
+
+# The tarball is unpacked into $@.tmp, which is renamed to $@ as the last
+# step.  The target is a directory, and make does not delete a directory on
+# an interrupt.  So $@ must exist only when it is complete.
+tzdata%:
+	rm -rf $@ $@.tmp
+	mkdir -p $@.tmp $(BUILD)
+	{ curl -fsSL -o $(BUILD)/$@.tgz $(IANA_URL)/releases/$@.tar.gz \
+	  && tar xzf $(BUILD)/$@.tgz -C $@.tmp \
+	  && test -f $@.tmp/africa; } \
+	  || { echo "failed to download or unpack $@ from $(IANA_URL)/releases" >&2; \
+	       rm -rf $@.tmp $(BUILD)/$@.tgz; exit 1; }
+	mv $@.tmp $@
+	rm -f $(BUILD)/$@.tgz
+
+# Everything test/tz_gen_tests.erl needs (the release the committed database
+# was generated from), then the whole eunit suite.
+test:
+	$(if $(COMMITTED_VERSION),,$(error no version found in the header of $(HRL)))
+	$(MAKE) tools zoneinfo TZ_VERSION=$(COMMITTED_VERSION) TZCODE_VERSION=$(COMMITTED_VERSION)
+	cd .. && rebar3 eunit
+
+clean:
+	rm -rf $(BUILD) tzdata*/

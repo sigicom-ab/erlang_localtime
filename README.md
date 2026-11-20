@@ -81,3 +81,61 @@ localtime:tz_shift({{2013, 01, 22}, {18, 17, 00}}, "America/New York").
 localtime:tz_shift({{2013, 01, 22}, {18, 17, 00}}, "America/New York", "Europe/Moscow").
 {'+',9,0}
 ```
+
+### Time zone database
+
+`include/tz_database.hrl` is generated from the [IANA tz database](https://www.iana.org/time-zones)
+by `db/tz_gen.erl`, and `include/tz_index.hrl` is derived from it by `src/ibuild.erl`. The release
+it was generated from is recorded in the header of `include/tz_database.hrl`. To update to the
+latest release (requires `curl`, a C compiler and Erlang):
+
+```
+make -C db         # fetch the latest release, build zic/zdump, compile data, generate
+make               # rebuild tz_index.hrl and compile
+make -C db test    # fetch the data for the committed release, run all tests
+```
+
+`make -C db` does nothing if the committed database is already at the latest release (`FORCE=1`
+regenerates anyway); `make -C db TZ_VERSION=2026e` generates a specific release.
+
+Tests of known transitions live in `test/localtime_transitions_tests.erl` and run without any
+downloads; add one there whenever a rule change is worth pinning down.
+
+Each zone is described by one yearly rule taken from the POSIX TZ string `zic` stores in the
+compiled TZif file. Rule times may be negative or 24 hours or more (e.g. Asia/Jerusalem
+`{4,thu,mar},{26,0}`: 02:00 on the day after the 4th Thursday). Periods where a zone does not
+follow its rule (history under earlier rules, e.g. America/Winnipeg's CST/CDT before its move to
+permanent −05 on 2026-11-01, or Morocco's Ramadan suspensions) are listed in `?tz_exceptions`,
+covering 1970 to the generation year plus 20. Beyond that window the yearly rule applies, so
+**results for dates before 1970 are unsupported**. Offsets are whole minutes; the only sub-minute
+offset in the window (Africa/Monrovia, −00:44:30 until 1972) is rounded to −00:45.
+
+#### Daylight saving time in zones with negative DST
+
+A few zones move their clocks *back* from standard time for part of the year. The main form of
+tzdata calls that period daylight time with a negative offset. `localtime_dst:check/2` instead
+follows tzdata's rearguard form, which has no negative DST: the lower offset is standard time and
+the higher one is daylight time. The database is generated from the rearguard form, so the
+offsets and abbreviations are the same either way; only `is_in_dst`/`is_not_in_dst` is affected.
+
+| Zone | Standard time | Daylight time | Example |
+|------|---------------|---------------|---------|
+| `Europe/Dublin`, `Eire` | GMT (winter) | IST (summer) | 2020-07-01 is `is_in_dst` |
+| `Africa/Windhoek` 1994 – 2017-10-24 | WAT, +01 (winter) | CAT, +02 (summer) | 2017-01-15 is `is_in_dst` |
+| `Africa/Casablanca`, `Africa/El_Aaiun` 2018 – 2026-09-20 | +00 (Ramadan) | +01 (rest of the year) | 2024-06-01 is `is_in_dst` |
+
+Ireland's all-year IST of 1968-10-27 .. 1971-10-31 is standard time. Windhoek's CAT after
+2017-10-24 and Morocco's +00 after 2026-09-20 are standard time.
+
+#### Changes since the 2015g database
+
+* `Etc/GMT±N` follows the IANA/POSIX sign convention: `Etc/GMT+1` is UTC−1.
+* Abbreviations follow IANA, which replaced many invented ones with numeric ones
+  (e.g. `"-03"` instead of `"BRT"`); the old abbreviations no longer resolve in `get_timezone/1`.
+* `Canada/East-Saskatchewan` was removed upstream; use `America/Regina`.
+* A zone name that is also an abbreviation (`CET`, `EET`, `EST`, `GMT`, `HST`, `MST`, `UTC`, `WET`)
+  now resolves to that zone.
+* `utc_to_local/2` always returns a single datetime (it used to return a list in the hour after
+  a fall-back transition).
+* `list_timezones/0` returns the sorted zone names (Zones and Links, e.g. `"Europe/Stockholm"`);
+  it used to return the abbreviations accepted by `get_timezone/1`.
